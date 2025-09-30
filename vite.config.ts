@@ -5,8 +5,6 @@ import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 import { componentTagger } from "lovable-tagger";
 
 export default defineConfig(async ({ mode }) => ({
-  root: path.resolve(import.meta.dirname),
-  publicDir: path.resolve(import.meta.dirname, "public"),
   plugins: [
     react(),
     runtimeErrorOverlay(),
