@@ -29,6 +29,22 @@ console.log('[DEBUG] Starting React app initialization...');
 console.log('[DEBUG] Window location:', window.location.href);
 console.log('[DEBUG] Document ready state:', document.readyState);
 
+// Check if CSS is loaded
+const stylesheets = document.querySelectorAll('link[rel="stylesheet"], style');
+console.log('[DEBUG] Stylesheets found:', stylesheets.length);
+stylesheets.forEach((sheet, index) => {
+  console.log(`[DEBUG] Stylesheet ${index}:`, sheet.outerHTML);
+});
+
+// Check if Tailwind classes are working
+const testElement = document.createElement('div');
+testElement.className = 'bg-primary text-primary-foreground p-4';
+document.body.appendChild(testElement);
+const computedStyle = window.getComputedStyle(testElement);
+console.log('[DEBUG] Tailwind test - background color:', computedStyle.backgroundColor);
+console.log('[DEBUG] Tailwind test - color:', computedStyle.color);
+document.body.removeChild(testElement);
+
 try {
   const rootElement = document.getElementById("root");
   console.log('[DEBUG] Root element found:', !!rootElement);
