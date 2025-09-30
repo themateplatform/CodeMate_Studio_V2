@@ -10,30 +10,47 @@ jobs:
   swap:
     runs-on: ubuntu-latest
     steps:
-      - name: Prepare Git
+      - name: Prepare Git identity
         run: |
           git config --global user.name "Repo Swap Bot"
           git config --global user.email "bot@example.com"
 
-      - name: Check out the target repo
+      # 1) Check out the TARGET repo (fertile-ground-base) with full history
+      - name: Check out target (fertile-ground-base)
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # full history so we can back up cleanly
+          fetch-depth: 0
 
+      # 2) Create a safety backup of current main that you can roll back to
       - name: Create backup branch of current main
         run: |
           git branch backup-pre-swap "$GITHUB_SHA"
           git push origin backup-pre-swap
 
-      - name: Add source repo and fetch (private)
+      # 3) Add SOURCE remote using your fine-grained PAT and verify access
+      - name: Add SOURCE remote and verify access
         env:
           SOURCE_PAT: ${{ secrets.SOURCE_PAT }}
         run: |
-          git remote add source https://x-access-token:${SOURCE_PAT}@github.com/themateplatform/codemate_studio.git
+          # Use the PAT directly (fine-grained tokens work like this).
+          # NOTE: If your token contains special characters, Git handles them in the URL.
+          git remote add source https://${SOURCE_PAT}@github.com/themateplatform/codemate_studio.git
+
+          echo "Verifying we can read the source repo refs..."
+          git ls-remote --heads source
+
+      # 4) Fetch all refs + tags from SOURCE
+      - name: Fetch SOURCE refs and tags
+        run: |
           git fetch source --prune --tags
 
-      - name: Replace main with source/main
+      # 5) Replace TARGET main with SOURCE main (keeps full history)
+      - name: Replace main with source/main and push
         run: |
+          # If your source default branch is NOT 'main', change 'main' below.
           git checkout -B main source/main
           git push origin main --force
           git push origin --tags || true
+
+      - name: Done
+        run: echo "Swap complete. backup-pre-swap branch is available for rollback."
