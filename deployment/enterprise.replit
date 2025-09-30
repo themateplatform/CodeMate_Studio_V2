@@ -1,0 +1,61 @@
+# Reserved VM Deployment Configuration for CodeMate Studio
+# Always-on enterprise deployment with dedicated resources
+
+[deployment]
+deploymentTarget = "reservedVm"
+build = ["npm", "run", "build:enterprise"]
+run = ["npm", "run", "start:enterprise"]
+
+# Dedicated machine configuration
+machine = "shared-cpu-2x"
+reserved = true
+private = true  # Enterprise only
+
+# Port configuration
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+# WebSocket support for real-time collaboration
+[[ports]]
+localPort = 8080
+externalPort = 8080
+
+# Health check configuration
+[deployment.healthCheck]
+path = "/health"
+port = 5000
+intervalSeconds = 30
+timeoutSeconds = 10
+healthyThreshold = 2
+unhealthyThreshold = 3
+
+# Auto-restart configuration
+[deployment.autoRestart]
+enabled = true
+maxRestarts = 5
+restartDelaySeconds = 30
+
+# Environment configuration
+[env]
+DEPLOYMENT_TYPE = "enterprise"
+NODE_ENV = "production"
+PORT = "5000"
+
+# Resource monitoring
+[deployment.monitoring]
+enabled = true
+metricsRetentionDays = 30
+alerting = true
+
+# Security configuration
+[deployment.security]
+enableFirewall = true
+allowedIPs = []  # Configure specific IPs for security
+sslTermination = true
+
+# Backup configuration
+[deployment.backup]
+enabled = true
+schedule = "0 4 * * *"  # Daily at 4 AM
+retentionDays = 30

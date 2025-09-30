@@ -1,0 +1,109 @@
+name: 🐛 Bug Report
+description: Report a bug or issue with CodeMate Studio
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out the sections below.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is
+      placeholder: Describe what happened vs what you expected
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce this issue?
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should have happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Affected Phase
+      description: Which phase of the application is affected?
+      options:
+        - "Core Application"
+        - "Phase 1: Infrastructure"
+        - "Phase 2: Supabase Backend"
+        - "Phase 3: API Security"
+        - "Phase 4: CI/CD"
+        - "Phase 5: Deployments"
+        - "Phase 6: PWA"
+        - "Phase 7: Mobile"
+        - "Phase 8: Store Readiness"
+        - "Phase 9: AI Workflows"
+        - "Phase 10: Templates"
+        - "Phase 11: Observability"
+        - "Phase 12: Enterprise"
+        - "Unknown"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - "Low - Cosmetic issue"
+        - "Medium - Functionality impaired"
+        - "High - Core feature broken"
+        - "Critical - Security or data loss"
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Tell us about your environment
+      value: |
+        - OS: [e.g., macOS 14, Windows 11, Ubuntu 22.04]
+        - Browser: [e.g., Chrome 122, Firefox 124, Safari 17]
+        - Device: [e.g., Desktop, iPhone 15, Android tablet]
+        - Screen size: [e.g., 1920x1080, mobile]
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console Logs/Errors
+      description: Any relevant console logs or error messages
+      render: text
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other information that might help us debug this issue

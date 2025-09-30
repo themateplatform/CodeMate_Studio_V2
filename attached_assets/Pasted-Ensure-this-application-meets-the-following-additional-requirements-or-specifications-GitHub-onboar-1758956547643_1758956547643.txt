@@ -1,0 +1,81 @@
+Ensure this application meets the following additional requirements or specifications (GitHub onboarding, cross-app identity/style linking, upfront questions & smart suggestions):
+
+GITHUB-FIRST ONBOARDING & CONTINUOUS SYNC
+
+Connect to GitHub at project start; import an existing repo or create a new one.
+
+Two-way sync: push/pull, branch mapping, PR creation, and conflict resolution.
+
+“Repo as source of truth” option with guardrails (required reviews, protected branches).
+
+Commit strategy settings: conventional commits, squash/merge, signed commits.
+
+Secrets/env mapping from repo → app environments; drift detection and diffs.
+
+Safe dry-run mode (plan + diff) before any write to the repository.
+
+Continuous updates: subsequent edits open PRs with human-readable summaries and migration notes.
+
+FULL AUTHENTICATION & IDENTITY (SINGLE-APP AND CROSS-APP)
+
+Built-in user auth (email/password + social/SSO) with MFA/Passkeys.
+
+Multi-tenant orgs, roles/permissions, session management, rate limiting, audit logs.
+
+Cross-app identity federation: option to share the same identity provider/users across apps.
+
+Connected users toggle when creating a new app: inherit users/SSO from an existing app or keep users separate.
+
+Consent/data-sharing controls when linking identities across apps.
+
+CROSS-APP STYLE & COMPONENT LINKING (SEAMLESS LOOK/FEEL, OPTIONAL)
+
+“Match another app” prompt: inherit design tokens (color, type, spacing, motion), components, layouts.
+
+Token diff + selective propagation: choose which tokens/components to copy or link.
+
+Shared component registry with versioning; impact analysis on updates (both apps tested in CI).
+
+Reuse of nav/header/footer patterns with per-app overrides.
+
+UPFRONT QUESTION ENGINE (MORE QUESTIONS BY DEFAULT, WITH SUGGESTIONS)
+
+“High-fidelity brief” wizard that front-loads decisions (platforms, regions, auth model, data residency, payments, SEO, accessibility level, performance targets, analytics, domain, app store targets).
+
+Suggestion engine presents recommended defaults (with pros/cons) and alternatives; one-click accept.
+
+“Autonomy level” choice (Ask Everything / Ask Some / Ask None) applied to the entire build.
+
+Post-brief intent echo (plain language recap) requiring a single confirmation before building.
+
+Auto-generated implementation plan (files, schema, jobs, tests, deployments) shown as a diffable outline before execution.
+
+CROSS-APP DATA & ENTITLEMENTS (OPTIONAL)
+
+Data-contract linking: choose shared vs separate schemas; read-only vs read/write bridges.
+
+Entitlement/plan sharing across apps (e.g., subscriptions recognized in both), with override policies.
+
+Analytics/SEO continuity: share tracking IDs, consolidated sitemaps, canonical settings where applicable.
+
+PIPELINE & CI/CD ENHANCEMENTS FOR LINKED APPS
+
+When apps are linked, changes to shared components/tokens trigger multi-app preview builds.
+
+Cross-app test matrix and health gates; coordinated rollback if a shared update fails in any app.
+
+API & HEADLESS CONTROL (FOR APPS THAT CREATE OTHER APPS)
+
+API endpoints to: submit a brief, receive a plan, open a PR, run tests, deploy, link styles/users between apps.
+
+Webhooks for status (plan ready, PR opened, checks passed/failed, deploy complete).
+
+Idempotency keys; scoped API keys; per-operation RBAC and audit logs.
+
+DX/SAFETY
+
+One-click rollback (code + DB) per app; snapshot before cross-app propagations.
+
+Human-readable release notes and migration guides generated for each PR.
+
+Policy knobs: required approval on schema/auth/identity changes; soft blocks on risky operations.

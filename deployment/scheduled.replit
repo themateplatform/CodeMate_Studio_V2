@@ -1,0 +1,43 @@
+# Scheduled Deployment Configuration for CodeMate Studio
+# Background jobs and maintenance tasks
+
+[deployment]
+deploymentTarget = "scheduled"
+build = ["npm", "run", "build:worker"]
+run = ["npm", "run", "worker"]
+
+# Machine configuration for scheduled jobs
+machine = "shared-cpu-1x"
+timeoutMinutes = 30
+
+# Database maintenance job - daily at 2 AM UTC
+[[deployment.schedule]]
+name = "database-maintenance"
+schedule = "0 2 * * *"
+command = ["node", "dist/jobs/worker.js", "db-maintenance"]
+timeoutMinutes = 15
+
+# Health check job - every 5 minutes
+[[deployment.schedule]]
+name = "health-check"
+schedule = "*/5 * * * *"
+command = ["node", "dist/jobs/worker.js", "health-check"]
+timeoutMinutes = 2
+
+# Analytics aggregation - hourly
+[[deployment.schedule]]
+name = "analytics-aggregation"
+schedule = "0 * * * *"
+command = ["node", "dist/jobs/worker.js", "analytics"]
+timeoutMinutes = 10
+
+# Backup operations - weekly on Sunday at 3 AM UTC
+[[deployment.schedule]]
+name = "backup-operations"
+schedule = "0 3 * * 0"
+command = ["node", "dist/jobs/worker.js", "backup"]
+timeoutMinutes = 30
+
+# Error notifications
+errorAlert = true
+successAlert = false

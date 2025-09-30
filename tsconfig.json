@@ -1,16 +1,26 @@
 {
-  "files": [],
-  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }],
+  "include": ["client/src/**/*", "shared/**/*", "server/**/*"],
+  "exclude": ["node_modules", "build", "dist", "**/*.test.ts"],
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
-    "noImplicitAny": false,
-    "noUnusedParameters": false,
+    "incremental": true,
+    "tsBuildInfoFile": "./node_modules/typescript/tsbuildinfo",
+    "noEmit": true,
+    "target": "ES2020",
+    "module": "ESNext",
+    "strict": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "jsx": "preserve",
+    "esModuleInterop": true,
     "skipLibCheck": true,
-    "allowJs": true,
-    "noUnusedLocals": false,
-    "strictNullChecks": false
+    "allowImportingTsExtensions": true,
+    "moduleResolution": "bundler",
+    "baseUrl": ".",
+    "types": ["node", "vite/client"],
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@/*": ["./client/src/*"],
+      "@shared/*": ["./shared/*"]
+    }
   }
 }

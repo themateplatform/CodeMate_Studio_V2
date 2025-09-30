@@ -1,0 +1,216 @@
+# CodeVibe → Lovable.dev Replacement: What’s Left & How We Ship (v0.9)
+
+*Updated: 27 Sep 2025 — Melbourne (AEST)*
+
+## North Star & MVP
+
+**Goal:** Ship a single‑owner, GitHub‑first, AI‑assisted app builder that can import an existing repo, edit it in-browser, generate code with AI, and push PRs with preview links.
+
+**MVP must do:**
+
+* ✅ Auth & orgs (done at backend); 🔲 minimal admin UI to manage org, members, roles
+* 🔲 GitHub-first onboarding (OAuth → pick repo/branch → import → index)
+* 🔲 IDE core (file tree, Monaco editor, tabs, save, create/rename/delete)
+* 🔲 Live Preview (iframe sandbox or Vercel/Sandpack) with hot reload
+* 🔲 AI assist (chat + inline “generate/explain/fix” actions)
+* 🔲 PR flow (branch map → open PR → attach preview link)
+* 🔲 Audit/logs viewer (read-only UI over existing logs)
+
+---
+
+## Critical Path (strict order)
+
+1. **GitHub OAuth + repo import wizard** → 2) **File tree + Monaco wired to backend** → 3) **Save & basic file ops** → 4) **Live preview** → 5) **AI chat panel + inline actions** → 6) **Branching & PR creation** → 7) **Org/admin UI + audit viewer**.
+
+---
+
+## EPICS → Scope, Acceptance Criteria, Dependencies
+
+### 1) GitHub‑First Onboarding
+
+**Scope:** OAuth, repo selection, branch mapping, initial index, project dashboard card.
+**Accept:**
+
+* User logs in → **Connect GitHub** → sees list of repos (search + pagination)
+* Pick repo + branch → import completes → project tile appears with last commit, branch, status
+* Reconnect & token refresh handled; error states visible
+  **Deps:** Octokit configured (✅), DB schemas (✅)
+  **Effort:** **L**
+
+### 2) IDE Core (Editor + Files)
+
+**Scope:** Monaco setup, file tree, tabs, CRUD, autosave, dirty markers, quick search (⌘P), format on save.
+**Accept:**
+
+* Open any file → content loads <300ms P95 for typical files
+* Create/rename/delete works; optimistic UI with rollback on failure
+* Prettier/ESLint available; errors shown in problems panel
+* Keyboard shortcuts: save, find, toggle sidebar
+  **Deps:** Backend file APIs (partial), WebSocket (✅ infra), DB (✅)
+  **Effort:** **XL**
+
+### 3) Live Preview
+
+**Scope:** Choose **Sandpack** for instant sandbox; support Vite/Next projects; fallback to serverless preview URLs (Vercel) for full-stack.
+**Accept:**
+
+* “Run/Preview” button opens live preview pane; hot reload within 2s
+* Console logs captured; error overlay shows stack/line
+* Toggle device sizes (mobile/tablet/desktop)
+  **Deps:** IDE Core
+  **Effort:** **L**
+
+### 4) AI Assist (Chat + Inline)
+
+**Scope:** Right-side chat dock + inline actions (Generate/Explain/Fix/Tests). Context: open file + selected range + repo index.
+**Accept:**
+
+* Streaming chat with markdown/code blocks, copy buttons
+* Inline action inserts diffs; user can **Preview patch → Apply**
+* All generations logged to DB with file, diff, user
+  **Deps:** OpenAI client (✅), Gen storage (✅)
+  **Effort:** **L**
+
+### 5) GitHub Workflows (PRs & Sync)
+
+**Scope:** Branch mapping, open PR, status checks, preview links surfaced in UI.
+**Accept:**
+
+* “Create Branch” → “Open PR” flow; PR URL surfaced; commit messages templated
+* Incoming GitHub webhooks update build status badges
+* Auto‑generate PR summary (changeset + plain‑English diff)
+  **Deps:** GitHub events schema (✅)
+  **Effort:** **M**
+
+### 6) Org/Admin UI + Audit Viewer
+
+**Scope:** Minimal settings area: members, roles, API keys (masked, rotate), audit log table with filters.
+**Accept:**
+
+* Invite by email; role change persists; key creation/rotation logged
+* Audit table: filter by user, action, time; export CSV
+  **Deps:** Security/audit backend (✅)
+  **Effort:** **M**
+
+### 7) Question Engine (Scaffolder) — v1.1
+
+**Scope:** Upfront wizard to scaffold repos (Design tokens, components, integrations).
+**Accept:**
+
+* Answer Qs → dry‑run plan → **Generate** → PR with scaffold files + README
+  **Deps:** AI assist + PR flow
+  **Effort:** **M**
+
+### 8) Real‑time Collaboration — v1.1
+
+**Scope:** Yjs doc sync, presence, cursors, file lock/merge strategy.
+**Accept:**
+
+* Two editors see live cursor, changes; conflict‑free merges on text files
+  **Deps:** WebSocket server (✅)
+  **Effort:** **L**
+
+### 9) CI/CD Integration — v1.1
+
+**Scope:** Vercel/Netlify selection per project; show last deployments, preview links.
+**Accept:**
+
+* After PR, preview link displayed; status badges live update
+  **Deps:** GitHub webhooks
+  **Effort:** **S**
+
+### 10) Component Registry & Design Tokens — v1.2
+
+**Scope:** Pull components/tokens from registry; diff & apply updates.
+**Accept:**
+
+* “Update tokens/components” opens diff → apply → PR
+  **Effort:** **M**
+
+---
+
+## Sprint Plan (2‑week sprints)
+
+### Sprint 0 — Stabilize & Decisions
+
+* Pick **Sandpack** for preview; Monaco + shadcn + Tailwind baselines
+* Backend file API endpoints finalized; error model unified
+* Skeleton routes: `/projects`, `/project/:id/editor`, `/settings`
+
+**Exit:** Hello‑world project can open in editor (read‑only), basic layout solid
+
+### Sprint 1 — GitHub Onboarding + File Read
+
+* OAuth connect, repo list, import flow, project card
+* File tree read, open file in Monaco, problems panel skeleton
+
+**Exit:** Import any public repo → browse & open files
+
+### Sprint 2 — File Ops + Live Preview
+
+* Create/rename/delete, autosave, format
+* Sandpack preview panel; device toggles; console capture
+
+**Exit:** Edit React/Vite repo and see live preview
+
+### Sprint 3 — AI Assist (Chat + Inline)
+
+* Docked chat; context wiring; inline actions; diff preview/apply
+* Log generations; rate limits; failure recovery
+
+**Exit:** Generate component/tests and apply patch
+
+### Sprint 4 — PR Flow + Admin/Audit
+
+* Branching, PR creation, PR summary; webhook status
+* Settings: members/roles, keys, audit log table
+
+**Exit:** Edit → Generate → PR with preview link; basic admin usable
+
+*(v1.1): add Question Engine, Realtime Collab, CI/CD dashboards*
+
+---
+
+## Definition of Done (per epic)
+
+* **Perf:** P95 editor load < 500ms after cache warm; preview hot reload < 2s
+* **DX:** Undo/redo safe, no data loss; clear error toasts; retryable actions
+* **Security:** All mutations audit‑logged; permission checks at API + UI
+* **Reliability:** E2E tests for import→edit→PR; recovery on 502/timeout
+
+---
+
+## Technical Choices
+
+* **Editor:** Monaco (VSCode), file search via ripgrep wasm (later)
+* **Preview:** Sandpack for FE; Vercel preview links for full‑stack
+* **Collab:** Yjs + custom WS (post‑MVP)
+* **Terminal:** Defer; use CI logs + preview console first
+* **Diffs:** Unified diff view; code‑mod safety checks
+
+---
+
+## Risks & Mitigations
+
+* **GitHub rate limits:** Cache & backoff, ask for PAT if needed
+* **Large repos:** Lazy index, virtualized trees, on‑demand fetch
+* **AI hallucinations:** Diff preview, small scoped actions, tests generation
+* **Security drift:** Ship settings/audit UI early, RBAC enforced on every API
+
+---
+
+## Non‑Goals (v1)
+
+* Full terminal, dockerized servers, marketplace billing, multi‑cloud deploy
+
+---
+
+## Ship Checklist
+
+* [ ] GitHub connect/import
+* [ ] Editor + file ops
+* [ ] Live preview
+* [ ] AI chat + inline actions
+* [ ] Branching + PR + preview link
+* [ ] Settings + audit viewer
+* [ ] E2E: import→edit→PR green twice in a row

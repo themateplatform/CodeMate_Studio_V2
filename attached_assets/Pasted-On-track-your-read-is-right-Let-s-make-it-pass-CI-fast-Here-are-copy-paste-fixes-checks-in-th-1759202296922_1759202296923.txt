@@ -1,0 +1,221 @@
+On track — your read is right. Let’s make it pass CI fast. Here are copy-paste fixes + checks, in the order that will unblock you.
+
+---
+
+## 1) `tsconfig.json` (stop the Set/Map + iterator noise)
+
+Use a modern target; no need to downlevel if you’re on Node 18/20.
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM"],
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}
+```
+
+> If you truly must support older targets, keep `target` lower and add `"downlevelIteration": true`. Otherwise drop it.
+
+---
+
+## 2) OpenAI typings: use the exact literal
+
+### If you’re on the **Responses API** (OpenAI Node v4+):
+
+```ts
+const res = await client.responses.create({
+  model: "gpt-4.1-mini",
+  input: prompt,
+  response_format: { type: "json_object" } // ← literal
+});
+```
+
+### If you’re on **chat.completions**:
+
+```ts
+const res = await client.chat.completions.create({
+  model: "gpt-4o-mini",
+  messages,
+  response_format: { type: "json_object" } // or a json_schema object
+});
+```
+
+**Do not** pass a string variable; TS expects the literal union.
+Quick find/fix:
+
+```bash
+# list all occurrences
+rg -n "response_format" src
+
+# typical bad --> good
+# response_format: { type: "json" }  -->  response_format: { type: "json_object" }
+```
+
+---
+
+## 3) Nullables: convert `string | null` → `string | undefined`
+
+Where a lib expects `string | undefined`:
+
+```ts
+const val: string | null = maybeNull();
+const safe: string | undefined = val ?? undefined;
+// or guard
+if (val == null) return;
+use(val);
+```
+
+If it’s your own type, prefer making the field optional:
+
+```ts
+type Foo = { id: string; desc?: string }; // not desc: string | null
+```
+
+---
+
+## 4) Drizzle ORM “where” errors
+
+Use the query-builder helpers:
+
+```ts
+import { eq, and } from "drizzle-orm";
+import { workflowRuns } from "./db/schema";
+
+const run = await db.select()
+  .from(workflowRuns)
+  .where(and(
+    eq(workflowRuns.jobId, jobId),
+    eq(workflowRuns.status, "queued")
+  ));
+```
+
+If you see `Property 'where' does not exist`, you’re probably calling it on a **Table** instead of a **Select** builder, or importing from the wrong path. Make sure you’re chaining from `db.select().from(...)`.
+
+---
+
+## 5) Duplicate functions / duplicate keys
+
+* When TS says “Duplicate function implementation,” you’ve got two `function foo(...) {}` in the same scope. Kill one or rename.
+* For object literals, **keys must be unique**. Typical offender in templates:
+
+```ts
+// BAD
+const tmpl = {
+  name: "x",
+  name: "y"
+};
+// GOOD
+const tmpl = {
+  name: "x",
+  label: "y"
+};
+```
+
+Run:
+
+```bash
+rg -n "Duplicate function implementation|An object literal cannot have multiple properties" --ts
+```
+
+---
+
+## 6) Overload arg count
+
+“Expected 3 arguments, got 2” → jump to the definition (TsServer link in the error) and match the current signature. Most common case is a lib breaking change where a new options arg became required.
+
+---
+
+## 7) Your Neon error (from your Console screenshot)
+
+```
+error: column "step_number" does not exist
+```
+
+Add the column (adjust table name if different):
+
+```sql
+-- migration
+ALTER TABLE workflow_runs
+  ADD COLUMN step_number integer NOT NULL DEFAULT 0;
+
+-- optional index
+CREATE INDEX IF NOT EXISTS idx_workflow_runs_step_number
+  ON workflow_runs(step_number);
+```
+
+Sanity check first:
+
+```sql
+SELECT column_name
+FROM information_schema.columns
+WHERE table_name = 'workflow_runs' AND column_name = 'step_number';
+```
+
+If you’re using Drizzle Migrations, add it to your schema and generate a migration; otherwise run the SQL once against Neon.
+
+---
+
+## 8) Quick “fix now” checklist
+
+Run these in Replit Shell to see only real blockers:
+
+```bash
+# typecheck without building
+npx tsc --noEmit
+
+# find all response_format usage
+rg -n "response_format" src
+
+# find .where misuse
+rg -n "\.where\(" src
+
+# show duplicate function / key errors again after edits
+npx tsc --noEmit
+```
+
+---
+
+## 9) Suggested patches you can paste
+
+### `tsconfig.json`
+
+```diff
+-  "target": "ES2017",
+-  "downlevelIteration": false,
++  "target": "ES2020",
++  "lib": ["ES2020", "DOM"],
++  "module": "ESNext",
++  "moduleResolution": "Bundler"
+```
+
+### `openaiService.ts` (example)
+
+```diff
+- response_format: { type: "json" as any }
++ response_format: { type: "json_object" }
+```
+
+### Drizzle query (example)
+
+```diff
+- const rows = await db.from(workflowRuns).where(eq(workflowRuns.id, id)).select();
++ const rows = await db.select().from(workflowRuns).where(eq(workflowRuns.id, id));
+```
+
+---
+
+## 10) If you want me to patch specific files
+
+Tell me the filenames that are erroring (or paste the `tsc --noEmit` output). I’ll return exact before/after diffs you can drop in.
+
+**Verdict →** Mostly on track because you’ve identified the right classes of issues.
+**Next step →** Apply the `tsconfig` change, fix `response_format` literals, run the migration for `step_number`, then re-run `npx tsc --noEmit`.
+If anything still screams, paste those exact error lines and I’ll zero them out.

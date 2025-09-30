@@ -1,0 +1,137 @@
+CodeMate Studio Homepage Design Guidelines
+1. Layout Structure
+
+Top Navigation (fixed, transparent)
+
+Left: White Mate Face icon → text CodeMate Studio (Poppins Bold, 20–24px).
+
+Right: Links: Community | Pricing | Docs | Sign In (white, 14–16px).
+
+Hover state: Links change to Neon Pink (#FF0CB6).
+
+Hero Section (full screen height)
+
+Background:
+
+Gradient fill: Neon Pink #FF0CB6 → Electric Purple #8A2EFF (135° top-left to bottom-right).
+
+Base layer: Deep navy #0B0B15 for depth.
+
+Headline:
+
+Text: Build With Creativity
+
+Style: Poppins ExtraBold, 56–72px, gradient text fill (Pink→Purple).
+
+Subheadline:
+
+Text: Describe it. Build it. Launch it.
+
+Style: Montserrat Regular, 20–24px, White #FFFFFF.
+
+Input Box:
+
+Size: Wide (min 600px), centered.
+
+Background: White #FFFFFF.
+
+Border: Rounded 12px, subtle purple glow #8A2EFF.
+
+Placeholder text: “I want to build a…” in Slate Grey #A3A6B5.
+
+CTA Buttons (inline with input box):
+
+Primary: Gradient Pink→Purple background, White text, rounded corners, hover glow.
+
+Label: Start Building →
+
+Secondary (optional, below input): White background, Pink text.
+
+Label: See Examples
+
+2. Mid Section (Showcase Cards)
+
+Grid of 3–4 project cards under the hero section.
+
+Card Design:
+
+Background: White #FFFFFF.
+
+Border-radius: 12px.
+
+Shadow: Soft blur, tinted pink/purple (rgba 255, 12, 182, 0.2).
+
+Top accent: Thin gradient strip (Pink→Purple).
+
+Hover: Card elevates with subtle pink glow.
+
+Card Content:
+
+Image thumbnail of project.
+
+Project title in Montserrat Medium, 16px, Black #0B0B15.
+
+3. Footer
+
+Background: Solid Deep Navy #0B0B15.
+
+Columns: Company | Product | Resources | Community.
+
+Text: White #FFFFFF (Montserrat 14px).
+
+Hover states: Neon Pink #FF0CB6.
+
+4. Typography
+
+Font Family:
+
+Headers → Poppins Bold/ExtraBold.
+
+Body/links → Montserrat Regular/SemiBold.
+
+Font Sizes:
+
+Hero Headline: 56–72px
+
+Subheadline: 20–24px
+
+Nav Links: 14–16px
+
+Card Titles: 16–18px
+
+Footer Links: 14px
+
+5. Colour Palette
+
+Primary Gradient:
+
+Neon Pink #FF0CB6
+
+Electric Purple #8A2EFF
+
+Base Background: Deep Navy #0B0B15
+
+Accent (glows, outlines): Aqua Teal #23E3B8 (used sparingly)
+
+Text Colours:
+
+White #FFFFFF
+
+Slate Grey #A3A6B5 (placeholders, secondary text)
+
+6. UI/UX Style Notes
+
+Keep the content overlays white so they stand out clearly over the neon gradient background.
+
+Gradients = branding, not clutter. Use them for hero headline, CTAs, card accents.
+
+Animations (optional):
+
+Input box glow pulses slightly when focused.
+
+CTA buttons have a hover shimmer.
+
+Background gradient can have a subtle slow drift for energy.
+
+✅ Result:
+This makes the homepage instantly recognizable as CodeMate Studio — bold, creative, futuristic, but structured and professional.

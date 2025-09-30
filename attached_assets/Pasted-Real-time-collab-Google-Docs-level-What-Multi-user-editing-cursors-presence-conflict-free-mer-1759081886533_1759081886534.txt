@@ -1,0 +1,95 @@
+Real-time collab (Google-Docs level)
+
+What: Multi-user editing, cursors, presence, conflict-free merges.
+
+How: CRDT (Yjs/Automerge) + awareness server; room-per-project; file-level locks for binaries.
+
+Accept: Two users typing in same file with no losses; offline-edit → auto-merge on reconnect; timeline scrubber to replay edits.
+
+“Plan → Preview → Apply” agentic builder (inside the app)
+
+What: Turn prompts into a numbered plan, generate diffs, tests, and open a PR.
+
+How: Planner service + Monaco diff viewer + test scaffolder; rollback button.
+
+Accept: Ask for “add dark mode,” see plan → diff → tests → PR; merge is 1 click; revert works.
+
+One-click deployments + preview environments
+
+What: Deploy to Vercel/Fly/Cloudflare/Replit with per-PR previews.
+
+How: Provider adapters, build pipeline, health checks; env var mapping/secrets sync.
+
+Accept: New branch = preview URL in ≤2 min; merge = prod URL; green health.
+
+Secrets the right way (no keys in client, ever)
+
+What: Server-only secrets, rotation, audit.
+
+How: Edge function broker + short-lived tokens; key vault + rotation CLI.
+
+Accept: Secrets scan finds 0 leaks; rotate OPENAI key with no downtime.
+
+Data connectors + instant CRUD
+
+What: Supabase (first-class), Postgres, MySQL, Firebase, Airtable, Sheets.
+
+How: Connector SDK; schema introspection → generate typed client, routes, and CRUD UIs with RLS snippets.
+
+Accept: Connect DB → see tables → working list/detail/edit screens in 60s.
+
+Mobile track: PWA + Native
+
+What: Installable PWA plus real native builds.
+
+How: PWA hardening (manifest/SW/Lighthouse ≥90); Expo/EAS app in /mobile consuming same APIs.
+
+Accept: Installable web app offline; EAS build link; device push works.
+
+Store-readiness wizard (Play + App Store)
+
+What: Admin page that collects compliance inputs, generates assets/descriptions, and exports a submission pack.
+
+How: Form sections (privacy, access creds, data safety, ratings, assets); JSON/Markdown export.
+
+Accept: Export zip uploads to Play Console/TestFlight with no missing fields.
+
+Observability + SLOs
+
+What: Logs, traces, metrics, uptime, perf budgets.
+
+How: /metrics endpoint; CI gates if FCP or API P95 regresses >20%; incident runbook.
+
+Accept: Red graph triggers Slack alert; rollback runbook tested in a drill.
+
+Enterprise toggles
+
+What: RBAC (Owner/Admin/Editor/Viewer), SSO (Okta/Azure), audit log, data residency.
+
+How: Policy gates server-side; region tags; exportable audit trails.
+
+Accept: Viewer cannot push; SSO login works; audit shows who changed what/when.
+
+GitHub 2-way sync + Code export (no lock-in)
+
+What: Round-trip commits, branch protection, conventional releases.
+
+How: Actions pipeline (lint/typecheck/test/build); protected main; changesets.
+
+Accept: PR blocked on failing tests; release notes auto-generated.
+
+Templates + starter blueprints
+
+What: Opinionated starters (Auth+Profiles CRUD, Support Desk, Content App, “AI Chat with Edge Secret”).
+
+How: Template generator; seeded data; copy changes into new project.
+
+Accept: Each template boots in preview with working flows.
+
+Usage metering + billing hooks
+
+What: Track AI/compute usage; paywall tiers.
+
+How: Event collector + quotas per plan; Stripe customer/portal; soft/hard limits.
+
+Accept: Exceed quota → graceful block; upgrade unlocks instantly.

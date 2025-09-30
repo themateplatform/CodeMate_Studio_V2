@@ -1,0 +1,125 @@
+# Release Pipeline for CodeMate Studio
+# Manual release workflow - requires manual version bumping
+
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., 1.2.3)'
+        required: true
+        type: string
+      release_notes:
+        description: 'Release notes (optional)'
+        required: false
+        type: string
+
+env:
+  NODE_VERSION: '20'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Validate and prepare release
+        id: prepare
+        run: |
+          RELEASE_VERSION="${{ github.event.inputs.version }}"
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          
+          # Validate that input version matches package.json version
+          if [ "$RELEASE_VERSION" != "$CURRENT_VERSION" ]; then
+            echo "❌ Version mismatch!"
+            echo "   Input version: $RELEASE_VERSION"
+            echo "   Package.json version: $CURRENT_VERSION"
+            echo "   Please update package.json version to match input or correct the input version"
+            exit 1
+          fi
+          
+          echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "release_version=$RELEASE_VERSION" >> $GITHUB_OUTPUT
+          echo "tag_name=v$RELEASE_VERSION" >> $GITHUB_OUTPUT
+          
+          echo "✅ Creating release for version $RELEASE_VERSION"
+
+      - name: Generate changelog
+        run: |
+          echo "# Release ${{ steps.prepare.outputs.release_version }}" > RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          
+          # Use provided release notes or generate from commits
+          if [ -n "${{ github.event.inputs.release_notes }}" ]; then
+            echo "${{ github.event.inputs.release_notes }}" >> RELEASE_NOTES.md
+          else
+            echo "## Changes" >> RELEASE_NOTES.md
+            echo "" >> RELEASE_NOTES.md
+            
+            # Get commits since last tag
+            LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+            if [ -n "$LAST_TAG" ]; then
+              echo "Generating changelog from $LAST_TAG to HEAD"
+              git log --pretty=format:"- %s" ${LAST_TAG}..HEAD >> RELEASE_NOTES.md
+            else
+              echo "No previous tags found, including recent commits"
+              git log --pretty=format:"- %s" -10 HEAD >> RELEASE_NOTES.md
+            fi
+          fi
+          
+          echo "" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          if [ -n "$LAST_TAG" ]; then
+            echo "**Full Changelog**: https://github.com/${{ github.repository }}/compare/${LAST_TAG}...${{ steps.prepare.outputs.tag_name }}" >> RELEASE_NOTES.md
+          else
+            echo "**Full Changelog**: https://github.com/${{ github.repository }}/commits/${{ steps.prepare.outputs.tag_name }}" >> RELEASE_NOTES.md
+          fi
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.prepare.outputs.tag_name }}
+          release_name: Release ${{ steps.prepare.outputs.release_version }}
+          body_path: RELEASE_NOTES.md
+          draft: false
+          prerelease: false
+          target_commitish: ${{ github.sha }}
+
+      - name: Output release info
+        run: |
+          echo "🎉 Release ${{ steps.prepare.outputs.release_version }} created successfully!"
+          echo "📦 Version: ${{ steps.prepare.outputs.current_version }} → ${{ steps.prepare.outputs.release_version }}"
+          echo "🔖 Tag: ${{ steps.prepare.outputs.tag_name }}"
+          echo ""
+          echo "ℹ️ Note: This is a manual release workflow."
+          echo "📝 To create releases: Go to Actions → Release → Run workflow"

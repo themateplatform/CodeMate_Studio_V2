@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run type checking before commit
+echo "Running type check..."
+npx tsc --noEmit
+
+# Run tests with coverage check (strict enforcement)
+echo "Running test coverage check..."
+npx vitest run --coverage --reporter=verbose || {
+  echo "❌ Coverage check failed - must maintain 85% coverage"
+  echo "Run 'npx vitest run --coverage' to see detailed report"
+  echo "🚫 BLOCKING COMMIT: Coverage below 85% threshold"
+  exit 1
+}
+
+echo "✅ Pre-commit checks completed"

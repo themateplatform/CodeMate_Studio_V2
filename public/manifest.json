@@ -1,0 +1,95 @@
+{
+  "name": "CodeMate Studio",
+  "short_name": "CodeMate",
+  "description": "AI-powered code generation and development platform with real-time collaboration and project management capabilities",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": [
+    "productivity",
+    "developer",
+    "utilities"
+  ],
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxOTIiIGZpbGw9IiMwMDAwMDAiIHJ4PSIyNCIvPgogIDx0ZXh0IHg9Ijk2IiB5PSIxMTAiIGZpbGw9IndoaXRlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI0OCIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkM8L3RleHQ+CiAgPHRleHQgeD0iOTYiIHk9IjEzNSIgZmlsbD0iZ3JheSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkNvZGVNYXRlPC90ZXh0Pgo8L3N2Zz4=",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/screenshot-1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "CodeMate Studio Dashboard"
+    },
+    {
+      "src": "/screenshots/screenshot-2.png",
+      "sizes": "375x812",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "CodeMate Studio Mobile"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New Project",
+      "short_name": "New",
+      "description": "Create a new project",
+      "url": "/projects/new",
+      "icons": [
+        {
+          "src": "/icons/shortcut-new.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "AI Chat",
+      "short_name": "Chat",
+      "description": "Open AI assistant",
+      "url": "/chat",
+      "icons": [
+        {
+          "src": "/icons/shortcut-chat.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "GitHub Sync",
+      "short_name": "Sync",
+      "description": "Sync with GitHub",
+      "url": "/github",
+      "icons": [
+        {
+          "src": "/icons/shortcut-github.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "handle_links": "preferred",
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  "protocol_handlers": [
+    {
+      "protocol": "web+codemate",
+      "url": "/open?url=%s"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+# Validate Conventional Commits in PRs
+name: Validate Commits
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate-commits:
+    name: Validate Conventional Commits
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate commit messages
+        run: |
+          # Get all commits in this PR using SHA range
+          COMMITS=$(git rev-list --reverse --no-merges ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }})
+          
+          echo "Validating commits in this PR:"
+          for commit in $COMMITS; do
+            echo "Checking commit: $commit"
+            MESSAGE=$(git log --format=%s -n 1 $commit)
+            echo "  Message: $MESSAGE"
+            
+            # Use commitlint to validate
+            echo "$MESSAGE" | npx commitlint
+            
+            if [ $? -ne 0 ]; then
+              echo "❌ Commit $commit failed validation"
+              exit 1
+            else
+              echo "✅ Commit $commit passed validation"
+            fi
+          done
+          
+          echo "🎉 All commits follow conventional commit format!"

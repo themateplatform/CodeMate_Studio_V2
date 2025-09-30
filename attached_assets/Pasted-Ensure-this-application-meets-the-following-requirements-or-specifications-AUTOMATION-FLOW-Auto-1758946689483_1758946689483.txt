@@ -1,0 +1,265 @@
+Ensure this application meets the following requirements or specifications:
+
+AUTOMATION & FLOW
+
+Automation modes: Ask Everything, Ask Some, Ask None (hands-off to completion).
+
+Accept a simple design brief, expand with targeted clarifiers, then confirm understanding (“intent echo”) before build.
+
+Continuous loop: plan → build → test → fix → deploy until completion.
+
+Optional checkpoints at scaffold, schema, preview, production.
+
+Auto-retry/self-heal on build/test/deploy failures.
+
+Completion gated by user-defined acceptance tests.
+
+MEMORY & CONTEXT
+
+Persistent global preferences (stack, tokens, auth, tone).
+
+Per-project memory scoped to repos/apps.
+
+Ingest context from repos, documents, and design tokens.
+
+Memory controls: pin, ignore, redact, scope (project/global).
+
+CROSS-APP DESIGN LINKING
+
+Shared design tokens (color, type, spacing, motion).
+
+Theme inheritance between apps with selective overrides.
+
+Design diffing and safe propagation with guardrails.
+
+Component parity map across web and native.
+
+PLANNING & SCAFFOLDING
+
+Generate file trees, dependencies, routes/screens, schemas, jobs.
+
+Pattern library: auth, CRUD, payments, chat, dashboards, search, forms, booking, notifications, media.
+
+Schema ERD visualization, migrations, seed/backfill scripts.
+
+State/job builder: cron, webhooks, queues, retries, backoff.
+
+CODE GENERATION & QUALITY
+
+Multi-file code generation with comments/docstrings.
+
+Stack presets: Web, Native, Both; DB and Auth provider selection.
+
+Automated tests: smoke, unit, integration (selectable).
+
+Static checks: typecheck, lint, format.
+
+Risk scoring (new deps, schema breaks, platform changes).
+
+RUN & SANDBOX
+
+Isolated sandbox to compile/run with fixtures.
+
+Auto-provisioned preview environments with live URLs.
+
+Data fixtures with anonymized samples.
+
+DEPLOY & RELEASE
+
+One-click deploy: dev → staging → prod.
+
+Native build pipelines (iOS/Android) with OTA channels (internal/beta/GA).
+
+Safe environment promotion with secret/env diffs.
+
+Post-deploy verification: health checks, synthetic tests.
+
+OBSERVABILITY
+
+Build and runtime logs, searchable.
+
+Error tracking (client/server) and triage.
+
+Performance budgets and gates (web vitals, bundle size).
+
+Product analytics scaffold with prebuilt event schema.
+
+GOVERNANCE & COLLABORATION
+
+Roles: Owner, Editor, Reviewer.
+
+Approval policies for high-risk operations.
+
+Commenting on plans/diffs, decision log.
+
+Full audit trail of changes and deployments.
+
+SECURITY & COMPLIANCE
+
+Integrated secrets manager with rotation and scopes.
+
+Dependency vulnerability scanning, SAST, secret detection.
+
+RBAC/ABAC scaffolds, audit logs, consent flows.
+
+Compliance packs (GDPR/CCPA), DSR endpoints, cookie/CMP presets.
+
+COST & MODEL CONTROL
+
+Token and budget meters with caps/alerts.
+
+Model tier selector (speed vs quality).
+
+Latency vs quality knob and caching.
+
+CREATIVE ASSETS
+
+Brand kit generator: logos, icons, color systems, typography.
+
+Image/icon generation (including SVG), favicons, splash screens, app icons.
+
+Stock search with license tracking, background removal, upscaling.
+
+Copy studio with tone presets and i18n support.
+
+GOOGLE & OPENAI INTEGRATIONS
+
+Search Console, sitemaps, indexing push; PageSpeed checks/fixes.
+
+Analytics setup with BigQuery export; dashboard templates.
+
+Maps/Places, OAuth, Firebase push/Crashlytics/App Distribution (opt-in).
+
+OpenAI model routing, prompt optimization, fallback and evals.
+
+ACCESSIBILITY & UX
+
+WCAG scanner with suggested auto-fixes.
+
+Color contrast tuning and motion/spacing density presets.
+
+AI-generated alt text with review workflow and focus-order checks.
+
+CMS & CONTENT OPS
+
+Built-in CMS or headless adapters.
+
+Media library with tagging and transformations.
+
+Roles, editorial workflows, scheduled publishing.
+
+EXPERIMENTS & FLAGS
+
+Feature flags with targeting; progressive rollouts.
+
+A/B tests and canary releases; auto-rollback on health fail.
+
+RECOVERY & SAFETY
+
+One-click rollback for code and database.
+
+Point-in-time recovery and milestone snapshots.
+
+Dry-run migrations and safe re-seeding.
+
+INTERNATIONALIZATION
+
+Locale packs; AI pre-translation with reviewer workflow.
+
+Regional compliance presets.
+
+Automatic date/number/currency localization.
+
+MONETIZATION
+
+Subscription plans and entitlements scaffolds.
+
+Usage metering and invoicing hooks.
+
+Trials, coupons, paywalls, marketplace take-rates.
+
+DEVELOPER ERGONOMICS
+
+“Explain this diff/lib choice” overlays.
+
+Refactor campaigns across repos (rename, extract, standardize).
+
+Code style and naming convention profiles.
+
+PRIVACY
+
+Data scopes: local-only, redacted cloud, or full cloud.
+
+PII tagging and masking policies.
+
+Per-project data retention windows.
+
+INTERFACES
+
+Minimal UI by default with optional Advanced/Expert panels.
+
+CLI and API feature parity.
+
+Webhooks for build/test/deploy and state changes.
+
+PROGRAMMATIC ORCHESTRATION & API (FOR APPS THAT CREATE OTHER APPS)
+
+Public REST and optional GraphQL API to invoke plan/generate/test/deploy.
+
+Service accounts, API keys, OAuth2 client credentials; per-project scopes.
+
+Idempotency keys for safe retries.
+
+Async job model with job IDs; polling and webhook callbacks.
+
+Streaming build/test logs over SSE/WebSocket.
+
+Dry-run and preview endpoints (no-write mode) with diffs.
+
+Endpoint families: /brief, /plan, /scaffold, /migrate, /test, /deploy, /rollback, /assets (logo/icon/image), /tokens (design), /flags, /experiments, /memory, /secrets, /blueprints.
+
+Blueprint registry management via API (publish, version, deprecate).
+
+Cross-app design linking via API (inherit, diff, propagate).
+
+Quotas, rate limits, and burst allowances with per-key policies.
+
+Fine-grained RBAC for API operations; audit logs for all calls.
+
+Signed URL workflows for artifact upload/download.
+
+SDKs in common languages (TypeScript, Python) with typed models.
+
+Error contract with machine-readable codes and diagnostics.
+
+FINE-TUNE PANELS (ON DEMAND ONLY)
+
+Model/prompt controls, caching, reranking, RAG sources.
+
+Design tokens/motion/spacing density.
+
+SEO strategy, keyword targets, hreflang rules.
+
+Compliance scope, data retention, PII masking.
+
+PRESET BUNDLES
+
+Minimal Static Site
+
+Content + SEO Engine
+
+SaaS Starter (auth + billing + dashboard)
+
+Marketplace (listings + search + checkout)
+
+Mobile Companion (push, offline, deep links)
+
+DONE CRITERIA PER GENERATION
+
+Plan approved per policy (or auto-approved in hands-off mode).
+
+Code compiles, tests pass, migrations dry-run clean.
+
+Preview deploy healthy; performance and accessibility within budgets.
+
+Changelog and diffs stored; memory updated; rollback point captured.

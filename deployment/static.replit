@@ -1,0 +1,39 @@
+# Static Deployment Configuration for CodeMate Studio
+# Frontend-only deployment without backend server
+
+[deployment]
+deploymentTarget = "static"
+publicDir = "dist"
+build = ["npm", "run", "build:static"]
+
+# Custom 404 page for SPA routing
+[[deployment.responseHeaders]]
+path = "**/*"
+headers = [
+  { name = "Cache-Control", value = "public, max-age=86400" },
+  { name = "X-Frame-Options", value = "DENY" },
+  { name = "X-Content-Type-Options", value = "nosniff" }
+]
+
+# Rewrite all routes to index.html for SPA
+[[deployment.urlRewrite]]
+from = "/*"
+to = "/index.html"
+status = 200
+
+# Static file caching
+[[deployment.responseHeaders]]
+path = "**/*.{js,css,png,jpg,jpeg,gif,svg,woff,woff2}"
+headers = [
+  { name = "Cache-Control", value = "public, max-age=31536000, immutable" }
+]
+
+# Security headers
+[[deployment.responseHeaders]]
+path = "**/*"
+headers = [
+  { name = "Strict-Transport-Security", value = "max-age=31536000; includeSubDomains" },
+  { name = "X-Frame-Options", value = "DENY" },
+  { name = "X-Content-Type-Options", value = "nosniff" },
+  { name = "Referrer-Policy", value = "strict-origin-when-cross-origin" }
+]
