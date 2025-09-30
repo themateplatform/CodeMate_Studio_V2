@@ -17,6 +17,9 @@ import AIAssistantPage from "./pages/ai-assistant";
 import DeployPage from "./pages/deploy";
 import SettingsPage from "./pages/settings";
 import SecretsPage from "./pages/secrets";
+import PricingPage from "./pages/pricing";
+import DocsPage from "./pages/docs";
+import AboutPage from "./pages/about";
 import NotFound from "@/pages/not-found";
 
 // No authentication - direct access to all routes
@@ -75,6 +78,9 @@ function Router() {
           </GlobalShell>
         )}
       </Route>
+      <Route path="/pricing" component={PricingPage} />
+      <Route path="/docs" component={DocsPage} />
+      <Route path="/about" component={AboutPage} />
       <Route component={NotFound} />
     </Switch>
   );

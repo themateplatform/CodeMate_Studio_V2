@@ -1,9 +1,9 @@
 import { useLocation } from 'wouter';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { ArrowRight, Code2 } from 'lucide-react';
+import { ArrowRight, Code2, Code, Zap, Database } from 'lucide-react';
 
 export default function LandingPage() {
   const [, setLocation] = useLocation();
@@ -137,6 +137,103 @@ export default function LandingPage() {
         </div>
       </div>
 
+      {/* Features Section */}
+      <section className="py-20 px-6 bg-[#0B0B15]">
+        <div className="container mx-auto">
+          <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-4">
+            Everything You Need to Build
+          </h2>
+          <p className="text-white/80 text-center text-lg mb-16 max-w-2xl mx-auto">
+            Powerful tools and features to bring your ideas to life faster than ever
+          </p>
+          
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <Card className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/15 transition-all">
+              <CardHeader>
+                <div className="p-3 bg-gradient-to-r from-[#FF0CB6] to-[#8A2EFF] rounded-lg w-fit mb-4">
+                  <Code className="w-6 h-6 text-white" />
+                </div>
+                <CardTitle className="text-white text-xl">AI-Powered Code Generation</CardTitle>
+                <CardDescription className="text-white/80">
+                  Describe what you want to build and watch as AI generates clean, production-ready code
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/15 transition-all">
+              <CardHeader>
+                <div className="p-3 bg-gradient-to-r from-[#FF0CB6] to-[#8A2EFF] rounded-lg w-fit mb-4">
+                  <Zap className="w-6 h-6 text-white" />
+                </div>
+                <CardTitle className="text-white text-xl">Lightning Fast Development</CardTitle>
+                <CardDescription className="text-white/80">
+                  Build full-stack applications in minutes, not weeks. Go from idea to deployment instantly
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/15 transition-all">
+              <CardHeader>
+                <div className="p-3 bg-gradient-to-r from-[#FF0CB6] to-[#8A2EFF] rounded-lg w-fit mb-4">
+                  <Database className="w-6 h-6 text-white" />
+                </div>
+                <CardTitle className="text-white text-xl">Built-in Backend</CardTitle>
+                <CardDescription className="text-white/80">
+                  Database, authentication, and APIs automatically configured and ready to use
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="py-20 px-6 bg-[#0B0B15]/80">
+        <div className="container mx-auto max-w-5xl">
+          <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-16">
+            How It Works
+          </h2>
+          
+          <div className="space-y-12">
+            <div className="flex items-start gap-6">
+              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-[#FF0CB6] to-[#8A2EFF] rounded-full flex items-center justify-center text-white font-bold text-xl">
+                1
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-white mb-2">Describe Your Idea</h3>
+                <p className="text-white/80 text-lg">
+                  Tell us what you want to build in plain English. No coding required to start.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-6">
+              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-[#FF0CB6] to-[#8A2EFF] rounded-full flex items-center justify-center text-white font-bold text-xl">
+                2
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-white mb-2">AI Builds Your App</h3>
+                <p className="text-white/80 text-lg">
+                  Our AI generates a complete, working application with frontend, backend, and database.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-6">
+              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-[#FF0CB6] to-[#8A2EFF] rounded-full flex items-center justify-center text-white font-bold text-xl">
+                3
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-white mb-2">Customize & Deploy</h3>
+                <p className="text-white/80 text-lg">
+                  Fine-tune with our visual editor or dive into the code. Deploy to production with one click.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Showcase Cards Section */}
       <div className="relative bg-[#0B0B15] py-20 px-4">
         <div className="max-w-7xl mx-auto">
@@ -166,6 +263,56 @@ export default function LandingPage() {
           </div>
         </div>
       </div>
+
+      {/* Social Proof Section */}
+      <section className="py-20 px-6 bg-[#0B0B15]/50">
+        <div className="container mx-auto max-w-4xl">
+          <h2 className="text-4xl font-bold text-center text-white mb-12">
+            Trusted by Developers Worldwide
+          </h2>
+          
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
+            <Card className="bg-white/10 backdrop-blur-lg border-white/20 text-center">
+              <CardContent className="pt-8">
+                <div className="text-4xl font-bold text-white mb-2">10K+</div>
+                <div className="text-white/80">Active Developers</div>
+              </CardContent>
+            </Card>
+            <Card className="bg-white/10 backdrop-blur-lg border-white/20 text-center">
+              <CardContent className="pt-8">
+                <div className="text-4xl font-bold text-white mb-2">50K+</div>
+                <div className="text-white/80">Projects Launched</div>
+              </CardContent>
+            </Card>
+            <Card className="bg-white/10 backdrop-blur-lg border-white/20 text-center">
+              <CardContent className="pt-8">
+                <div className="text-4xl font-bold text-white mb-2">99.9%</div>
+                <div className="text-white/80">Uptime</div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="space-y-6">
+            <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+              <CardContent className="p-6">
+                <p className="text-white/90 italic mb-4">
+                  "CodeMate Studio cut our development time by 80%. We shipped our MVP in days instead of months."
+                </p>
+                <p className="text-white/70 font-semibold">- Sarah Chen, Startup Founder</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+              <CardContent className="p-6">
+                <p className="text-white/90 italic mb-4">
+                  "The AI understands what I want to build and generates clean, maintainable code. It's incredible."
+                </p>
+                <p className="text-white/70 font-semibold">- Marcus Rodriguez, Full-Stack Developer</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
 
       {/* Footer */}
       <footer className="bg-[#0B0B15] border-t border-gray-800 py-16 px-4">
