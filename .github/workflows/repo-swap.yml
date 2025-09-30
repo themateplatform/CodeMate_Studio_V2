@@ -1,0 +1,39 @@
+name: Repo Swap (import from private codemate_studio)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  swap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prepare Git
+        run: |
+          git config --global user.name "Repo Swap Bot"
+          git config --global user.email "bot@example.com"
+
+      - name: Check out the target repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # full history so we can back up cleanly
+
+      - name: Create backup branch of current main
+        run: |
+          git branch backup-pre-swap "$GITHUB_SHA"
+          git push origin backup-pre-swap
+
+      - name: Add source repo and fetch (private)
+        env:
+          SOURCE_PAT: ${{ secrets.SOURCE_PAT }}
+        run: |
+          git remote add source https://x-access-token:${SOURCE_PAT}@github.com/themateplatform/codemate_studio.git
+          git fetch source --prune --tags
+
+      - name: Replace main with source/main
+        run: |
+          git checkout -B main source/main
+          git push origin main --force
+          git push origin --tags || true
