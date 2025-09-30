@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ToastProvider } from "@/components/ui/toast";
 import { useAuth } from "@/hooks/useAuth";
 import { GlobalShell } from "@/components/layout/GlobalShell";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import LandingPage from "@/pages/landing";
 import IDEPage from "@/pages/ide";
 import ProjectsPageSimplified from "./pages/projects-simplified";
@@ -80,15 +81,19 @@ function Router() {
 }
 
 function App() {
+  console.log('[DEBUG] App component rendering...');
+  
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <ToastProvider>
-          <Toaster />
-          <Router />
-        </ToastProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <ToastProvider>
+            <Toaster />
+            <Router />
+          </ToastProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 
