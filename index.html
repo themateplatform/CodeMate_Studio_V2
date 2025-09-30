@@ -11,7 +11,11 @@
     <link rel="manifest" href="/manifest.json" />
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">Loading...</div>
+    <script>
+      console.log('[HTML] Page loaded successfully');
+      console.log('[HTML] Root element:', document.getElementById('root'));
+    </script>
     <script type="module" src="/client/src/main.tsx"></script>
   </body>
 </html>
