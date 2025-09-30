@@ -220,7 +220,7 @@ export async function POST(request: Request) {
   })
 }`,
 
-  "app/globals.css": `@tailwind base;
+  "styles/globals.css": `@tailwind base;
 @tailwind components;
 @tailwind utilities;
 

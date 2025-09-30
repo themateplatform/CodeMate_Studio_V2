@@ -26,9 +26,9 @@ function Router() {
       <Route path="/projects" component={ProjectsPageSimplified} />
       <Route path="/app-builder" component={AppBuilderPage} />
       <Route path="/ide/:projectId">
-        {(params) => (
+        {() => (
           <GlobalShell>
-            <IDEPage params={params} />
+            <IDEPage />
           </GlobalShell>
         )}
       </Route>

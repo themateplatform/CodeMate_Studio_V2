@@ -31,6 +31,13 @@ export interface FileTreeNode {
   isOpen?: boolean;
   isActive?: boolean;
   language?: string;
+  content?: string;
+  isDirectory?: boolean;
+  filePath?: string;
+  fileName?: string;
+  projectId?: string;
+  createdAt?: Date | null;
+  updatedAt?: Date | null;
 }
 
 export interface CodeGenerationResult {
