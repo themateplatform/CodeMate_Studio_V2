@@ -21,7 +21,6 @@ export default defineConfig(async ({ mode }) => ({
         ]
       : []),
   ].filter(Boolean),
-  root: path.resolve(import.meta.dirname, "client"),
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
@@ -30,7 +29,7 @@ export default defineConfig(async ({ mode }) => ({
     },
   },
   build: {
-    outDir: "../dist/public",
+    outDir: "dist/public",
     emptyOutDir: true,
   },
   server: {
