@@ -22,8 +22,10 @@ export function log(message: string, source = "express") {
 }
 
 export async function setupVite(app: Express, server: Server) {
+  log('Loading Vite configuration from vite.config.ts...');
+  
   const vite = await createViteServer({
-    configFile: false,
+    // Let Vite load vite.config.ts - critical for React, Tailwind, aliases, etc.
     server: {
       middlewareMode: true,
       hmr: { server },
@@ -33,9 +35,12 @@ export async function setupVite(app: Express, server: Server) {
       ...viteLogger,
       error: (msg, options) => {
         viteLogger.error(msg, options);
+        // Don't exit - allow HMR to recover from transient errors
       },
     },
   });
+  
+  log('Vite server created successfully with React + Tailwind processing');
 
   app.use(vite.middlewares);
 
@@ -59,8 +64,8 @@ export async function setupVite(app: Express, server: Server) {
       // always reload the index.html file from disk incase it changes
       let template = await fs.promises.readFile(clientTemplate, "utf-8");
       template = template.replace(
-        `src="/src/main.tsx"`,
-        `src="/src/main.tsx?v=${nanoid()}"`,
+        `src="/client/src/main.tsx"`,
+        `src="/client/src/main.tsx?v=${nanoid()}"`,
       );
       const page = await vite.transformIndexHtml(url, template);
       res.status(200).set({ "Content-Type": "text/html" }).end(page);
@@ -72,18 +77,23 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(__dirname, "..", "dist");
+  const distPath = path.resolve(__dirname, "..", "dist", "public");
+  
+  log(`Looking for build directory at: ${distPath}`);
 
   if (!fs.existsSync(distPath)) {
     throw new Error(
       `Could not find the build directory: ${distPath}, make sure to build the client first`,
     );
   }
-
+  
+  log('Serving static files from dist/public');
   app.use(express.static(distPath));
 
   // fall through to index.html if the file doesn't exist
   app.use("*", (_req, res) => {
-    res.sendFile(path.resolve(distPath, "index.html"));
+    const indexPath = path.resolve(distPath, "index.html");
+    log(`Serving index.html from: ${indexPath}`);
+    res.sendFile(indexPath);
   });
 }
