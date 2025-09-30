@@ -21,6 +21,7 @@ export default defineConfig(async ({ mode }) => ({
         ]
       : []),
   ].filter(Boolean),
+  root: path.resolve(import.meta.dirname, "client"),
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
