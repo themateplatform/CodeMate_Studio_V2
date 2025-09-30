@@ -1,8 +1,8 @@
 import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes";
+import { createServer } from "http";
+// import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { healthRouter, trackRequest } from "./health";
-import { WorkerManager } from "./jobs/worker";
 
 const app = express();
 app.use(express.json());
@@ -47,7 +47,8 @@ app.use((req, res, next) => {
   // Add health check routes
   app.use('/', healthRouter);
   
-  const server = await registerRoutes(app);
+  // const server = await registerRoutes(app);
+  const server = createServer(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
@@ -62,18 +63,8 @@ app.use((req, res, next) => {
   // doesn't interfere with the other routes
   if (app.get("env") === "development") {
     await setupVite(app, server);
-    // Setup WebSocket server after Vite setup to avoid conflicts
-    if ((server as any).setupWebSocket) {
-      await (server as any).setupWebSocket();
-      log("WebSocket server setup completed after Vite");
-    }
   } else {
     serveStatic(app);
-    // Setup WebSocket server in production as well
-    if ((server as any).setupWebSocket) {
-      await (server as any).setupWebSocket();
-      log("WebSocket server setup completed");
-    }
   }
 
   // ALWAYS serve the app on the port specified in the environment variable PORT
@@ -81,39 +72,8 @@ app.use((req, res, next) => {
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   const port = parseInt(process.env.PORT || '5000', 10);
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
+  server.listen(port, () => {
     log(`serving on port ${port}`);
-    
-    // Start background workers for workflow execution
-    startBackgroundWorkers();
   });
   
-  // Initialize and start background workers
-  function startBackgroundWorkers() {
-    const workerManager = new WorkerManager();
-    
-    // Schedule workflow execution every 30 seconds
-    setInterval(async () => {
-      try {
-        await workerManager.runJob('workflow-executor');
-      } catch (error) {
-        console.error('Workflow executor job failed:', error);
-      }
-    }, 30000);
-    
-    // Schedule workflow retry every 1 minute
-    setInterval(async () => {
-      try {
-        await workerManager.runJob('workflow-retry');
-      } catch (error) {
-        console.error('Workflow retry job failed:', error);
-      }
-    }, 60000);
-    
-    log('✅ Background workers initialized - workflow execution every 30s, retry every 1min');
-  }
 })();

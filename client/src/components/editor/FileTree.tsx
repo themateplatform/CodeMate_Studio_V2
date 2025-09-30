@@ -29,25 +29,27 @@ export default function FileTree({ files, onFileSelect, activeFileId }: FileTree
 
     // Create nodes for all files and directories
     files.forEach(file => {
-      const parts = file.path.split('/');
+      const path = file.filePath || file.fileName;
+      const parts = path.split('/');
       const fileName = parts[parts.length - 1];
       
       const node: FileTreeNode = {
         id: file.id,
         name: fileName,
-        path: file.path,
-        isDirectory: file.isDirectory,
-        language: file.language,
+        path: path,
+        isDirectory: false, // ProjectFile doesn't have isDirectory, assume all are files
+        language: file.language || undefined,
         children: [],
       };
 
-      nodeMap.set(file.path, node);
+      nodeMap.set(path, node);
     });
 
     // Build parent-child relationships
     files.forEach(file => {
-      const parts = file.path.split('/');
-      const node = nodeMap.get(file.path)!;
+      const path = file.filePath || file.fileName;
+      const parts = path.split('/');
+      const node = nodeMap.get(path)!;
 
       if (parts.length === 1) {
         // Root level file/directory

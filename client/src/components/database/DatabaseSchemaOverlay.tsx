@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
-import type { DatabaseSchema } from '@shared/schema';
+// import type { DatabaseSchema } from '@shared/schema';
 
 interface DatabaseSchemaOverlayProps {
   isOpen: boolean;
@@ -23,7 +23,7 @@ export default function DatabaseSchemaOverlay({
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: schemas = [], isLoading } = useQuery<DatabaseSchema[]>({
+  const { data: schemas = [], isLoading } = useQuery<any[]>({
     queryKey: ['/api/projects', projectId, 'database/schema'],
     enabled: !!projectId && isOpen,
   });

@@ -1,16 +1,6 @@
-// @deno-types="https://deno.land/x/supabase_functions_js@2.0.0/mod.ts"
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
 import { getCorsHeaders, corsHeaders } from "../_shared/cors.ts"
-
-// Global Deno types for TypeScript
-declare global {
-  var Deno: {
-    env: {
-      get(key: string): string | undefined;
-    };
-  };
-}
 
 console.log("Secure API Proxy Edge Function starting up")
 
@@ -31,7 +21,7 @@ interface ProxyResponse {
   };
 }
 
-serve(async (req) => {
+serve(async (req: Request) => {
   const requestId = crypto.randomUUID();
   const origin = req.headers.get('origin');
   const corsHeaders = getCorsHeaders(origin);
