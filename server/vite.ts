@@ -41,6 +41,18 @@ export async function setupVite(app: Express, server: Server) {
   });
 
   app.use(vite.middlewares);
+
+  // Serve service worker and other public assets
+  app.use("/sw.js", (req, res) => {
+    const swPath = path.resolve(import.meta.dirname, "..", "public", "sw.js");
+    if (fs.existsSync(swPath)) {
+      res.setHeader("Content-Type", "application/javascript");
+      res.sendFile(swPath);
+    } else {
+      res.status(404).send("Service worker not found");
+    }
+  });
+
   app.use("*", async (req, res, next) => {
     const url = req.originalUrl;
 
