@@ -96,7 +96,7 @@ export default function LandingPage() {
                   value={projectIdea}
                   onChange={(e) => setProjectIdea(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleStartBuilding()}
-                  className="flex-1 border-0 bg-transparent text-base sm:text-lg px-4 py-3 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[hsl(185,16%,37%)]"
+                  className="flex-1 border-0 bg-transparent text-base sm:text-lg px-4 py-3 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground"
                 />
                 <Button
                   onClick={handleStartBuilding}
@@ -140,10 +140,10 @@ export default function LandingPage() {
                       </div>
                     </div>
                     
-                    <h3 className="text-xl font-bold text-[hsl(0,0%,12%)] mb-2 font-heading">
+                    <h3 className="text-xl font-bold text-foreground mb-2 font-heading">
                       {project.name}
                     </h3>
-                    <p className="text-[hsl(185,16%,37%)] text-sm mb-6">
+                    <p className="text-muted-foreground text-sm mb-6">
                       {project.description}
                     </p>
                     
