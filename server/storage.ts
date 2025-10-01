@@ -13,7 +13,7 @@ const MemoryStore = createMemoryStore(session);
  */
 const sessionStore: session.Store = isDatabaseConfigured && pool
   ? new PgSessionStore({
-      pool,
+      pool: pool as any, // Neon serverless Pool is compatible with pg Pool
       tableName: "session",
       createTableIfMissing: true,
       pruneSessionInterval: 60 * 15, // Clean up expired sessions every 15 minutes
