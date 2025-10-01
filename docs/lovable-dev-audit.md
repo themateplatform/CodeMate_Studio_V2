@@ -16,7 +16,7 @@ This document captures the current blockers that prevent the application from su
 ## 3. Missing REST endpoints for projects, files, and preview assets
 
 * The IDE relies on `/api/projects/:id`, `/api/projects/:id/files`, and `/api/projects/:id/preview` to load metadata, persist file changes, and render the preview iframe. 【F:client/src/pages/ide.tsx†L46-L85】【F:client/src/components/preview/LivePreview.tsx†L21-L75】
-* The Express router currently exposes only CSRF, health, and session endpoints—none of the project/file routes exist, so every fetch call returns 404. 【F:server/routes.ts†L48-L78】
+* The Express router currently exposes only `CSRF`, `health`, and `session` endpoints—none of the project/file routes exist, so every fetch call returns 404. 【F:server/routes.ts†L48-L78】
 * As a result, the editor cannot load any file tree, create files, or resolve the preview URL that the iframe expects.
 
 ## Summary of required fixes
