@@ -23,15 +23,10 @@ async function getCSRFToken(): Promise<string> {
     });
     if (response.ok) {
       const data = await response.json();
-      const receivedToken =
-        typeof data?.csrfToken === 'string' && data.csrfToken.length > 0
-          ? data.csrfToken
-          : typeof data?.token === 'string'
-            ? data.token
-            : '';
+      const receivedToken = data?.csrfToken || data?.token;
 
-      if (!receivedToken) {
-        console.warn('CSRF token response missing token payload:', data);
+      if (typeof receivedToken !== 'string' || !receivedToken) {
+        console.warn('CSRF token response missing or invalid token payload:', data);
         return '';
       }
 
