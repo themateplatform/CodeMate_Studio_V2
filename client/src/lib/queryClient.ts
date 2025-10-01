@@ -23,9 +23,16 @@ async function getCSRFToken(): Promise<string> {
     });
     if (response.ok) {
       const data = await response.json();
-      csrfToken = data.csrfToken; // Fixed: was data.token, should be data.csrfToken
-      console.log('CSRF token fetched successfully, token:', csrfToken ? csrfToken.substring(0, 10) + '...' : 'null');
-      return csrfToken || '';
+      const receivedToken = data?.csrfToken || data?.token;
+
+      if (typeof receivedToken !== 'string' || !receivedToken) {
+        console.warn('CSRF token response missing or invalid token payload:', data);
+        return '';
+      }
+
+      csrfToken = receivedToken;
+      console.log('CSRF token fetched successfully, token:', csrfToken.substring(0, 10) + '...');
+      return csrfToken;
     } else {
       console.error('Failed to fetch CSRF token:', response.status, response.statusText);
     }
