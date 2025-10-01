@@ -21,46 +21,46 @@ export default function LandingPage() {
     {
       name: 'hottr-hub',
       description: 'Real-time collaboration platform',
-      gradient: 'from-[hsl(316,100%,53%)] to-[hsl(330,100%,45%)]',
+      gradient: 'from-[var(--hotter-pink)] to-[var(--brand-magenta)]',
       icon: Sparkles,
-      color: 'text-[hsl(316,100%,53%)]',
+      color: 'text-[var(--hotter-pink)]',
     },
     {
       name: 'hub-mate-studio',
       description: 'Creative workspace builder',
-      gradient: 'from-[hsl(187,68%,41%)] to-[hsl(200,70%,50%)]',
+      gradient: 'from-[var(--electric-blue)] to-[var(--electric-blue-bright)]',
       icon: Code2,
-      color: 'text-[hsl(187,68%,41%)]',
+      color: 'text-[var(--electric-blue)]',
     },
     {
       name: 'passion-to-plan-pro',
       description: 'Project management suite',
-      gradient: 'from-[hsl(265,100%,59%)] to-[hsl(280,100%,65%)]',
+      gradient: 'from-[var(--electric-purple)] to-[var(--electric-purple-bright)]',
       icon: Zap,
-      color: 'text-[hsl(265,100%,59%)]',
+      color: 'text-[var(--electric-purple)]',
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[hsl(316,100%,53%)] via-[hsl(265,100%,59%)] to-[hsl(230,31%,6%)]">
+    <div className="min-h-screen bg-gradient-to-br from-[var(--hotter-pink)] via-[var(--electric-purple)] to-[var(--deep-navy)]">
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 bg-transparent backdrop-blur-sm border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
-                <Code2 className="w-5 h-5 text-[hsl(316,100%,53%)]" />
+                <Code2 className="w-5 h-5 text-[var(--hotter-pink)]" />
               </div>
               <span className="text-xl font-bold text-white">CodeMate Studio</span>
             </div>
             <div className="hidden md:flex items-center gap-6">
-              <a href="/docs" className="text-sm text-white/90 hover:text-[hsl(316,100%,53%)] transition-colors">
+              <a href="/docs" className="text-sm text-white/90 hover:text-[var(--hotter-pink)] transition-colors">
                 Community
               </a>
-              <a href="/pricing" className="text-sm text-white/90 hover:text-[hsl(316,100%,53%)] transition-colors">
+              <a href="/pricing" className="text-sm text-white/90 hover:text-[var(--hotter-pink)] transition-colors">
                 Pricing
               </a>
-              <a href="/docs" className="text-sm text-white/90 hover:text-[hsl(316,100%,53%)] transition-colors">
+              <a href="/docs" className="text-sm text-white/90 hover:text-[var(--hotter-pink)] transition-colors">
                 Docs
               </a>
               <Button
@@ -78,7 +78,7 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white mb-6 bg-gradient-to-r from-white via-[hsl(316,100%,80%)] to-white bg-clip-text text-transparent">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white mb-6 bg-gradient-to-r from-white via-[var(--hotter-pink-soft)] to-white bg-clip-text text-transparent">
             Build With Creativity
           </h1>
           <p className="text-xl sm:text-2xl text-white/90 mb-12">
@@ -88,7 +88,7 @@ export default function LandingPage() {
           {/* Input Box */}
           <div className="max-w-2xl mx-auto">
             <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-[hsl(316,100%,53%)] to-[hsl(265,100%,59%)] rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-300"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-[var(--hotter-pink)] to-[var(--electric-purple)] rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-300"></div>
               <div className="relative flex flex-col sm:flex-row gap-3 bg-white rounded-xl p-2 shadow-2xl">
                 <Input
                   type="text"
@@ -100,7 +100,7 @@ export default function LandingPage() {
                 />
                 <Button
                   onClick={handleStartBuilding}
-                  className="bg-gradient-to-r from-[hsl(316,100%,53%)] to-[hsl(265,100%,59%)] hover:from-[hsl(316,100%,48%)] hover:to-[hsl(265,100%,54%)] text-white px-8 py-6 text-base font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 group"
+                  className="bg-gradient-to-r from-[var(--hotter-pink)] to-[var(--electric-purple)] hover:from-[var(--hotter-pink-strong)] hover:to-[var(--electric-purple-strong)] text-white px-8 py-6 text-base font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 group"
                 >
                   Start Building
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -165,24 +165,24 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[hsl(230,31%,6%)] border-t border-white/10 py-12 px-4 sm:px-6 lg:px-8">
+      <footer className="bg-[var(--deep-navy)] border-t border-white/10 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
             <div>
               <h4 className="text-white font-semibold mb-4">Company</h4>
               <ul className="space-y-2">
                 <li>
-                  <a href="/about" className="text-white/70 hover:text-[hsl(316,100%,53%)] text-sm transition-colors">
+                  <a href="/about" className="text-white/70 hover:text-[var(--hotter-pink)] text-sm transition-colors">
                     About
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-white/70 hover:text-[hsl(316,100%,53%)] text-sm transition-colors">
+                  <a href="#" className="text-white/70 hover:text-[var(--hotter-pink)] text-sm transition-colors">
                     Careers
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-white/70 hover:text-[hsl(316,100%,53%)] text-sm transition-colors">
+                  <a href="#" className="text-white/70 hover:text-[var(--hotter-pink)] text-sm transition-colors">
                     Blog
                   </a>
                 </li>
@@ -192,17 +192,17 @@ export default function LandingPage() {
               <h4 className="text-white font-semibold mb-4">Product</h4>
               <ul className="space-y-2">
                 <li>
-                  <a href="/templates" className="text-white/70 hover:text-[hsl(316,100%,53%)] text-sm transition-colors">
+                  <a href="/templates" className="text-white/70 hover:text-[var(--hotter-pink)] text-sm transition-colors">
                     Templates
                   </a>
                 </li>
                 <li>
-                  <a href="/pricing" className="text-white/70 hover:text-[hsl(316,100%,53%)] text-sm transition-colors">
+                  <a href="/pricing" className="text-white/70 hover:text-[var(--hotter-pink)] text-sm transition-colors">
                     Pricing
                   </a>
                 </li>
                 <li>
-                  <a href="/components" className="text-white/70 hover:text-[hsl(316,100%,53%)] text-sm transition-colors">
+                  <a href="/components" className="text-white/70 hover:text-[var(--hotter-pink)] text-sm transition-colors">
                     Components
                   </a>
                 </li>
@@ -212,17 +212,17 @@ export default function LandingPage() {
               <h4 className="text-white font-semibold mb-4">Resources</h4>
               <ul className="space-y-2">
                 <li>
-                  <a href="/docs" className="text-white/70 hover:text-[hsl(316,100%,53%)] text-sm transition-colors">
+                  <a href="/docs" className="text-white/70 hover:text-[var(--hotter-pink)] text-sm transition-colors">
                     Documentation
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-white/70 hover:text-[hsl(316,100%,53%)] text-sm transition-colors">
+                  <a href="#" className="text-white/70 hover:text-[var(--hotter-pink)] text-sm transition-colors">
                     API Reference
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-white/70 hover:text-[hsl(316,100%,53%)] text-sm transition-colors">
+                  <a href="#" className="text-white/70 hover:text-[var(--hotter-pink)] text-sm transition-colors">
                     Support
                   </a>
                 </li>
@@ -232,17 +232,17 @@ export default function LandingPage() {
               <h4 className="text-white font-semibold mb-4">Community</h4>
               <ul className="space-y-2">
                 <li>
-                  <a href="#" className="text-white/70 hover:text-[hsl(316,100%,53%)] text-sm transition-colors">
+                  <a href="#" className="text-white/70 hover:text-[var(--hotter-pink)] text-sm transition-colors">
                     Discord
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-white/70 hover:text-[hsl(316,100%,53%)] text-sm transition-colors">
+                  <a href="#" className="text-white/70 hover:text-[var(--hotter-pink)] text-sm transition-colors">
                     Twitter
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-white/70 hover:text-[hsl(316,100%,53%)] text-sm transition-colors">
+                  <a href="#" className="text-white/70 hover:text-[var(--hotter-pink)] text-sm transition-colors">
                     GitHub
                   </a>
                 </li>
@@ -255,13 +255,13 @@ export default function LandingPage() {
               © 2025 CodeMate Studio. All rights reserved.
             </p>
             <div className="flex items-center gap-4">
-              <a href="#" className="text-white/60 hover:text-[hsl(316,100%,53%)] transition-colors">
+              <a href="#" className="text-white/60 hover:text-[var(--hotter-pink)] transition-colors">
                 <Github className="w-5 h-5" />
               </a>
-              <a href="#" className="text-white/60 hover:text-[hsl(316,100%,53%)] transition-colors">
+              <a href="#" className="text-white/60 hover:text-[var(--hotter-pink)] transition-colors">
                 <Twitter className="w-5 h-5" />
               </a>
-              <a href="#" className="text-white/60 hover:text-[hsl(316,100%,53%)] transition-colors">
+              <a href="#" className="text-white/60 hover:text-[var(--hotter-pink)] transition-colors">
                 <Linkedin className="w-5 h-5" />
               </a>
             </div>

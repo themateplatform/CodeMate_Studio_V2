@@ -8,7 +8,10 @@
   /* CodeMate Studio Professional Color Palette */
   --hotter-pink: hsl(316, 100%, 53%); /* #FF0CB6 - Limited to CTAs and AI highlights */
   --electric-purple: hsl(265, 100%, 59%); /* #8A2EFF - Brand gradient */
+  --electric-purple-bright: hsl(280, 100%, 65%);
+  --electric-purple-strong: hsl(265, 100%, 54%);
   --electric-blue: hsl(187, 68%, 41%); /* #23A5B9 - Status, links, syntax highlights */
+  --electric-blue-bright: hsl(200, 70%, 50%);
   --aqua-teal: hsl(164, 79%, 52%); /* #23E3B8 - Accent glows */
   --deep-navy: hsl(230, 31%, 6%); /* #0B0B15 - Dark base */
   --slate-grey: hsl(185, 16%, 37%); /* #4F6F70 - Sidebars, secondary UI */
@@ -37,6 +40,9 @@
   --border: hsl(220, 13%, 86%);
   --input: hsl(220, 13%, 86%);
   --ring: var(--hotter-pink);
+  --brand-magenta: hsl(330, 100%, 45%);
+  --hotter-pink-soft: hsl(316, 100%, 80%);
+  --hotter-pink-strong: hsl(316, 100%, 48%);
   --chart-1: var(--hotter-pink);
   --chart-2: var(--electric-blue);
   --chart-3: hsl(42, 92%, 56%);
