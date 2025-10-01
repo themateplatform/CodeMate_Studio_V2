@@ -1,12 +1,46 @@
 import express, { type Request, Response, NextFunction } from "express";
-import { createServer } from "http";
-// import { registerRoutes } from "./routes";
+import session from "express-session";
+import cookieParser from "cookie-parser";
+import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { healthRouter, trackRequest } from "./health";
+import { storage } from "./storage";
 
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+
+/**
+ * CRITICAL: Trust proxy headers when behind Lovable/HTTPS edge
+ * This allows secure cookies to work properly
+ */
+app.set("trust proxy", 1);
+
+/**
+ * Session middleware - MUST be before any route that uses req.session
+ * Provides authentication state for both HTTP and WebSocket connections
+ */
+const sessionMiddleware = session({
+  secret: process.env.SESSION_SECRET || "dev_fallback_change_in_production",
+  store: storage.sessionStore,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    sameSite: process.env.NODE_ENV === "production" ? "lax" : "lax",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+  },
+  name: "codemate.sid", // Custom session cookie name
+});
+
+app.use(cookieParser());
+app.use(sessionMiddleware);
+
+/**
+ * IMPORTANT: Do NOT add body parsers here!
+ * Body parsing is handled in registerRoutes() to ensure:
+ * 1. Webhooks get raw bytes for signature verification
+ * 2. API routes get parsed JSON
+ */
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -44,11 +78,11 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Add health check routes
+  // Add health check routes (basic, no auth)
   app.use('/', healthRouter);
   
-  // const server = await registerRoutes(app);
-  const server = createServer(app);
+  // Register all application routes with session support
+  const server = await registerRoutes(app, { sessionMiddleware });
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
