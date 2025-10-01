@@ -51,8 +51,10 @@ export async function registerRoutes(
       return res.status(500).json({ error: "Session not initialized" });
     }
 
-    const csrfToken =
-      (req.session as any).csrfToken ?? ((req.session as any).csrfToken = crypto.randomUUID());
+    if (!req.session.csrfToken) {
+      req.session.csrfToken = crypto.randomUUID();
+    }
+    const csrfToken = req.session.csrfToken;
 
     // Expose the token under both legacy ("token") and explicit ("csrfToken") keys
     // to support older clients while allowing the frontend to rely on a descriptive key.
