@@ -58,31 +58,45 @@ export default function ComponentsPage() {
           {/* Search and Actions */}
           <div className="flex items-center gap-4 mb-6">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" aria-hidden="true" />
+              <label htmlFor="search-components" className="sr-only">
+                Search components
+              </label>
               <Input 
+                id="search-components"
                 placeholder="Search components..." 
                 className="pl-9 bg-secondary/50 border-border focus:border-accent"
                 data-testid="input-search-components"
+                aria-label="Search for components by name or category"
               />
             </div>
-            <Button variant="outline" className="subtle-hover" data-testid="button-filter-components">
-              <Filter className="w-4 h-4 mr-2" />
+            <Button variant="outline" className="subtle-hover" data-testid="button-filter-components" aria-label="Filter components">
+              <Filter className="w-4 h-4 mr-2" aria-hidden="true" />
               Filter
             </Button>
-            <Button className="btn-secondary" data-testid="button-create-component">
-              <Plus className="w-4 h-4 mr-2" />
+            <Button className="btn-secondary" data-testid="button-create-component" aria-label="Create new component">
+              <Plus className="w-4 h-4 mr-2" aria-hidden="true" />
               Create Component
             </Button>
           </div>
 
           {/* Categories */}
-          <div className="flex gap-3 flex-wrap">
+          <div className="flex gap-3 flex-wrap" role="group" aria-label="Component categories">
             {componentCategories.map((category) => (
               <Badge 
                 key={category.name}
                 variant="secondary" 
                 className={`${category.color} subtle-hover cursor-pointer`}
                 data-testid={`category-${category.name.toLowerCase()}`}
+                role="button"
+                tabIndex={0}
+                aria-label={`Filter by ${category.name} category, ${category.count} components`}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    // Filter logic would go here
+                  }
+                }}
               >
                 {category.name} ({category.count})
               </Badge>
@@ -128,11 +142,11 @@ export default function ComponentsPage() {
                       {component.downloads} downloads
                     </span>
                     <div className="flex gap-2">
-                      <Button size="sm" variant="ghost" className="h-8 w-8 p-0 hover-neon-purple">
-                        <Copy className="w-3 h-3" />
+                      <Button size="sm" variant="ghost" className="h-8 w-8 p-0 hover-neon-purple" aria-label="Copy component code">
+                        <Copy className="w-3 h-3" aria-hidden="true" />
                       </Button>
-                      <Button size="sm" variant="ghost" className="h-8 w-8 p-0 hover-neon-purple">
-                        <Download className="w-3 h-3" />
+                      <Button size="sm" variant="ghost" className="h-8 w-8 p-0 hover-neon-purple" aria-label="Download component">
+                        <Download className="w-3 h-3" aria-hidden="true" />
                       </Button>
                     </div>
                   </div>

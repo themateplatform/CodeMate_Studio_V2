@@ -6,88 +6,156 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
 import { GlobalShell } from "@/components/layout/GlobalShell";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import LandingPage from "@/pages/landing";
-import IDEPage from "@/pages/ide";
-import ProjectsPageSimplified from "./pages/projects-simplified";
-import AppBuilderPage from "./pages/app-builder";
-import TemplatesPage from "./pages/templates";
-import ComponentsPage from "./pages/components";
-import AIAssistantPage from "./pages/ai-assistant";
-import DeployPage from "./pages/deploy";
-import SettingsPage from "./pages/settings";
-import SecretsPage from "./pages/secrets";
-import PricingPage from "./pages/pricing";
-import DocsPage from "./pages/docs";
-import AboutPage from "./pages/about";
-import NotFound from "@/pages/not-found";
+import { lazy, Suspense } from "react";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+
+// Lazy load pages for better code splitting
+const LandingPage = lazy(() => import("@/pages/landing"));
+const IDEPage = lazy(() => import("@/pages/ide"));
+const ProjectsPageSimplified = lazy(() => import("./pages/projects-simplified"));
+const AppBuilderPage = lazy(() => import("./pages/app-builder"));
+const TemplatesPage = lazy(() => import("./pages/templates"));
+const ComponentsPage = lazy(() => import("./pages/components"));
+const AIAssistantPage = lazy(() => import("./pages/ai-assistant"));
+const DeployPage = lazy(() => import("./pages/deploy"));
+const SettingsPage = lazy(() => import("./pages/settings"));
+const SecretsPage = lazy(() => import("./pages/secrets"));
+const PricingPage = lazy(() => import("./pages/pricing"));
+const DocsPage = lazy(() => import("./pages/docs"));
+const AboutPage = lazy(() => import("./pages/about"));
+const NotFound = lazy(() => import("@/pages/not-found"));
+
+// Loading fallback component
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-screen" role="status" aria-live="polite">
+    <div className="flex flex-col items-center gap-4">
+      <LoadingSpinner size="lg" className="text-primary" />
+      <p className="text-sm text-muted-foreground">Loading page...</p>
+    </div>
+  </div>
+);
 
 // No authentication - direct access to all routes
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={LandingPage} />
-      <Route path="/projects" component={ProjectsPageSimplified} />
-      <Route path="/app-builder" component={AppBuilderPage} />
+      <Route path="/">
+        {() => (
+          <Suspense fallback={<PageLoader />}>
+            <LandingPage />
+          </Suspense>
+        )}
+      </Route>
+      <Route path="/projects">
+        {() => (
+          <Suspense fallback={<PageLoader />}>
+            <ProjectsPageSimplified />
+          </Suspense>
+        )}
+      </Route>
+      <Route path="/app-builder">
+        {() => (
+          <Suspense fallback={<PageLoader />}>
+            <AppBuilderPage />
+          </Suspense>
+        )}
+      </Route>
       <Route path="/ide/:projectId">
         {() => (
           <GlobalShell>
-            <IDEPage />
+            <Suspense fallback={<PageLoader />}>
+              <IDEPage />
+            </Suspense>
           </GlobalShell>
         )}
       </Route>
       <Route path="/templates">
         {() => (
           <GlobalShell>
-            <TemplatesPage />
+            <Suspense fallback={<PageLoader />}>
+              <TemplatesPage />
+            </Suspense>
           </GlobalShell>
         )}
       </Route>
       <Route path="/components">
         {() => (
           <GlobalShell>
-            <ComponentsPage />
+            <Suspense fallback={<PageLoader />}>
+              <ComponentsPage />
+            </Suspense>
           </GlobalShell>
         )}
       </Route>
       <Route path="/ai">
         {() => (
           <GlobalShell>
-            <AIAssistantPage />
+            <Suspense fallback={<PageLoader />}>
+              <AIAssistantPage />
+            </Suspense>
           </GlobalShell>
         )}
       </Route>
       <Route path="/deploy">
         {() => (
           <GlobalShell>
-            <DeployPage />
+            <Suspense fallback={<PageLoader />}>
+              <DeployPage />
+            </Suspense>
           </GlobalShell>
         )}
       </Route>
       <Route path="/settings">
         {() => (
           <GlobalShell>
-            <SettingsPage />
+            <Suspense fallback={<PageLoader />}>
+              <SettingsPage />
+            </Suspense>
           </GlobalShell>
         )}
       </Route>
       <Route path="/secrets">
         {() => (
           <GlobalShell>
-            <SecretsPage />
+            <Suspense fallback={<PageLoader />}>
+              <SecretsPage />
+            </Suspense>
           </GlobalShell>
         )}
       </Route>
-      <Route path="/pricing" component={PricingPage} />
-      <Route path="/docs" component={DocsPage} />
-      <Route path="/about" component={AboutPage} />
-      <Route component={NotFound} />
+      <Route path="/pricing">
+        {() => (
+          <Suspense fallback={<PageLoader />}>
+            <PricingPage />
+          </Suspense>
+        )}
+      </Route>
+      <Route path="/docs">
+        {() => (
+          <Suspense fallback={<PageLoader />}>
+            <DocsPage />
+          </Suspense>
+        )}
+      </Route>
+      <Route path="/about">
+        {() => (
+          <Suspense fallback={<PageLoader />}>
+            <AboutPage />
+          </Suspense>
+        )}
+      </Route>
+      <Route>
+        {() => (
+          <Suspense fallback={<PageLoader />}>
+            <NotFound />
+          </Suspense>
+        )}
+      </Route>
     </Switch>
   );
 }
 
 function App() {
-  console.log('[DEBUG] App component rendering...');
-  
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>

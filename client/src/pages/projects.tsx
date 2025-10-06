@@ -877,22 +877,24 @@ export default function ProjectsPage() {
         {/* Projects List */}
         <div className="space-y-6">
           {projectsLoading ? (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <div className="text-center py-12" role="status" aria-live="polite">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4" aria-hidden="true"></div>
               <p className="text-muted-foreground">Loading your projects...</p>
+              <span className="sr-only">Loading projects</span>
             </div>
           ) : filteredProjects.length === 0 ? (
-            <div className="text-center py-12">
+            <div className="text-center py-12" role="status" aria-live="polite">
               <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
-                <Code className="w-8 h-8 text-muted-foreground" />
+                <Code className="w-8 h-8 text-muted-foreground" aria-hidden="true" />
               </div>
               <h3 className="text-lg font-semibold mb-2">No projects yet</h3>
               <p className="text-muted-foreground mb-6">Create your first project to get started with Codemate Dynamic Intelligence</p>
               <Button 
                 onClick={() => setIsCreateOpen(true)}
                 data-testid="button-create-first-project"
+                aria-label="Create your first project"
               >
-                <Plus className="w-4 h-4 mr-2" />
+                <Plus className="w-4 h-4 mr-2" aria-hidden="true" />
                 Create Your First Project
               </Button>
             </div>
@@ -923,8 +925,13 @@ export default function ProjectsPage() {
                         </div>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
-                              <MoreVertical className="w-4 h-4" />
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="opacity-0 group-hover:opacity-100 transition-opacity"
+                              aria-label={`Options for ${project.name}`}
+                            >
+                              <MoreVertical className="w-4 h-4" aria-hidden="true" />
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">

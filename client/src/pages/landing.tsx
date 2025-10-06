@@ -54,19 +54,32 @@ export default function LandingPage() {
               <span className="text-xl font-bold text-white">CodeMate Studio</span>
             </div>
             <div className="hidden md:flex items-center gap-6">
-              <a href="/docs" className="text-sm text-white/90 hover:text-[var(--hotter-pink)] transition-colors">
+              <a 
+                href="/docs" 
+                className="text-sm text-white/90 hover:text-[var(--hotter-pink)] transition-colors focus:outline-none focus:ring-2 focus:ring-white/50 rounded px-2 py-1"
+                aria-label="View community resources"
+              >
                 Community
               </a>
-              <a href="/pricing" className="text-sm text-white/90 hover:text-[var(--hotter-pink)] transition-colors">
+              <a 
+                href="/pricing" 
+                className="text-sm text-white/90 hover:text-[var(--hotter-pink)] transition-colors focus:outline-none focus:ring-2 focus:ring-white/50 rounded px-2 py-1"
+                aria-label="View pricing plans"
+              >
                 Pricing
               </a>
-              <a href="/docs" className="text-sm text-white/90 hover:text-[var(--hotter-pink)] transition-colors">
+              <a 
+                href="/docs" 
+                className="text-sm text-white/90 hover:text-[var(--hotter-pink)] transition-colors focus:outline-none focus:ring-2 focus:ring-white/50 rounded px-2 py-1"
+                aria-label="View documentation"
+              >
                 Docs
               </a>
               <Button
                 variant="ghost"
                 onClick={() => setLocation('/projects')}
                 className="text-white hover:bg-white/10"
+                aria-label="Sign in to your account"
               >
                 Sign In
               </Button>
@@ -88,28 +101,38 @@ export default function LandingPage() {
           {/* Input Box */}
           <div className="max-w-2xl mx-auto">
             <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-[var(--hotter-pink)] to-[var(--electric-purple)] rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-300"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-[var(--hotter-pink)] to-[var(--electric-purple)] rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-300" aria-hidden="true"></div>
               <div className="relative flex flex-col sm:flex-row gap-3 bg-white rounded-xl p-2 shadow-2xl">
+                <label htmlFor="project-idea-input" className="sr-only">
+                  Describe your project idea
+                </label>
                 <Input
+                  id="project-idea-input"
                   type="text"
                   placeholder="I want to build a..."
                   value={projectIdea}
                   onChange={(e) => setProjectIdea(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleStartBuilding()}
                   className="flex-1 border-0 bg-transparent text-base sm:text-lg px-4 py-3 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground"
+                  aria-describedby="project-idea-help"
                 />
                 <Button
                   onClick={handleStartBuilding}
                   className="bg-gradient-to-r from-[var(--hotter-pink)] to-[var(--electric-purple)] hover:from-[var(--hotter-pink-strong)] hover:to-[var(--electric-purple-strong)] text-white px-8 py-6 text-base font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 group"
+                  aria-label="Start building your project"
                 >
                   Start Building
-                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
                 </Button>
               </div>
+              <p id="project-idea-help" className="sr-only">
+                Enter a description of what you want to build, then press Enter or click Start Building
+              </p>
             </div>
             <button
               onClick={() => setLocation('/templates')}
-              className="mt-6 text-white/80 hover:text-white text-sm font-medium transition-colors"
+              className="mt-6 text-white/80 hover:text-white text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-white/50 rounded px-3 py-2"
+              aria-label="Browse example projects"
             >
               See Examples
             </button>
@@ -120,6 +143,9 @@ export default function LandingPage() {
       {/* Showcase Projects */}
       <section className="pb-32 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold text-white text-center mb-12">
+            Showcase Projects
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {showcaseProjects.map((project) => {
               const Icon = project.icon;
@@ -127,16 +153,25 @@ export default function LandingPage() {
                 <Card
                   key={project.name}
                   onClick={() => setLocation('/projects')}
-                  className="relative group cursor-pointer overflow-hidden bg-white rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 border-0"
+                  className="relative group cursor-pointer overflow-hidden bg-white rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 border-0 focus-within:ring-2 focus-within:ring-white/50"
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setLocation('/projects');
+                    }
+                  }}
+                  aria-label={`View ${project.name} - ${project.description}`}
                 >
                   {/* Gradient Top Accent */}
-                  <div className={`h-2 bg-gradient-to-r ${project.gradient}`}></div>
+                  <div className={`h-2 bg-gradient-to-r ${project.gradient}`} aria-hidden="true"></div>
                   
                   {/* Card Content */}
                   <div className="p-8">
                     <div className="flex items-start justify-between mb-4">
                       <div className={`p-3 rounded-lg bg-gradient-to-br ${project.gradient} bg-opacity-10`}>
-                        <Icon className={`w-6 h-6 ${project.color}`} />
+                        <Icon className={`w-6 h-6 ${project.color}`} aria-hidden="true" />
                       </div>
                     </div>
                     
@@ -148,7 +183,7 @@ export default function LandingPage() {
                     </p>
                     
                     {/* Preview Image Placeholder */}
-                    <div className={`relative h-40 rounded-lg bg-gradient-to-br ${project.gradient} opacity-20 group-hover:opacity-30 transition-opacity`}>
+                    <div className={`relative h-40 rounded-lg bg-gradient-to-br ${project.gradient} opacity-20 group-hover:opacity-30 transition-opacity`} aria-hidden="true">
                       <div className="absolute inset-0 flex items-center justify-center">
                         <Code2 className="w-16 h-16 text-white/50" />
                       </div>
@@ -156,7 +191,7 @@ export default function LandingPage() {
                   </div>
                   
                   {/* Hover Effect */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-0 group-hover:opacity-5 transition-opacity pointer-events-none`}></div>
+                  <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-0 group-hover:opacity-5 transition-opacity pointer-events-none`} aria-hidden="true"></div>
                 </Card>
               );
             })}

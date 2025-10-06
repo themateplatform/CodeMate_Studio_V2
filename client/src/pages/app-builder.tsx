@@ -312,11 +312,11 @@ export default function AppBuilderPage() {
           <div className="flex-1 flex flex-col">
             {/* Messages */}
             <ScrollArea className="flex-1 p-6">
-              <div className="space-y-4 max-w-4xl mx-auto">
+              <div className="space-y-4 max-w-4xl mx-auto" role="log" aria-live="polite" aria-label="Conversation history">
                 {messages.length === 0 && (
                   <div className="text-center py-8">
                     <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center mx-auto mb-4">
-                      <Bot className="w-8 h-8 text-white" />
+                      <Bot className="w-8 h-8 text-white" aria-hidden="true" />
                     </div>
                     <h3 className="text-lg font-semibold mb-2">Welcome to the AI App Builder!</h3>
                     <p className="text-muted-foreground mb-4">
@@ -331,7 +331,7 @@ export default function AppBuilderPage() {
                 {messages.map((message) => (
                   <div key={message.id} className={`flex gap-3 ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
                     {message.type === 'ai' && (
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0 mt-1">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0 mt-1" aria-hidden="true">
                         <Bot className="w-4 h-4 text-white" />
                       </div>
                     )}
@@ -344,7 +344,9 @@ export default function AppBuilderPage() {
                       <div className={`text-xs mt-2 opacity-70 ${
                         message.type === 'user' ? 'text-primary-foreground/70' : 'text-muted-foreground'
                       }`}>
-                        {message.timestamp.toLocaleTimeString()}
+                        <time dateTime={message.timestamp.toISOString()}>
+                          {message.timestamp.toLocaleTimeString()}
+                        </time>
                       </div>
                     </div>
                     {message.type === 'user' && (
