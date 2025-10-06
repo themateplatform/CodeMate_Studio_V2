@@ -37,7 +37,7 @@ This document outlines the work required to deliver a fully optimized, responsiv
 ## 7. Quality, Security & Compliance
 - **Testing Strategy:** Mandate unit, integration, end-to-end (Playwright/Cypress), and consumer-driven contract tests (e.g., Pact) for Supabase APIs. Automate regression suites in CI.
 - **Security Hardening:** Perform dependency audits, threat modeling, OWASP ASVS compliance, and environment secrets management.
-- **Accessibility (a11y):** Enforce WCAG 2.2 AA compliance, keyboard navigation, screen reader support, and color contrast validation.
+- **Accessibility (a11y):** Enforce WCAG 2.2 AA compliance through automated CI checks (e.g., axe-core), keyboard navigation testing, screen reader support, and color contrast validation.
 - **Data Governance:** Ensure GDPR/CCPA readiness, audit logging, role-based access control, and tenant isolation.
 
 ## 8. Delivery Roadmap & Governance
