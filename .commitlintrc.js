@@ -53,5 +53,6 @@ module.exports = {
     'subject-min-length': [2, 'always', 10],
     'subject-empty': [2, 'never'],
     'subject-full-stop': [2, 'never', '.'],
+    
   },
 };
