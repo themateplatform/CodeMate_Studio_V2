@@ -9,11 +9,11 @@ export function safeUser(user: User) {
 // Runtime environment checks
 export function validateEnvironment() {
   if (!process.env.SESSION_SECRET) {
-    console.warn("SESSION_SECRET not set - using development fallback (not secure for production)");
+    throw new Error("SESSION_SECRET environment variable is required for secure authentication");
   }
   
   if (!process.env.DATABASE_URL) {
-    console.warn("DATABASE_URL not set - running in development mode without database");
+    throw new Error("DATABASE_URL environment variable is required");
   }
   
   // PRODUCTION REQUIREMENT: GitHub webhook secret must be present
@@ -27,11 +27,6 @@ export async function validateDatabaseConstraints() {
   try {
     const { sql } = await import("drizzle-orm");
     const { db } = await import("./db");
-    
-    if (!db) {
-      console.warn("⚠️ Database not configured - skipping constraint validation");
-      return false;
-    }
     
     // Check for critical unique constraint on github_sync_events
     const constraintCheck = await db.execute(sql`
