@@ -16,7 +16,7 @@ This document outlines the work required to deliver a fully optimized, responsiv
 ## 3. Performance & Web Vitals
 - **Metrics Targets:** Set budgets for LCP (<2.5s), CLS (<0.1), INP (<200ms), TTFB (<500ms), and PWA Lighthouse score (>90).
 - **Code Splitting & Bundling:** Analyze client bundle sizes, enable route-based code splitting, leverage dynamic imports, and tree-shake dependencies.
-- **Asset Optimization:** Enforce responsive images, AVIF/WebP, and service worker caching strategies. Automate image/CDN pipelines.
+- **Asset Optimization:** Enforce responsive images, modern formats like AVIF/WebP with fallbacks to JPEG/PNG, and service worker caching strategies. Automate image/CDN pipelines.
 - **Runtime Profiling:** Use Web Vitals, React Profiler, and Supabase/DB metrics to locate bottlenecks. Document remediation tasks.
 
 ## 4. Progressive Web App Enhancements
