@@ -1,25 +1,25 @@
 // Conventional Commits configuration for CodeMate Studio
 // Phase 4: GitHub 2-Way Sync + CI Implementation
 
-module.exports = {
+export default {
   extends: ['@commitlint/config-conventional'],
   rules: {
     'type-enum': [
       2,
       'always',
       [
-        'feat',     // New feature
-        'fix',      // Bug fix
-        'docs',     // Documentation changes
-        'style',    // Code style changes (formatting, etc.)
+        'feat', // New feature
+        'fix', // Bug fix
+        'docs', // Documentation changes
+        'style', // Code style changes (formatting, etc.)
         'refactor', // Code refactoring
-        'perf',     // Performance improvements
-        'test',     // Test additions or modifications
-        'chore',    // Build process or auxiliary tool changes
-        'ci',       // CI/CD changes
-        'build',    // Build system changes
-        'revert',   // Revert previous commit
-        'phase',    // Phase-specific changes
+        'perf', // Performance improvements
+        'test', // Test additions or modifications
+        'chore', // Build process or auxiliary tool changes
+        'ci', // CI/CD changes
+        'build', // Build system changes
+        'revert', // Revert previous commit
+        'phase', // Phase-specific changes
       ],
     ],
     'scope-enum': [
