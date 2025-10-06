@@ -14,7 +14,7 @@ This document outlines the work required to deliver a fully optimized, responsiv
 - **Design QA Pipeline:** Integrate visual regression testing (Chromatic/Storybook, Playwright) and manual UX sign-off for all responsive states.
 
 ## 3. Performance & Web Vitals
-- **Metrics Targets:** Set budgets for LCP (<2.5s), CLS (<0.1), FID/INP (<200ms), TTFB (<500ms), and PWA Lighthouse score (>90).
+- **Metrics Targets:** Set budgets for LCP (<2.5s), CLS (<0.1), INP (<200ms), TTFB (<500ms), and PWA Lighthouse score (>90).
 - **Code Splitting & Bundling:** Analyze client bundle sizes, enable route-based code splitting, leverage dynamic imports, and tree-shake dependencies.
 - **Asset Optimization:** Enforce responsive images, AVIF/WebP, and service worker caching strategies. Automate image/CDN pipelines.
 - **Runtime Profiling:** Use Web Vitals, React Profiler, and Supabase/DB metrics to locate bottlenecks. Document remediation tasks.
