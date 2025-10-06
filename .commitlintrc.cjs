@@ -1,7 +1,8 @@
 // Conventional Commits configuration for CodeMate Studio
 // Phase 4: GitHub 2-Way Sync + CI Implementation
 
-export default {
+/** @type {import('@commitlint/types').UserConfig} */
+const config = {
   extends: ['@commitlint/config-conventional'],
   rules: {
     'type-enum': [
@@ -55,3 +56,5 @@ export default {
     'subject-full-stop': [2, 'never', '.'],
   },
 };
+
+module.exports = config;
