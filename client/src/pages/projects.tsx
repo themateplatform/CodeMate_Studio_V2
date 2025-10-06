@@ -454,7 +454,14 @@ export default function ProjectsPage() {
 
   // Redirect to login if not authenticated
   if (userLoading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center" role="status" aria-live="polite">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" aria-hidden="true"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
   }
 
   if (!currentUser) {
@@ -478,13 +485,18 @@ export default function ProjectsPage() {
           <div className="flex items-center space-x-6">
             <h1 className="text-2xl font-bold" data-testid="text-projects-title">Projects</h1>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" aria-hidden="true" />
+              <label htmlFor="search-projects" className="sr-only">
+                Search projects
+              </label>
               <Input
+                id="search-projects"
                 placeholder="Search projects..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 w-64"
                 data-testid="input-search-projects"
+                aria-label="Search for projects by name"
               />
             </div>
           </div>
@@ -496,14 +508,16 @@ export default function ProjectsPage() {
               variant="outline" 
               onClick={() => setLocation('/settings')}
               data-testid="button-settings"
+              aria-label="Open settings"
             >
-              <Settings className="w-4 h-4 mr-2" />
+              <Settings className="w-4 h-4 mr-2" aria-hidden="true" />
               Settings
             </Button>
             <Button 
               variant="ghost" 
               onClick={handleLogout}
               data-testid="button-logout"
+              aria-label="Logout from your account"
             >
               Logout
             </Button>
@@ -516,8 +530,8 @@ export default function ProjectsPage() {
         <div className="mb-8">
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
-              <Button size="lg" data-testid="button-create-project">
-                <Plus className="w-5 h-5 mr-2" />
+              <Button size="lg" data-testid="button-create-project" aria-label="Create new project">
+                <Plus className="w-5 h-5 mr-2" aria-hidden="true" />
                 New Project
               </Button>
             </DialogTrigger>
