@@ -241,9 +241,19 @@ export default function ProjectsPage() {
       setIsCreateOpen(false);
     },
     onError: (error) => {
+      let description = error instanceof Error ? error.message : 'Unknown error';
+
+      if (
+        typeof description === 'string' &&
+        description.toLowerCase().includes('publish or update your lovable project')
+      ) {
+        description =
+          'Lovable hides unpublished projects from its API. Publish or update the project in Lovable, then try importing again.';
+      }
+
       toast({
         title: 'Import failed',
-        description: error.message,
+        description,
         variant: 'destructive',
       });
     },
@@ -411,7 +421,7 @@ export default function ProjectsPage() {
       switch (platform) {
         case 'lovable':
           // Extract project name from Lovable URL
-          const lovableMatch = url.match(/\/project\/([^\/\?]+)/);
+          const lovableMatch = url.match(/\/(?:project|projects)\/([^\/\?]+)/);
           name = lovableMatch ? lovableMatch[1] : 'lovable-project';
           break;
         case 'replit':
@@ -823,7 +833,7 @@ export default function ProjectsPage() {
                       <Input
                         id="importUrl"
                         placeholder={
-                          selectedPlatform === 'lovable' ? 'https://lovable.dev/project/your-project'
+                          selectedPlatform === 'lovable' ? 'https://lovable.dev/projects/your-project'
                           : selectedPlatform === 'replit' ? 'https://replit.com/@username/project-name'
                           : selectedPlatform === 'bubble' ? 'https://your-app.bubbleapps.io'
                           : 'https://github.com/user/repo or zip file URL'
@@ -832,6 +842,12 @@ export default function ProjectsPage() {
                         onChange={(e) => setImportUrl(e.target.value)}
                         data-testid="input-import-url"
                       />
+                      {selectedPlatform === 'lovable' && (
+                        <p className="text-xs text-muted-foreground">
+                          Lovable only exposes published projects through its API. Publish or update the project in Lovable,
+                          then try importing it here.
+                        </p>
+                      )}
                     </div>
 
                     {selectedPlatform === 'generic' && (
