@@ -22,9 +22,7 @@ export function TopNavBar({
     <header className="flex items-center justify-between px-4 py-2 bg-card border-b border-border backdrop-blur-md bg-card/95">
       <div className="flex items-center space-x-4">
         <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-neon-pink to-electric-purple rounded-lg flex items-center justify-center neon-glow">
-            <Zap className="w-5 h-5 text-white" />
-          </div>
+          <img src="https://cdn.builder.io/api/v1/image/assets%2F7f4f17bc2420491a95f23b47a94e6efc%2Fcf2bb14f9f634632acd8da085020bfdb?format=webp&width=800" alt="CodeMate Studio Logo" className="h-8 w-auto" />
           <span className="text-lg font-heading font-bold neon-text">
             CodeMate Studio
           </span>

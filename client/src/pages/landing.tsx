@@ -38,9 +38,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center">
-              <div className="w-6 h-6 rounded-full border-4 border-[#FF0CB6]"></div>
-            </div>
+            <img src="https://cdn.builder.io/api/v1/image/assets%2F7f4f17bc2420491a95f23b47a94e6efc%2Fcf2bb14f9f634632acd8da085020bfdb?format=webp&width=800" alt="CodeMate Studio Logo" className="h-10 w-auto" />
             <span className="font-heading font-bold text-xl text-white">CodeMate Studio</span>
           </div>
           
