@@ -1,5 +1,11 @@
 /* CodeMate Studio Typography */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* HubMate Design Tokens - Shared token system */
+@import './lib/design-tokens/global.css';
+/* CodeMate Brand Overrides - App-specific values */
+@import './lib/design-tokens/codemate-overrides.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -17,39 +23,35 @@
   --primary-text-light: hsl(0, 0%, 12%); /* #1E1E1E - Dark text for light mode */
   --primary-text-dark: hsl(0, 0%, 98%); /* #F9F9F9 - Light text for dark mode */
   
-  /* Light Mode Design Tokens (Default) */
-  --background: var(--light-base);
-  --foreground: var(--primary-text-light);
-  --card: hsl(0, 0%, 100%);
-  --card-foreground: var(--primary-text-light);
-  --popover: hsl(0, 0%, 100%);
-  --popover-foreground: var(--primary-text-light);
-  --primary: var(--hotter-pink);
-  --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(220, 14%, 92%);
-  --secondary-foreground: var(--primary-text-light);
-  --muted: hsl(220, 14%, 94%);
-  --muted-foreground: hsl(220, 8%, 35%);
-  --accent: var(--electric-blue);
+  /* Legacy Design Tokens (preserved for backward compatibility) */
+  /* These map to canonical HubMate token names */
+  --background: var(--surfaces-background);
+  --foreground: var(--surfaces-foreground);
+  --card: var(--surfaces-card);
+  --card-foreground: var(--surfaces-card-foreground);
+  --popover: var(--surfaces-popover);
+  --popover-foreground: var(--surfaces-popover-foreground);
+  --primary: var(--semantic-primary);
+  --primary-foreground: var(--semantic-primary-foreground);
+  --secondary: var(--semantic-secondary);
+  --secondary-foreground: var(--semantic-secondary-foreground);
+  --muted: var(--surfaces-muted);
+  --muted-foreground: var(--surfaces-muted-foreground);
+  --accent: var(--core-brand-accent);
   --accent-foreground: hsl(0, 0%, 100%);
-  --destructive: hsl(0, 84%, 60%);
-  --destructive-foreground: hsl(0, 0%, 98%);
-  --border: hsl(220, 13%, 86%);
-  --input: hsl(220, 13%, 86%);
-  --ring: var(--hotter-pink);
+  --destructive: var(--feedback-destructive);
+  --destructive-foreground: var(--feedback-destructive-foreground);
+  --border: var(--chrome-border);
+  --input: var(--chrome-border);
+  --ring: var(--semantic-primary);
   --chart-1: var(--hotter-pink);
   --chart-2: var(--electric-blue);
   --chart-3: hsl(42, 92%, 56%);
   --chart-4: hsl(147, 78%, 42%);
   --chart-5: hsl(203, 88%, 53%);
-  --sidebar: var(--slate-grey);
-  --sidebar-foreground: hsl(0, 0%, 95%);
-  --sidebar-primary: var(--hotter-pink);
-  --sidebar-primary-foreground: hsl(0, 0%, 100%);
-  --sidebar-accent: var(--electric-blue);
-  --sidebar-accent-foreground: hsl(0, 0%, 100%);
-  --sidebar-border: hsl(185, 16%, 30%);
-  --sidebar-ring: var(--hotter-pink);
+  
+  /* Sidebar tokens - map to canonical names with legacy support */
+  --sidebar: var(--sidebar-background); /* Legacy alias */
   
   /* CodeMate Studio Typography */
   --font-heading: 'Poppins', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
@@ -70,26 +72,29 @@
 }
 
 .dark {
-  /* CodeMate Studio Dark Theme */
-  --background: var(--dark-base);
-  --foreground: var(--primary-text-dark);
-  --card: hsl(0, 0%, 14%);
-  --card-foreground: var(--primary-text-dark);
-  --popover: hsl(0, 0%, 14%);
-  --popover-foreground: var(--primary-text-dark);
-  --primary: var(--hotter-pink);
-  --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(0, 0%, 18%);
-  --secondary-foreground: var(--primary-text-dark);
-  --muted: hsl(0, 0%, 20%);
-  --muted-foreground: hsl(0, 0%, 70%);
-  --accent: var(--electric-blue);
+  /* Legacy tokens mapped to canonical HubMate dark mode tokens */
+  --background: var(--surfaces-background);
+  --foreground: var(--surfaces-foreground);
+  --card: var(--surfaces-card);
+  --card-foreground: var(--surfaces-card-foreground);
+  --popover: var(--surfaces-popover);
+  --popover-foreground: var(--surfaces-popover-foreground);
+  --primary: var(--semantic-primary);
+  --primary-foreground: var(--semantic-primary-foreground);
+  --secondary: var(--semantic-secondary);
+  --secondary-foreground: var(--semantic-secondary-foreground);
+  --muted: var(--surfaces-muted);
+  --muted-foreground: var(--surfaces-muted-foreground);
+  --accent: var(--core-brand-accent);
   --accent-foreground: hsl(0, 0%, 100%);
-  --destructive: hsl(0, 84%, 60%);
-  --destructive-foreground: var(--primary-text-dark);
-  --border: hsl(0, 0%, 24%);
-  --input: hsl(0, 0%, 24%);
-  --ring: var(--hotter-pink);
+  --destructive: var(--feedback-destructive);
+  --destructive-foreground: var(--feedback-destructive-foreground);
+  --border: var(--chrome-border);
+  --input: var(--chrome-border);
+  --ring: var(--semantic-primary);
+  
+  /* Sidebar legacy alias */
+  --sidebar: var(--sidebar-background);
 }
 
 @layer base {

@@ -1,6 +1,10 @@
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
+import { initDesignTokenSync } from "./lib/design-tokens";
+
+// Initialize design token sync (only active in dev with flag)
+initDesignTokenSync();
 
 // Clear any existing service workers to prevent caching issues
 if ('serviceWorker' in navigator) {

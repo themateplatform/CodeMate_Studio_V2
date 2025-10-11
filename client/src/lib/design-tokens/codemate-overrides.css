@@ -1,0 +1,43 @@
+/**
+ * CodeMate Studio Brand Overrides
+ * 
+ * This file contains app-specific brand values that override the shared HubMate tokens.
+ * These preserve CodeMate's unique visual identity while still consuming the base token system.
+ * 
+ * Usage:
+ * - Import after design-tokens/global.css to apply overrides
+ * - Values here take precedence over HubMate defaults
+ * - Can be toggled via feature flag if needed
+ */
+
+:root {
+  /* CodeMate Specific Brand Colors */
+  --hotter-pink: hsl(316, 100%, 53%); /* #FF0CB6 - CodeMate primary */
+  --electric-purple: hsl(265, 100%, 59%); /* #8A2EFF - CodeMate gradient */
+  --electric-blue: hsl(187, 68%, 41%); /* #23A5B9 - CodeMate accent */
+  --aqua-teal: hsl(164, 79%, 52%); /* #23E3B8 - CodeMate glow */
+  --deep-navy: hsl(230, 31%, 6%); /* #0B0B15 - CodeMate dark base */
+  --slate-grey: hsl(185, 16%, 37%); /* #4F6F70 - CodeMate sidebar */
+
+  /* Override core brand tokens with CodeMate values */
+  --core-brand-primary: var(--hotter-pink);
+  --core-brand-secondary: var(--electric-purple);
+  --core-brand-accent: var(--electric-blue);
+
+  /* CodeMate-specific sidebar values */
+  --sidebar-background: var(--slate-grey);
+  
+  /* CodeMate Typography */
+  --font-heading: 'Poppins', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-sans: 'Montserrat', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: 'JetBrains Mono', Menlo, Monaco, monospace;
+
+  /* CodeMate specific radius preference */
+  --radius: 0.5rem;
+}
+
+.dark {
+  /* CodeMate Dark Mode Overrides */
+  --surfaces-background: hsl(0, 0%, 12%); /* #1E1E1E - CodeMate dark */
+}
