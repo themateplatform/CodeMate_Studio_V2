@@ -65,11 +65,18 @@ class DesignTokenSync {
       
       console.log(`[DesignTokenSync] Fetching tokens from ${url}`);
       
+      // Add timeout to fetch request
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      
       const response = await fetch(url, {
         headers: {
           'Accept': 'application/json',
         },
+        signal: controller.signal,
       });
+      
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         throw new Error(`Failed to fetch tokens: ${response.status} ${response.statusText}`);
@@ -87,7 +94,11 @@ class DesignTokenSync {
       }));
       
     } catch (error) {
-      console.error('[DesignTokenSync] Failed to fetch/apply tokens:', error);
+      if (error instanceof Error && error.name === 'AbortError') {
+        console.error('[DesignTokenSync] Fetch timeout - request took longer than 10 seconds');
+      } else {
+        console.error('[DesignTokenSync] Failed to fetch/apply tokens:', error);
+      }
       console.log('[DesignTokenSync] Falling back to vendored tokens');
     }
   }
@@ -119,12 +130,21 @@ class DesignTokenSync {
    * Watch for theme changes and refetch tokens
    */
   private watchThemeChanges(): void {
+    let debounceTimer: number | undefined;
+    
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.attributeName === 'class') {
-          const mode = this.getCurrentMode();
-          console.log(`[DesignTokenSync] Theme changed to ${mode}`);
-          this.fetchAndApplyTokens(mode);
+          // Debounce theme changes to avoid rapid API calls
+          if (debounceTimer) {
+            window.clearTimeout(debounceTimer);
+          }
+          
+          debounceTimer = window.setTimeout(() => {
+            const mode = this.getCurrentMode();
+            console.log(`[DesignTokenSync] Theme changed to ${mode}`);
+            this.fetchAndApplyTokens(mode);
+          }, 300); // 300ms debounce
         }
       });
     });
@@ -146,7 +166,12 @@ class DesignTokenSync {
     console.log(`[DesignTokenSync] Starting poll every ${this.config.pollInterval}ms`);
     
     this.pollTimer = window.setInterval(() => {
-      this.fetchAndApplyTokens();
+      // Wrap in try-catch to prevent accumulated errors
+      try {
+        this.fetchAndApplyTokens();
+      } catch (error) {
+        console.error('[DesignTokenSync] Polling error:', error);
+      }
     }, this.config.pollInterval);
   }
 
@@ -176,6 +201,11 @@ let tokenSyncInstance: DesignTokenSync | null = null;
  * Initialize design token sync (call from main.tsx)
  */
 export function initDesignTokenSync(): DesignTokenSync | null {
+  // Singleton pattern - return existing instance if already initialized
+  if (tokenSyncInstance) {
+    return tokenSyncInstance;
+  }
+  
   // Only enable in development with feature flag
   const enabled = 
     import.meta.env.DEV && 
@@ -191,7 +221,7 @@ export function initDesignTokenSync(): DesignTokenSync | null {
       : undefined,
   };
 
-  if (!tokenSyncInstance && config.enabled) {
+  if (config.enabled) {
     tokenSyncInstance = new DesignTokenSync(config);
     tokenSyncInstance.init();
   }

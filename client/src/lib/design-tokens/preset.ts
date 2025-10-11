@@ -45,6 +45,9 @@ export const designTokensPreset: Partial<Config> = {
             foreground: "var(--semantic-primary-foreground)",
             hover: "var(--semantic-primary-hover)",
             active: "var(--semantic-primary-active)",
+            700: "var(--semantic-primary-700)",
+            800: "var(--semantic-primary-800)",
+            900: "var(--semantic-primary-900)",
           },
           secondary: {
             DEFAULT: "var(--semantic-secondary)",
