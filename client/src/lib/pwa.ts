@@ -58,17 +58,16 @@ class PWAManager {
       return;
     }
 
-    // Ensure the service worker script is reachable on the current origin before attempting to register.
-    // This prevents noisy errors when the app is previewed under a different host that doesn't serve /sw.js.
+    // Build an absolute controller URL to avoid issues when hosted under alternate hosts/origins.
+    const controllerUrl = `${window.location.origin}/sw.js`;
+
+    // Probe for the existence of the service worker script before attempting registration.
     try {
-      const controllerUrl = '/sw.js';
-      // Use a short HEAD request to verify existence. Some environments may not allow HEAD; fall back to GET.
       let headOk = false;
       try {
         const headResp = await fetch(controllerUrl, { method: 'HEAD' });
         headOk = headResp.ok;
       } catch (headErr) {
-        // HEAD might be blocked by some proxies; try a GET without downloading the body (only used as a probe).
         try {
           const getResp = await fetch(controllerUrl, { method: 'GET' });
           headOk = getResp.ok;
@@ -78,16 +77,16 @@ class PWAManager {
       }
 
       if (!headOk) {
-        console.warn('[PWA] /sw.js not found on this origin — skipping service worker registration');
+        console.warn('[PWA] ' + controllerUrl + ' not found on this origin — skipping service worker registration');
         return;
       }
     } catch (error) {
-      console.warn('[PWA] Could not verify /sw.js existence — skipping service worker registration', error);
+      console.warn('[PWA] Could not verify sw.js existence — skipping service worker registration', error);
       return;
     }
 
     try {
-      const registration = await navigator.serviceWorker.register('/sw.js', {
+      const registration = await navigator.serviceWorker.register(controllerUrl, {
         scope: '/'
       });
 
@@ -164,6 +163,21 @@ class PWAManager {
     if (!this.swRegistration) return;
 
     try {
+      // Verify the worker script exists before calling update() to avoid noisy 404 errors
+      const scriptUrl = (this.swRegistration as any).active?.scriptURL || (this.swRegistration as any).scope && `${window.location.origin}/sw.js`;
+      if (scriptUrl) {
+        try {
+          const probe = await fetch(scriptUrl, { method: 'HEAD' });
+          if (!probe.ok) {
+            console.warn('[PWA] Service worker script not available for update:', scriptUrl);
+            return;
+          }
+        } catch (probeErr) {
+          console.warn('[PWA] Could not probe service worker script before update:', probeErr);
+          return;
+        }
+      }
+
       await this.swRegistration.update();
     } catch (error) {
       console.error('[PWA] Update check failed:', error);
