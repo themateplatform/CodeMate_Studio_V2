@@ -58,6 +58,34 @@ class PWAManager {
       return;
     }
 
+    // Ensure the service worker script is reachable on the current origin before attempting to register.
+    // This prevents noisy errors when the app is previewed under a different host that doesn't serve /sw.js.
+    try {
+      const controllerUrl = '/sw.js';
+      // Use a short HEAD request to verify existence. Some environments may not allow HEAD; fall back to GET.
+      let headOk = false;
+      try {
+        const headResp = await fetch(controllerUrl, { method: 'HEAD' });
+        headOk = headResp.ok;
+      } catch (headErr) {
+        // HEAD might be blocked by some proxies; try a GET without downloading the body (only used as a probe).
+        try {
+          const getResp = await fetch(controllerUrl, { method: 'GET' });
+          headOk = getResp.ok;
+        } catch (getErr) {
+          headOk = false;
+        }
+      }
+
+      if (!headOk) {
+        console.warn('[PWA] /sw.js not found on this origin — skipping service worker registration');
+        return;
+      }
+    } catch (error) {
+      console.warn('[PWA] Could not verify /sw.js existence — skipping service worker registration', error);
+      return;
+    }
+
     try {
       const registration = await navigator.serviceWorker.register('/sw.js', {
         scope: '/'
@@ -79,7 +107,7 @@ class PWAManager {
         }
       });
 
-      // Check for updates
+      // Initial update check
       this.checkForUpdates();
 
     } catch (error) {
