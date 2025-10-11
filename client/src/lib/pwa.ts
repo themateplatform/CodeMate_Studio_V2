@@ -163,6 +163,21 @@ class PWAManager {
     if (!this.swRegistration) return;
 
     try {
+      // Verify the worker script exists before calling update() to avoid noisy 404 errors
+      const scriptUrl = (this.swRegistration as any).active?.scriptURL || (this.swRegistration as any).scope && `${window.location.origin}/sw.js`;
+      if (scriptUrl) {
+        try {
+          const probe = await fetch(scriptUrl, { method: 'HEAD' });
+          if (!probe.ok) {
+            console.warn('[PWA] Service worker script not available for update:', scriptUrl);
+            return;
+          }
+        } catch (probeErr) {
+          console.warn('[PWA] Could not probe service worker script before update:', probeErr);
+          return;
+        }
+      }
+
       await this.swRegistration.update();
     } catch (error) {
       console.error('[PWA] Update check failed:', error);
