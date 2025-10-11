@@ -1,0 +1,139 @@
+/**
+ * HubMate Design Tokens - Global CSS Variables
+ * Vendored from @themateplatform/design-tokens
+ * 
+ * These CSS variables can be overridden by:
+ * 1. Runtime API sync (dev mode)
+ * 2. App-specific overrides (codemate-overrides.css)
+ * 3. Theme switching (light/dark mode)
+ */
+
+:root {
+  /* Core Brand Tokens */
+  --core-brand-primary: hsl(316, 100%, 53%);
+  --core-brand-secondary: hsl(265, 100%, 59%);
+  --core-brand-accent: hsl(187, 68%, 41%);
+
+  /* Core Neutral Palette */
+  --core-neutral-50: hsl(220, 14%, 96%);
+  --core-neutral-100: hsl(220, 14%, 92%);
+  --core-neutral-200: hsl(220, 13%, 86%);
+  --core-neutral-300: hsl(220, 10%, 75%);
+  --core-neutral-400: hsl(220, 8%, 55%);
+  --core-neutral-500: hsl(220, 8%, 45%);
+  --core-neutral-600: hsl(220, 8%, 35%);
+  --core-neutral-700: hsl(220, 10%, 25%);
+  --core-neutral-800: hsl(220, 15%, 18%);
+  --core-neutral-900: hsl(220, 20%, 12%);
+
+  /* Semantic Tokens - Light Mode */
+  --semantic-primary: var(--core-brand-primary);
+  --semantic-primary-foreground: hsl(0, 0%, 100%);
+  --semantic-primary-hover: hsl(316, 100%, 48%);
+  --semantic-primary-active: hsl(316, 100%, 43%);
+  --semantic-primary-700: hsl(316, 100%, 43%);
+  --semantic-primary-800: hsl(316, 100%, 38%);
+  --semantic-primary-900: hsl(316, 100%, 33%);
+
+  --semantic-secondary: var(--core-neutral-100);
+  --semantic-secondary-foreground: var(--core-neutral-900);
+  --semantic-secondary-hover: var(--core-neutral-200);
+
+  --semantic-success: hsl(147, 78%, 42%);
+  --semantic-success-foreground: hsl(0, 0%, 100%);
+
+  --semantic-warning: hsl(42, 92%, 56%);
+  --semantic-warning-foreground: hsl(0, 0%, 12%);
+
+  --semantic-error: hsl(0, 84%, 60%);
+  --semantic-error-foreground: hsl(0, 0%, 98%);
+
+  --semantic-info: hsl(203, 88%, 53%);
+  --semantic-info-foreground: hsl(0, 0%, 100%);
+
+  /* Surface Tokens - Light Mode */
+  --surfaces-background: var(--core-neutral-50);
+  --surfaces-foreground: var(--core-neutral-900);
+  --surfaces-card: hsl(0, 0%, 100%);
+  --surfaces-card-foreground: var(--core-neutral-900);
+  --surfaces-popover: hsl(0, 0%, 100%);
+  --surfaces-popover-foreground: var(--core-neutral-900);
+  --surfaces-muted: var(--core-neutral-100);
+  --surfaces-muted-foreground: var(--core-neutral-600);
+
+  /* Feedback Tokens */
+  --feedback-destructive: var(--semantic-error);
+  --feedback-destructive-foreground: var(--semantic-error-foreground);
+  --feedback-success: var(--semantic-success);
+  --feedback-success-foreground: var(--semantic-success-foreground);
+
+  /* CTA Tokens */
+  --cta-primary: var(--semantic-primary);
+  --cta-primary-foreground: var(--semantic-primary-foreground);
+  --cta-primary-hover: var(--semantic-primary-hover);
+  --cta-secondary: transparent;
+  --cta-secondary-foreground: var(--core-brand-accent);
+  --cta-secondary-hover: hsla(187, 68%, 41%, 0.1);
+
+  /* Chrome Tokens - Light Mode */
+  --chrome-background: var(--surfaces-background);
+  --chrome-foreground: var(--surfaces-foreground);
+  --chrome-border: var(--core-neutral-200);
+  --chrome-toolbar: hsl(0, 0%, 100%);
+  --chrome-toolbar-foreground: var(--core-neutral-900);
+  --chrome-statusbar: var(--core-neutral-100);
+  --chrome-statusbar-foreground: var(--core-neutral-700);
+
+  /* Sidebar Tokens - Light Mode */
+  --sidebar-background: hsl(185, 16%, 37%);
+  --sidebar-foreground: hsl(0, 0%, 95%);
+  --sidebar-primary: var(--core-brand-primary);
+  --sidebar-primary-foreground: hsl(0, 0%, 100%);
+  --sidebar-accent: var(--core-brand-accent);
+  --sidebar-accent-foreground: hsl(0, 0%, 100%);
+  --sidebar-border: hsl(185, 16%, 30%);
+  --sidebar-ring: var(--core-brand-primary);
+
+  /* Layout Tokens */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+}
+
+/* Dark Mode Overrides */
+.dark {
+  /* Semantic Tokens - Dark Mode */
+  --semantic-primary: var(--core-brand-primary);
+  --semantic-primary-foreground: hsl(0, 0%, 100%);
+  --semantic-secondary: hsl(0, 0%, 18%);
+  --semantic-secondary-foreground: hsl(0, 0%, 98%);
+
+  /* Surface Tokens - Dark Mode */
+  --surfaces-background: hsl(0, 0%, 12%);
+  --surfaces-foreground: hsl(0, 0%, 98%);
+  --surfaces-card: hsl(0, 0%, 14%);
+  --surfaces-card-foreground: hsl(0, 0%, 98%);
+  --surfaces-popover: hsl(0, 0%, 14%);
+  --surfaces-popover-foreground: hsl(0, 0%, 98%);
+  --surfaces-muted: hsl(0, 0%, 20%);
+  --surfaces-muted-foreground: hsl(0, 0%, 70%);
+
+  /* Chrome Tokens - Dark Mode */
+  --chrome-background: var(--surfaces-background);
+  --chrome-foreground: var(--surfaces-foreground);
+  --chrome-border: hsl(0, 0%, 24%);
+  --chrome-toolbar: hsl(0, 0%, 14%);
+  --chrome-toolbar-foreground: hsl(0, 0%, 98%);
+  --chrome-statusbar: hsl(0, 0%, 16%);
+  --chrome-statusbar-foreground: hsl(0, 0%, 80%);
+
+  /* Sidebar Tokens - Dark Mode */
+  --sidebar-background: hsl(185, 16%, 20%);
+  --sidebar-foreground: hsl(0, 0%, 95%);
+}
