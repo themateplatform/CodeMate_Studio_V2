@@ -78,7 +78,9 @@ export async function setupVite(app: Express, server: Server) {
 
 export function serveStatic(app: Express) {
   const distPath = path.resolve(__dirname, "..", "dist", "public");
-  
+  const builtSwPath = path.resolve(distPath, "sw.js");
+  const publicSwPath = path.resolve(__dirname, "..", "public", "sw.js");
+
   log(`Looking for build directory at: ${distPath}`);
 
   if (!fs.existsSync(distPath)) {
@@ -86,7 +88,24 @@ export function serveStatic(app: Express) {
       `Could not find the build directory: ${distPath}, make sure to build the client first`,
     );
   }
-  
+
+  // Explicitly serve the service worker if present in the built output or the public folder.
+  app.get('/sw.js', (req, res) => {
+    if (fs.existsSync(builtSwPath)) {
+      res.setHeader("Content-Type", "application/javascript");
+      res.sendFile(builtSwPath);
+      return;
+    }
+
+    if (fs.existsSync(publicSwPath)) {
+      res.setHeader("Content-Type", "application/javascript");
+      res.sendFile(publicSwPath);
+      return;
+    }
+
+    res.status(404).send('Service worker not found');
+  });
+
   log('Serving static files from dist/public');
   app.use(express.static(distPath));
 
