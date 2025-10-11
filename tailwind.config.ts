@@ -1,7 +1,9 @@
 import type { Config } from "tailwindcss";
+import { designTokensPreset } from "./client/src/lib/design-tokens/preset";
 
 export default {
   darkMode: ["class"],
+  presets: [designTokensPreset],
   content: [
     "./index.html",
     "./client/src/**/*.{js,jsx,ts,tsx}",
@@ -9,6 +11,13 @@ export default {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
     extend: {
       borderRadius: {
         lg: "var(--radius)",
