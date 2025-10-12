@@ -91,13 +91,30 @@ export function LivePreview({ currentProject, activeFile, mode = 'desktop', clas
     }
   }, [lastMessage, currentProject?.id, previewUrl]);
 
-  if (isLoading) {
+  if (isLoading || userLoading) {
     return (
       <div className="flex-1 p-3">
         <div className="h-full bg-background rounded-lg border-2 border-border flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
             <p className="text-muted-foreground">Loading preview...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="flex-1 p-3">
+        <div className="h-full bg-background rounded-lg border-2 border-border flex items-center justify-center">
+          <div className="text-center">
+            <AlertCircle className="w-12 h-12 mx-auto mb-4 opacity-50" />
+            <h3 className="text-lg mb-2">Sign in to view previews</h3>
+            <p className="text-sm text-muted-foreground mb-4">Previews are only available to authenticated users.</p>
+            <div className="flex items-center justify-center">
+              <Button onClick={() => setLocation('/login')} variant="default">Sign in</Button>
+            </div>
           </div>
         </div>
       </div>
