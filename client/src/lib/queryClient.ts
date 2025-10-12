@@ -1,4 +1,5 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
@@ -44,19 +45,22 @@ export async function apiRequest(
   const headers: Record<string, string> = {
     ...(data ? { "Content-Type": "application/json" } : {}),
   };
-  
+
+  // Attach Supabase access token if present
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    const accessToken = session?.access_token;
+    if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
+  } catch {}
+
   // Add CSRF token for non-GET requests
   if (!['GET', 'HEAD', 'OPTIONS'].includes(method.toUpperCase())) {
     const token = await getCSRFToken();
-    console.log(`Token received for ${method} ${url}:`, token ? token.substring(0, 10) + '...' : 'null/empty');
     if (token && token.length > 0) {
       headers['X-CSRF-Token'] = token;
-      console.log(`Adding CSRF token to ${method} ${url}:`, token.substring(0, 10) + '...');
-    } else {
-      console.warn(`No CSRF token available for ${method} ${url}, token:`, token);
     }
   }
-  
+
   const res = await fetch(url, {
     method,
     headers,
@@ -80,8 +84,16 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
+    const headers: Record<string, string> = {};
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const accessToken = session?.access_token;
+      if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
+    } catch {}
+
     const res = await fetch(queryKey.join("/") as string, {
       credentials: "include",
+      headers,
     });
 
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {
