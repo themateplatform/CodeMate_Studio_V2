@@ -48,7 +48,16 @@ app.use((req, res, next) => {
 (async () => {
   // Add health check routes
   app.use('/', healthRouter);
-  
+
+  // Mount API routes
+  try {
+    // Auth routes (supabase-backed)
+    const authRouter = await import('./routes/auth');
+    app.use('/api/auth', authRouter.default);
+  } catch (err) {
+    console.warn('Auth routes not available:', err);
+  }
+
   // const server = await registerRoutes(app);
   const server = createServer(app);
 
