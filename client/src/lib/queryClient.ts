@@ -1,5 +1,5 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "../../../src/integrations/supabase/client";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
