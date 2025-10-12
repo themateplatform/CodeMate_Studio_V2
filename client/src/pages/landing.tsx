@@ -64,8 +64,8 @@ export default function LandingPage() {
             >
               Docs
             </a>
-            <a 
-              href="/projects" 
+            <a
+              href="/login"
               className="text-white hover:text-[#FF0CB6] transition-colors text-sm font-medium"
               data-testid="link-sign-in"
             >
