@@ -35,6 +35,10 @@ export default defineConfig(async ({ mode }) => ({
   },
   server: {
     port: 8080,
+    // Disable the Vite in-browser error overlay to avoid runtime crashes when overlay expects structured stack frames
+    hmr: {
+      overlay: false,
+    },
     fs: {
       strict: true,
       deny: ["**/.*"],
