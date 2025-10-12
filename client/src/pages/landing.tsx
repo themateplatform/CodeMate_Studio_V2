@@ -39,13 +39,12 @@ export default function LandingPage() {
           {/* Logo */}
           <div className="flex items-center gap-3">
             <img src="https://cdn.builder.io/api/v1/image/assets%2F7f4f17bc2420491a95f23b47a94e6efc%2Fcf2bb14f9f634632acd8da085020bfdb?format=webp&width=800" alt="CodeMate Studio Logo" className="h-10 w-auto" />
-            <span className="font-heading font-bold text-xl text-white">CodeMate Studio</span>
           </div>
           
           {/* Navigation Links */}
           <div className="flex items-center gap-8">
-            <a 
-              href="/projects" 
+            <a
+              href="https://106b5c53c605490a8764890fd15f0314-d51c0e53a5d4463886d58481b.fly.dev/projects"
               className="text-white hover:text-[#FF0CB6] transition-colors text-sm font-medium"
               data-testid="link-community"
             >
