@@ -10,7 +10,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Plus, Github, Code, Calendar, Zap, ExternalLink, Edit2, Trash2, MoreVertical, Eye, Play, Sparkles, ArrowRight, Home } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
