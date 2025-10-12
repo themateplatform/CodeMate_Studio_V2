@@ -163,22 +163,55 @@ class PWAManager {
     if (!this.swRegistration) return;
 
     try {
-      // Verify the worker script exists before calling update() to avoid noisy 404 errors
-      const scriptUrl = (this.swRegistration as any).active?.scriptURL || (this.swRegistration as any).scope && `${window.location.origin}/sw.js`;
-      if (scriptUrl) {
+      // Derive the script URL for the active registration.
+      const activeScriptUrl: string | undefined = (this.swRegistration as any).active?.scriptURL;
+
+      // If there is an active script URL, ensure it's same-origin before attempting an update.
+      if (activeScriptUrl) {
         try {
-          const probe = await fetch(scriptUrl, { method: 'HEAD' });
+          const activeOrigin = new URL(activeScriptUrl).origin;
+          if (activeOrigin !== window.location.origin) {
+            console.warn('[PWA] Active service worker script is cross-origin; skipping update to avoid 404 noisy errors:', activeScriptUrl);
+            return;
+          }
+        } catch (err) {
+          console.warn('[PWA] Could not parse active service worker script URL; skipping update', err);
+          return;
+        }
+
+        // Probe the active script before calling update()
+        try {
+          const probe = await fetch(activeScriptUrl, { method: 'HEAD' });
           if (!probe.ok) {
-            console.warn('[PWA] Service worker script not available for update:', scriptUrl);
+            console.warn('[PWA] Service worker script not available for update:', activeScriptUrl);
             return;
           }
         } catch (probeErr) {
           console.warn('[PWA] Could not probe service worker script before update:', probeErr);
           return;
         }
+      } else {
+        // No active script URL available: probe the local sw.js before updating
+        const localScript = `${window.location.origin}/sw.js`;
+        try {
+          const probe = await fetch(localScript, { method: 'HEAD' });
+          if (!probe.ok) {
+            console.warn('[PWA] Local service worker script not available for update:', localScript);
+            return;
+          }
+        } catch (probeErr) {
+          console.warn('[PWA] Could not probe local service worker script before update:', probeErr);
+          return;
+        }
       }
 
-      await this.swRegistration.update();
+      // Only call update() if we've passed the above checks
+      try {
+        await this.swRegistration.update();
+      } catch (updateErr) {
+        // Some browsers surface a detailed error when the script is missing on the origin used by the registration.
+        console.warn('[PWA] Service worker update failed (suppressed):', updateErr);
+      }
     } catch (error) {
       console.error('[PWA] Update check failed:', error);
     }
