@@ -27,6 +27,7 @@ function Router() {
       <Route path="/" component={LandingPage} />
       <Route path="/projects" component={ProjectsPageSimplified} />
       <Route path="/app-builder" component={AppBuilderPage} />
+      <Route path="/login" component={LoginPage} />
       <Route path="/ide/:projectId">
         {() => (
           <GlobalShell>
