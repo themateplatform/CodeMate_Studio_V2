@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { verifySupabaseJWT, supabaseAdmin } from '../supabaseClient';
+import { Router } from 'express';
 
 const router = Router();
 
