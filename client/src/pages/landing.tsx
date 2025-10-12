@@ -44,7 +44,7 @@ export default function LandingPage() {
           {/* Navigation Links */}
           <div className="flex items-center gap-8">
             <a
-              href="https://106b5c53c605490a8764890fd15f0314-d51c0e53a5d4463886d58481b.fly.dev/projects"
+              href="/projects"
               className="text-white hover:text-[#FF0CB6] transition-colors text-sm font-medium"
               data-testid="link-community"
             >
