@@ -14,19 +14,19 @@ export default function LandingPage() {
     {
       id: 'hottr-hub',
       title: 'hottr-hub',
-      thumbnail: '/api/placeholder/400/300',
+      thumbnail: 'https://cdn.builder.io/api/v1/image/assets%2F7f4f17bc2420491a95f23b47a94e6efc%2F5165481a9b9f4ad88cf21bb71b022669?format=webp&width=800',
       gradient: 'from-pink-500 to-purple-600'
     },
     {
       id: 'hub-mate-studio',
       title: 'hub-mate-studio',
-      thumbnail: '/api/placeholder/400/300',
+      thumbnail: 'https://cdn.builder.io/api/v1/image/assets%2F7f4f17bc2420491a95f23b47a94e6efc%2F5165481a9b9f4ad88cf21bb71b022669?format=webp&width=800',
       gradient: 'from-blue-500 to-indigo-600'
     },
     {
       id: 'passion-to-plan-pro',
       title: 'passion-to-plan-pro',
-      thumbnail: '/api/placeholder/400/300',
+      thumbnail: 'https://cdn.builder.io/api/v1/image/assets%2F7f4f17bc2420491a95f23b47a94e6efc%2F5165481a9b9f4ad88cf21bb71b022669?format=webp&width=800',
       gradient: 'from-purple-600 to-pink-600'
     }
   ];
