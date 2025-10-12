@@ -2,8 +2,10 @@ import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 
+// Full config with GitHub Codespaces-safe HMR
 export default defineConfig({
   plugins: [react()],
+
   test: {
     globals: true,
     environment: 'jsdom',
@@ -74,6 +76,7 @@ export default defineConfig({
     restoreMocks: true,
     clearMocks: true
   },
+
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './client/src'),
@@ -86,10 +89,26 @@ export default defineConfig({
       '@assets': path.resolve(__dirname, './attached_assets')
     }
   },
+
   define: {
     'process.env': {}
   },
+
   server: {
+    host: true,
+    port: 5000,
+    // Fix HMR inside GitHub Codespaces
+    hmr: process.env.CODESPACE_NAME
+      ? {
+          protocol: 'wss',
+          host: `${process.env.CODESPACE_NAME}-5000.app.github.dev`,
+          clientPort: 443
+        }
+      : {
+          protocol: 'ws',
+          host: 'localhost',
+          port: 5000
+        },
     deps: {
       inline: ['@radix-ui/*']
     }

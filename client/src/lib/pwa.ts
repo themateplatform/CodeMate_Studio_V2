@@ -1,18 +1,12 @@
-/**
- * Progressive Web App (PWA) Integration
- * Handles service worker registration, installation prompts, and offline capabilities
- */
+// client/src/lib/pwa.ts
+// Dev/Codespaces: disable Service Worker; provide safe stubs the app expects.
 
-interface BeforeInstallPromptEvent extends Event {
-  readonly platforms: string[];
-  readonly userChoice: Promise<{
-    outcome: 'accepted' | 'dismissed';
-    platform: string;
-  }>;
-  prompt(): Promise<void>;
+function isCodespaceHost() {
+  return typeof window !== "undefined" &&
+    window.location.hostname.endsWith(".app.github.dev");
 }
 
-interface PWAStatus {
+export interface PWAStatus {
   isInstalled: boolean;
   isInstallable: boolean;
   isOnline: boolean;
@@ -20,420 +14,119 @@ interface PWAStatus {
   updateAvailable: boolean;
 }
 
-class PWAManager {
-  private installPrompt: BeforeInstallPromptEvent | null = null;
-  private swRegistration: ServiceWorkerRegistration | null = null;
-  private statusCallbacks: ((status: PWAStatus) => void)[] = [];
+export async function registerServiceWorker() {
+  const isProd = import.meta.env.MODE === "production";
 
-  constructor() {
-    this.init();
-  }
-
-  /**
-   * Initialize PWA functionality
-   */
-  private async init() {
-    // Register service worker
-    await this.registerServiceWorker();
-    
-    // Setup installation prompt handling
-    this.setupInstallPrompt();
-    
-    // Setup online/offline detection
-    this.setupNetworkDetection();
-    
-    // Setup update detection
-    this.setupUpdateDetection();
-    
-    // Notify status change
-    this.notifyStatusChange();
-  }
-
-  /**
-   * Register service worker
-   */
-  private async registerServiceWorker(): Promise<void> {
-    if (!('serviceWorker' in navigator)) {
-      console.warn('[PWA] Service Worker not supported');
-      return;
-    }
-
-    // Build an absolute controller URL to avoid issues when hosted under alternate hosts/origins.
-    const controllerUrl = `${window.location.origin}/sw.js`;
-
-    // Probe for the existence of the service worker script before attempting registration.
+  // In dev or Codespaces: unregister and bail to avoid reload loops and CORS weirdness.
+  if (!isProd || isCodespaceHost()) {
     try {
-      let headOk = false;
-      try {
-        const headResp = await fetch(controllerUrl, { method: 'HEAD' });
-        headOk = headResp.ok;
-      } catch (headErr) {
-        try {
-          const getResp = await fetch(controllerUrl, { method: 'GET' });
-          headOk = getResp.ok;
-        } catch (getErr) {
-          headOk = false;
+      if ("serviceWorker" in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(r => r.unregister()));
+        if ("caches" in window) {
+          const keys = await caches.keys();
+          await Promise.all(keys.map(k => caches.delete(k)));
         }
+        console.debug("[PWA] Dev/Codespaces: SW unregistered and caches cleared");
       }
-
-      if (!headOk) {
-        console.warn('[PWA] ' + controllerUrl + ' not found on this origin — skipping service worker registration');
-        return;
-      }
-    } catch (error) {
-      console.warn('[PWA] Could not verify sw.js existence — skipping service worker registration', error);
-      return;
+    } catch (e) {
+      console.debug("[PWA] Dev/Codespaces cleanup warning:", e);
     }
+    return;
+  }
 
+  // Production-only registration
+  if ("serviceWorker" in navigator) {
     try {
-      const registration = await navigator.serviceWorker.register(controllerUrl, {
-        scope: '/'
-      });
-
-      this.swRegistration = registration;
-      console.log('[PWA] Service Worker registered successfully');
-
-      // Handle service worker updates
-      registration.addEventListener('updatefound', () => {
-        const newWorker = registration.installing;
-        if (newWorker) {
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              console.log('[PWA] New service worker available');
-              this.notifyStatusChange();
-            }
-          });
-        }
-      });
-
-      // Initial update check
-      this.checkForUpdates();
-
-    } catch (error) {
-      console.error('[PWA] Service Worker registration failed:', error);
-    }
-  }
-
-  /**
-   * Setup install prompt handling
-   */
-  private setupInstallPrompt(): void {
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      this.installPrompt = e as BeforeInstallPromptEvent;
-      console.log('[PWA] Install prompt available');
-      this.notifyStatusChange();
-    });
-
-    // Handle successful installation
-    window.addEventListener('appinstalled', () => {
-      console.log('[PWA] App installed successfully');
-      this.installPrompt = null;
-      this.notifyStatusChange();
-    });
-  }
-
-  /**
-   * Setup network detection
-   */
-  private setupNetworkDetection(): void {
-    const updateOnlineStatus = () => {
-      console.log('[PWA] Network status changed:', navigator.onLine ? 'online' : 'offline');
-      this.notifyStatusChange();
-    };
-
-    window.addEventListener('online', updateOnlineStatus);
-    window.addEventListener('offline', updateOnlineStatus);
-  }
-
-  /**
-   * Setup update detection
-   */
-  private setupUpdateDetection(): void {
-    // Check for updates periodically
-    setInterval(() => {
-      this.checkForUpdates();
-    }, 60000); // Check every minute
-  }
-
-  /**
-   * Check for service worker updates
-   */
-  private async checkForUpdates(): Promise<void> {
-    if (!this.swRegistration) return;
-
-    try {
-      // Verify the worker script exists before calling update() to avoid noisy 404 errors
-      const scriptUrl = (this.swRegistration as any).active?.scriptURL || (this.swRegistration as any).scope && `${window.location.origin}/sw.js`;
-      if (scriptUrl) {
-        try {
-          const probe = await fetch(scriptUrl, { method: 'HEAD' });
-          if (!probe.ok) {
-            console.warn('[PWA] Service worker script not available for update:', scriptUrl);
-            return;
-          }
-        } catch (probeErr) {
-          console.warn('[PWA] Could not probe service worker script before update:', probeErr);
-          return;
-        }
-      }
-
-      await this.swRegistration.update();
-    } catch (error) {
-      console.error('[PWA] Update check failed:', error);
-    }
-  }
-
-  /**
-   * Get current PWA status
-   */
-  public getStatus(): PWAStatus {
-    return {
-      isInstalled: this.isInstalled(),
-      isInstallable: this.installPrompt !== null,
-      isOnline: navigator.onLine,
-      serviceWorkerReady: this.swRegistration !== null,
-      updateAvailable: this.isUpdateAvailable()
-    };
-  }
-
-  /**
-   * Check if app is installed
-   */
-  public isInstalled(): boolean {
-    // Check for various installation indicators
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-    const isFullscreen = window.matchMedia('(display-mode: fullscreen)').matches;
-    const isMinimalUI = window.matchMedia('(display-mode: minimal-ui)').matches;
-    
-    return isStandalone || isFullscreen || isMinimalUI || 
-           (window.navigator as any).standalone === true;
-  }
-
-  /**
-   * Check if update is available
-   */
-  public isUpdateAvailable(): boolean {
-    if (!this.swRegistration) return false;
-    
-    return !!(this.swRegistration.waiting || 
-             (this.swRegistration.installing && 
-              navigator.serviceWorker.controller));
-  }
-
-  /**
-   * Prompt user to install app
-   */
-  public async promptInstall(): Promise<boolean> {
-    if (!this.installPrompt) {
-      console.warn('[PWA] Install prompt not available');
-      return false;
-    }
-
-    try {
-      await this.installPrompt.prompt();
-      const choiceResult = await this.installPrompt.userChoice;
-      
-      const accepted = choiceResult.outcome === 'accepted';
-      console.log('[PWA] Install prompt result:', choiceResult.outcome);
-      
-      if (accepted) {
-        this.installPrompt = null;
-        this.notifyStatusChange();
-      }
-      
-      return accepted;
-    } catch (error) {
-      console.error('[PWA] Install prompt failed:', error);
-      return false;
-    }
-  }
-
-  /**
-   * Apply available update
-   */
-  public async applyUpdate(): Promise<void> {
-    if (!this.swRegistration?.waiting) {
-      console.warn('[PWA] No update available');
-      return;
-    }
-
-    // Send message to waiting service worker to skip waiting
-    this.swRegistration.waiting.postMessage({ type: 'SKIP_WAITING' });
-
-    // Reload page when new service worker takes control
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      window.location.reload();
-    });
-  }
-
-  /**
-   * Clear all caches (useful for debugging)
-   */
-  public async clearCaches(): Promise<void> {
-    if (!('caches' in window)) {
-      console.warn('[PWA] Cache API not supported');
-      return;
-    }
-
-    try {
-      const cacheNames = await caches.keys();
-      const codemateCaches = cacheNames.filter(name => name.startsWith('codemate-'));
-      
-      await Promise.all(
-        codemateCaches.map(name => caches.delete(name))
-      );
-      
-      console.log('[PWA] All caches cleared');
-    } catch (error) {
-      console.error('[PWA] Failed to clear caches:', error);
-    }
-  }
-
-  /**
-   * Get cache usage statistics
-   */
-  public async getCacheInfo(): Promise<{ size: number; count: number }> {
-    if (!('caches' in window)) {
-      return { size: 0, count: 0 };
-    }
-
-    try {
-      const cacheNames = await caches.keys();
-      const codemateCaches = cacheNames.filter(name => name.startsWith('codemate-'));
-      
-      let totalSize = 0;
-      let totalCount = 0;
-
-      for (const cacheName of codemateCaches) {
-        const cache = await caches.open(cacheName);
-        const requests = await cache.keys();
-        totalCount += requests.length;
-
-        // Estimate cache size (rough calculation)
-        for (const request of requests) {
-          const response = await cache.match(request);
-          if (response) {
-            const arrayBuffer = await response.clone().arrayBuffer();
-            totalSize += arrayBuffer.byteLength;
-          }
-        }
-      }
-
-      return { 
-        size: totalSize, 
-        count: totalCount 
-      };
-    } catch (error) {
-      console.error('[PWA] Failed to get cache info:', error);
-      return { size: 0, count: 0 };
-    }
-  }
-
-  /**
-   * Subscribe to PWA status changes
-   */
-  public onStatusChange(callback: (status: PWAStatus) => void): () => void {
-    this.statusCallbacks.push(callback);
-    
-    // Return unsubscribe function
-    return () => {
-      const index = this.statusCallbacks.indexOf(callback);
-      if (index > -1) {
-        this.statusCallbacks.splice(index, 1);
-      }
-    };
-  }
-
-  /**
-   * Notify all status change callbacks
-   */
-  private notifyStatusChange(): void {
-    const status = this.getStatus();
-    this.statusCallbacks.forEach(callback => {
-      try {
-        callback(status);
-      } catch (error) {
-        console.error('[PWA] Status callback error:', error);
-      }
-    });
-  }
-
-  /**
-   * Send message to service worker
-   */
-  public sendMessageToSW(message: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      if (!navigator.serviceWorker.controller) {
-        reject(new Error('No active service worker'));
-        return;
-      }
-
-      const channel = new MessageChannel();
-      channel.port1.onmessage = (event) => {
-        resolve(event.data);
-      };
-
-      navigator.serviceWorker.controller.postMessage(message, [channel.port2]);
-    });
-  }
-
-  /**
-   * Request persistent storage (for important data)
-   */
-  public async requestPersistentStorage(): Promise<boolean> {
-    if (!('storage' in navigator) || !('persist' in navigator.storage)) {
-      console.warn('[PWA] Persistent storage not supported');
-      return false;
-    }
-
-    try {
-      const isPersistent = await navigator.storage.persist();
-      console.log('[PWA] Persistent storage:', isPersistent ? 'granted' : 'denied');
-      return isPersistent;
-    } catch (error) {
-      console.error('[PWA] Failed to request persistent storage:', error);
-      return false;
-    }
-  }
-
-  /**
-   * Get storage usage estimate
-   */
-  public async getStorageEstimate(): Promise<StorageEstimate | null> {
-    if (!('storage' in navigator) || !('estimate' in navigator.storage)) {
-      console.warn('[PWA] Storage estimate not supported');
-      return null;
-    }
-
-    try {
-      const estimate = await navigator.storage.estimate();
-      console.log('[PWA] Storage estimate:', estimate);
-      return estimate;
-    } catch (error) {
-      console.error('[PWA] Failed to get storage estimate:', error);
-      return null;
+      const reg = await navigator.serviceWorker.register("/sw.js", { scope: "/" });
+      console.debug("[PWA] SW registered", reg);
+    } catch (err) {
+      console.warn("[PWA] SW registration failed", err);
     }
   }
 }
 
-// Create singleton instance
-export const pwaManager = new PWAManager();
+// Minimal stub object so existing imports keep working.
+export const pwaManager = {
+  getStatus: (): PWAStatus => ({
+    isInstalled: false,
+    isInstallable: false,
+    isOnline: typeof navigator !== "undefined" ? navigator.onLine : true,
+    serviceWorkerReady: false,
+    updateAvailable: false
+  }),
+  onStatusChange: (_cb: (status: PWAStatus) => void) => () => {},
+  promptInstall: async () => false,
+  applyUpdate: async () => {},
+  getCacheInfo: async () => {
+    if (typeof window === "undefined" || !("caches" in window)) {
+      return { size: 0, count: 0 };
+    }
 
-// Export types
-export type { PWAStatus, BeforeInstallPromptEvent };
+    try {
+      const cacheNames = await caches.keys();
+      const sizes = await Promise.all(
+        cacheNames.map(async (name) => {
+          const cache = await caches.open(name);
+          const requests = await cache.keys();
+          let total = 0;
+          for (const request of requests) {
+            const response = await cache.match(request);
+            if (response && response.headers.has("content-length")) {
+              total += Number(response.headers.get("content-length")) || 0;
+            }
+          }
+          return total;
+        })
+      );
 
-// Utility functions
+      const totalSize = sizes.reduce((acc, size) => acc + size, 0);
+      return { size: totalSize, count: cacheNames.length };
+    } catch (error) {
+      console.debug("[PWA] Unable to inspect caches", error);
+      return { size: 0, count: 0 };
+    }
+  },
+  clearCaches: async () => {
+    if (typeof window === "undefined" || !("caches" in window)) return;
+    try {
+      const cacheNames = await caches.keys();
+      await Promise.all(cacheNames.map((name) => caches.delete(name)));
+    } catch (error) {
+      console.debug("[PWA] Unable to clear caches", error);
+    }
+  },
+  getStorageEstimate: async (): Promise<StorageEstimate | null> => {
+    try {
+      if (typeof navigator !== "undefined" && navigator.storage && navigator.storage.estimate) {
+        return await navigator.storage.estimate();
+      }
+    } catch (error) {
+      console.debug("[PWA] storage.estimate failed", error);
+    }
+    return null;
+  },
+  requestPersistentStorage: async (): Promise<boolean> => {
+    try {
+      if (typeof navigator !== "undefined" && navigator.storage && navigator.storage.persist) {
+        return await navigator.storage.persist();
+      }
+    } catch (error) {
+      console.debug("[PWA] storage.persist failed", error);
+    }
+    return false;
+  }
+};
+
+// Utilities expected elsewhere in the app
 export const formatBytes = (bytes: number): string => {
-  if (bytes === 0) return '0 Bytes';
-  
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  if (!Number.isFinite(bytes) || bytes <= 0) return "0 Bytes";
+  const units = ["Bytes", "KB", "MB", "GB", "TB"];
+  const i = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+  const value = bytes / Math.pow(1024, i);
+  return `${value.toFixed(value < 10 && i > 0 ? 2 : 0)} ${units[i]}`;
 };
 
 export const isPWACapable = (): boolean => {
-  return 'serviceWorker' in navigator && 'caches' in window;
+  return typeof navigator !== "undefined" && "serviceWorker" in navigator && "caches" in window;
 };
