@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
+import { useEffect, useState } from 'react';
 import { AlertCircle, Globe, Zap } from "lucide-react";
 import { Project, FileTreeNode } from "@/types";
 import { cn } from "@/lib/utils";
 import { useWebSocket } from "@/hooks/useWebSocket";
 import { useQuery } from "@tanstack/react-query";
+import { Button } from '@/components/ui/button';
+import { useLocation } from 'wouter';
 
 interface LivePreviewProps {
   currentProject: Project | null;
@@ -17,6 +20,18 @@ export function LivePreview({ currentProject, activeFile, mode = 'desktop', clas
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { isConnected, lastMessage, sendMessage } = useWebSocket();
+  const [, setLocation] = useLocation();
+
+  // Ensure user is authenticated before loading preview
+  const { data: user, isLoading: userLoading } = useQuery({
+    queryKey: ['/api/auth/user'],
+    queryFn: async () => {
+      const resp = await fetch('/api/auth/user', { headers: { Accept: 'application/json' } });
+      if (!resp.ok) throw new Error('Not authenticated');
+      return resp.json();
+    },
+    retry: false,
+  });
 
   // Load project files to build preview
   const { data: projectFiles } = useQuery({
@@ -27,7 +42,7 @@ export function LivePreview({ currentProject, activeFile, mode = 'desktop', clas
       if (!response.ok) throw new Error('Failed to load files');
       return response.json();
     },
-    enabled: !!currentProject?.id
+    enabled: !!currentProject?.id && !!user
   });
 
   // Generate preview URL for the project
