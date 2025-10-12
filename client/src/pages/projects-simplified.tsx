@@ -155,16 +155,29 @@ export default function ProjectsPageSimplified() {
                 Build, deploy, and manage your applications
               </p>
             </div>
-            <Button 
-              size="lg" 
-              className="btn-primary gap-2 hover-neon"
-              onClick={() => setLocation('/')}
-              data-testid="button-create-project"
-            >
-              <Sparkles className="w-5 h-5" />
-              + Create New App
-              <ArrowRight className="w-4 h-4" />
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button
+                size="lg"
+                variant="ghost"
+                className="gap-2"
+                onClick={() => setLocation('/')}
+                data-testid="button-home"
+              >
+                <Home className="w-5 h-5" />
+                Home
+              </Button>
+
+              <Button
+                size="lg"
+                className="btn-primary gap-2 hover-neon"
+                onClick={() => setLocation('/')}
+                data-testid="button-create-project"
+              >
+                <Sparkles className="w-5 h-5" />
+                + Create New App
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
         </div>
 
