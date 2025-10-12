@@ -1,17 +1,18 @@
 import { useState } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { Plus, Github, Code, Calendar, Zap, ExternalLink, Edit2, Trash2, MoreVertical, Eye, Play, Sparkles, ArrowRight } from 'lucide-react';
+import { Plus, Github, Code, Calendar, Zap, ExternalLink, Edit2, Trash2, MoreVertical, Eye, Play, Sparkles, ArrowRight, Home } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 
