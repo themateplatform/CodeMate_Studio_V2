@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { useEffect, useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { AlertCircle, Globe, Zap } from "lucide-react";
 import { Project, FileTreeNode } from "@/types";
 import { cn } from "@/lib/utils";
