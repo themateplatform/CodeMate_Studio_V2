@@ -93,6 +93,7 @@ function Router() {
       <Route path="/pricing" component={PricingPage} />
       <Route path="/docs" component={DocsPage} />
       <Route path="/about" component={AboutPage} />
+      <Route path="/admin" component={AdminPage} />
       <Route component={NotFound} />
     </Switch>
   );
