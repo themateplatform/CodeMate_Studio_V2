@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { ArrowRight, Code2 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { ArrowRight, Code2, Sparkles, Zap, Users, Shield, Rocket, Github } from 'lucide-react';
 
 export default function LandingPage() {
   const [, setLocation] = useLocation();
@@ -138,6 +139,91 @@ export default function LandingPage() {
       {/* Showcase Cards Section */}
       <div className="relative bg-[#0B0B15] py-20 px-4">
         <div className="max-w-7xl mx-auto">
+          {/* Features Section */}
+          <div className="text-center mb-16">
+            <Badge className="mb-4 bg-gradient-to-r from-[#FF0CB6] to-[#8A2EFF] text-white">
+              Features
+            </Badge>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              Everything you need to build{" "}
+              <span className="bg-gradient-to-r from-[#FF0CB6] to-[#8A2EFF] bg-clip-text text-transparent">
+                faster
+              </span>
+            </h2>
+            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+              AI-powered development tools that transform your ideas into production-ready applications
+            </p>
+          </div>
+
+          {/* Feature Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
+            <Card className="bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm border-white/20 p-8 hover:scale-105 transition-transform">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#FF0CB6] to-[#8A2EFF] flex items-center justify-center mb-4">
+                <Sparkles className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">AI-Powered Generation</h3>
+              <p className="text-gray-400">
+                Describe your app in plain English. Our AI generates production-ready code instantly.
+              </p>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm border-white/20 p-8 hover:scale-105 transition-transform">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#23E3B8] to-[#8A2EFF] flex items-center justify-center mb-4">
+                <Users className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">Real-Time Collaboration</h3>
+              <p className="text-gray-400">
+                Work together like Google Docs. See cursors, edits, and changes in real-time.
+              </p>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm border-white/20 p-8 hover:scale-105 transition-transform">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#8A2EFF] to-[#FF0CB6] flex items-center justify-center mb-4">
+                <Zap className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">Deploy Instantly</h3>
+              <p className="text-gray-400">
+                One-click deployment to production. Web and mobile apps ready in minutes.
+              </p>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm border-white/20 p-8 hover:scale-105 transition-transform">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#FF0CB6] to-[#23E3B8] flex items-center justify-center mb-4">
+                <Github className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">GitHub Integration</h3>
+              <p className="text-gray-400">
+                Seamless two-way sync with GitHub. Automated CI/CD pipelines included.
+              </p>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm border-white/20 p-8 hover:scale-105 transition-transform">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#23E3B8] to-[#FF0CB6] flex items-center justify-center mb-4">
+                <Shield className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">Enterprise Security</h3>
+              <p className="text-gray-400">
+                SSO, RBAC, audit logs, and compliance features for enterprise teams.
+              </p>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm border-white/20 p-8 hover:scale-105 transition-transform">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#8A2EFF] to-[#23E3B8] flex items-center justify-center mb-4">
+                <Rocket className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">PWA Ready</h3>
+              <p className="text-gray-400">
+                Progressive Web Apps that work offline. Install on any device, no app store needed.
+              </p>
+            </Card>
+          </div>
+
+          {/* Showcase Projects */}
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-white mb-4">Built with CodeMate</h2>
+            <p className="text-gray-400">Real projects created by our community</p>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {showcaseProjects.map((project) => (
               <Card 
@@ -161,6 +247,111 @@ export default function LandingPage() {
                 </div>
               </Card>
             ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Testimonials Section */}
+      <div className="relative bg-gradient-to-br from-[#0B0B15] to-[#1a1a2e] py-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <Badge className="mb-4 bg-gradient-to-r from-[#FF0CB6] to-[#8A2EFF] text-white">
+              Testimonials
+            </Badge>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              Loved by developers{" "}
+              <span className="bg-gradient-to-r from-[#FF0CB6] to-[#8A2EFF] bg-clip-text text-transparent">
+                worldwide
+              </span>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card className="bg-white/10 backdrop-blur-sm border-white/20 p-8">
+              <div className="flex items-center gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <span key={i} className="text-yellow-400">★</span>
+                ))}
+              </div>
+              <p className="text-white mb-4">
+                "CodeMate cut our development time by 70%. We shipped our MVP in 2 weeks instead of 3 months."
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#FF0CB6] to-[#8A2EFF]" />
+                <div>
+                  <p className="text-white font-semibold">Sarah Chen</p>
+                  <p className="text-gray-400 text-sm">Founder, TechStart</p>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="bg-white/10 backdrop-blur-sm border-white/20 p-8">
+              <div className="flex items-center gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <span key={i} className="text-yellow-400">★</span>
+                ))}
+              </div>
+              <p className="text-white mb-4">
+                "The AI code generation is scary good. It actually understands context and writes production-quality code."
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#23E3B8] to-[#8A2EFF]" />
+                <div>
+                  <p className="text-white font-semibold">Marcus Johnson</p>
+                  <p className="text-gray-400 text-sm">Lead Developer, FinTech Co</p>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="bg-white/10 backdrop-blur-sm border-white/20 p-8">
+              <div className="flex items-center gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <span key={i} className="text-yellow-400">★</span>
+                ))}
+              </div>
+              <p className="text-white mb-4">
+                "Real-time collaboration changed everything. Our remote team works seamlessly together now."
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#8A2EFF] to-[#FF0CB6]" />
+                <div>
+                  <p className="text-white font-semibold">Priya Patel</p>
+                  <p className="text-gray-400 text-sm">CTO, CloudScale</p>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </div>
+
+      {/* CTA Section */}
+      <div className="relative bg-[#0B0B15] py-20 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="bg-gradient-to-br from-[#FF0CB6]/20 to-[#8A2EFF]/20 backdrop-blur-xl border border-white/20 rounded-2xl p-12">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Ready to build something amazing?
+            </h2>
+            <p className="text-xl text-gray-300 mb-8">
+              Join 10,000+ developers building the future with CodeMate Studio
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                size="lg"
+                onClick={() => setLocation('/projects')}
+                className="bg-gradient-to-r from-[#FF0CB6] to-[#8A2EFF] hover:from-[#FF0CB6] hover:to-[#8A2EFF] text-white font-medium px-8 py-6 rounded-lg transition-all hover:shadow-lg text-lg"
+              >
+                Start Building Free
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+              <Button
+                size="lg"
+                onClick={() => setLocation('/docs')}
+                variant="outline"
+                className="border-white/30 text-white hover:bg-white/10 font-medium px-8 py-6 rounded-lg text-lg"
+              >
+                View Documentation
+              </Button>
+            </div>
           </div>
         </div>
       </div>

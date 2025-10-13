@@ -2,6 +2,9 @@ import express, { type Request, Response, NextFunction } from "express";
 import { createServer } from "http";
 import fs from "fs";
 import path from "path";
+import session from "express-session";
+import connectPgSimple from "connect-pg-simple";
+import pg from "pg";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { healthRouter, trackRequest } from "./health";
@@ -9,6 +12,29 @@ import { healthRouter, trackRequest } from "./health";
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Configure session middleware with PostgreSQL store
+// Create a standard pg pool for sessions (Neon serverless pool doesn't work with connect-pg-simple)
+const sessionPool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+const PgSession = connectPgSimple(session);
+app.use(
+  session({
+    store: new PgSession({
+      pool: sessionPool,
+      tableName: "sessions",
+      createTableIfMissing: false, // Table already exists in schema
+    }),
+    secret: process.env.SESSION_SECRET || "dev-secret-change-in-production",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      sameSite: "lax",
+    },
+  })
+);
 
 app.use((req, res, next) => {
   const start = Date.now();

@@ -2,18 +2,7 @@ import type { Request, Response, Express, RequestHandler } from "express";
 import { db } from "../db";
 import { specs, specVersions, projects } from "@shared/schema";
 import { eq, and, desc } from "drizzle-orm";
-
-// Extend Express Request to include session
-declare module "express-serve-static-core" {
-  interface Request {
-    session?: {
-      user?: {
-        id: string;
-        username: string;
-      };
-    };
-  }
-}
+import "../types/session"; // Import session type declarations
 
 interface SpecRequestBody {
   projectId?: string;
@@ -40,7 +29,7 @@ export function registerSpecRoutes(app: Express, csrfProtection: RequestHandler)
    */
   app.get("/api/specs", async (req: Request, res: Response) => {
     try {
-      const userId = (req.session as any)?.user?.id;
+      const userId = req.session?.user?.id;
       if (!userId) {
         return res.status(401).json({ message: "Unauthorized" });
       }
@@ -75,7 +64,7 @@ export function registerSpecRoutes(app: Express, csrfProtection: RequestHandler)
    */
   app.get("/api/specs/:id", async (req: Request, res: Response) => {
     try {
-      const userId = (req.session as any)?.user?.id;
+      const userId = req.session?.user?.id;
       if (!userId) {
         return res.status(401).json({ message: "Unauthorized" });
       }
@@ -102,7 +91,7 @@ export function registerSpecRoutes(app: Express, csrfProtection: RequestHandler)
    */
   app.post("/api/specs", csrfProtection, async (req: Request, res: Response) => {
     try {
-      const userId = (req.session as any)?.user?.id;
+      const userId = req.session?.user?.id;
       if (!userId) {
         return res.status(401).json({ message: "Unauthorized" });
       }
@@ -175,7 +164,7 @@ export function registerSpecRoutes(app: Express, csrfProtection: RequestHandler)
    */
   app.put("/api/specs/:id", csrfProtection, async (req: Request, res: Response) => {
     try {
-      const userId = (req.session as any)?.user?.id;
+      const userId = req.session?.user?.id;
       if (!userId) {
         return res.status(401).json({ message: "Unauthorized" });
       }
@@ -239,7 +228,7 @@ export function registerSpecRoutes(app: Express, csrfProtection: RequestHandler)
    */
   app.delete("/api/specs/:id", csrfProtection, async (req: Request, res: Response) => {
     try {
-      const userId = (req.session as any)?.user?.id;
+      const userId = req.session?.user?.id;
       if (!userId) {
         return res.status(401).json({ message: "Unauthorized" });
       }
@@ -268,7 +257,7 @@ export function registerSpecRoutes(app: Express, csrfProtection: RequestHandler)
    */
   app.get("/api/specs/:id/versions", async (req: Request, res: Response) => {
     try {
-      const userId = (req.session as any)?.user?.id;
+      const userId = req.session?.user?.id;
       if (!userId) {
         return res.status(401).json({ message: "Unauthorized" });
       }
@@ -293,7 +282,7 @@ export function registerSpecRoutes(app: Express, csrfProtection: RequestHandler)
    */
   app.post("/api/specs/:id/generate", csrfProtection, async (req: Request, res: Response) => {
     try {
-      const userId = (req.session as any)?.user?.id;
+      const userId = req.session?.user?.id;
       if (!userId) {
         return res.status(401).json({ message: "Unauthorized" });
       }
