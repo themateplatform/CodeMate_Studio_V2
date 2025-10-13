@@ -31,6 +31,7 @@ import { AISpecAnalysis } from "@/components/ai/AISpecAnalysis";
 import { AISuggestions } from "@/components/ai/AISuggestions";
 import { AITextImprover } from "@/components/ai/AITextImprover";
 import { AIUserStories } from "@/components/ai/AIUserStories";
+import { JourneyList } from "@/components/journeys/JourneyList";
 
 interface SpecData {
   title: string;
@@ -585,11 +586,14 @@ export default function SpecEditorPage() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-8 text-slate-500">
-                  <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>User journey mapping coming soon...</p>
-                  <p className="text-sm mt-2">This will allow you to define and visualize user experiences</p>
-                </div>
+                {projectId ? (
+                  <JourneyList specId={projectId} />
+                ) : (
+                  <div className="text-center py-8 text-slate-500">
+                    <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p>Please save the specification first to create user journeys</p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
