@@ -22,7 +22,8 @@ import {
   Edit,
   Plus,
   Trash2,
-  AlertCircle
+  AlertCircle,
+  Rocket
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -68,9 +69,10 @@ interface DataModel {
 
 export default function SpecEditorPage() {
   const { toast } = useToast();
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
   const [isEditing, setIsEditing] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
+  const [generatingApp, setGeneratingApp] = useState(false);
 
   // Extract project ID from URL
   const urlParams = new URLSearchParams(location.split('?')[1] || '');
@@ -207,6 +209,45 @@ export default function SpecEditorPage() {
     }));
   };
 
+  const handleGenerateApp = async () => {
+    if (!existingSpec) {
+      toast({
+        title: "Save specification first",
+        description: "Please save your specification before generating an app.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setGeneratingApp(true);
+    try {
+      const response = await apiRequest("POST", `/api/specs/${existingSpec.id}/generate`, {});
+      const data = await response.json();
+      
+      if (response.ok) {
+        toast({
+          title: "Ready to generate!",
+          description: "Redirecting to generator with your spec..."
+        });
+        
+        // Navigate to generator with pre-filled prompt
+        setTimeout(() => {
+          navigate(`/generator?prompt=${encodeURIComponent(data.prompt)}&name=${encodeURIComponent(data.projectName)}`);
+        }, 1000);
+      } else {
+        throw new Error(data.message || "Failed to generate");
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setGeneratingApp(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
@@ -238,6 +279,12 @@ export default function SpecEditorPage() {
           </div>
 
           <div className="flex items-center gap-2">
+            {existingSpec && !isEditing && (
+              <Button onClick={handleGenerateApp} disabled={generatingApp}>
+                <Rocket className="w-4 h-4 mr-2" />
+                {generatingApp ? "Preparing..." : "Generate App"}
+              </Button>
+            )}
             {isEditing ? (
               <>
                 <Button variant="outline" onClick={() => setIsEditing(false)}>

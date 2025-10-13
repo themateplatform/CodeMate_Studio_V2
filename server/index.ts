@@ -2,7 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { createServer } from "http";
 import fs from "fs";
 import path from "path";
-// import { registerRoutes } from "./routes";
+import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { healthRouter, trackRequest } from "./health";
 
@@ -49,7 +49,9 @@ app.use((req, res, next) => {
   // Add health check routes
   app.use('/', healthRouter);
   
-  // const server = await registerRoutes(app);
+  // Register all API routes
+  registerRoutes(app);
+  
   const server = createServer(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
