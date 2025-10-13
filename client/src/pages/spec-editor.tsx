@@ -32,6 +32,7 @@ import { AISuggestions } from "@/components/ai/AISuggestions";
 import { AITextImprover } from "@/components/ai/AITextImprover";
 import { AIUserStories } from "@/components/ai/AIUserStories";
 import { JourneyList } from "@/components/journeys/JourneyList";
+import { DataModelList } from "@/components/data-models/DataModelList";
 
 interface SpecData {
   title: string;
@@ -610,11 +611,14 @@ export default function SpecEditorPage() {
                 </p>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-8 text-slate-500">
-                  <Lightbulb className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>Data modeling coming soon...</p>
-                  <p className="text-sm mt-2">This will help generate database schemas and APIs</p>
-                </div>
+                {projectId ? (
+                  <DataModelList specId={projectId} />
+                ) : (
+                  <div className="text-center py-8 text-slate-500">
+                    <Lightbulb className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p>Please save the specification first to create data models</p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
