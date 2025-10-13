@@ -297,15 +297,9 @@ export default function AppBuilderPage() {
               {currentStepConfig.title}
             </Badge>
           </div>
-          
+
           {/* Progress Bar */}
-          <div className="mt-4">
-            <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
-              <span>Progress</span>
-              <span>{progress}% Complete</span>
-            </div>
-            <Progress value={progress} className="h-2" />
-          </div>
+  A copy of the previous content has been replaced with the new design banner. Please review the new changes in the updated code.
         </div>
 
         {/* Content Area */}
