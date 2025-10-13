@@ -4,10 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { ArrowRight, Code2 } from 'lucide-react';
+import { AuthDialog } from '@/components/auth/AuthDialog';
 
 export default function LandingPage() {
   const [, setLocation] = useLocation();
   const [projectDescription, setProjectDescription] = useState("");
+  const [authOpen, setAuthOpen] = useState(false);
 
   // Sample project showcase data
   const showcaseProjects = [
