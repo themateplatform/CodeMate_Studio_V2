@@ -66,13 +66,13 @@ export default function LandingPage() {
             >
               Docs
             </a>
-            <a
-              href="/login"
+            <button
+              onClick={() => setAuthOpen(true)}
               className="text-white hover:text-[#FF0CB6] transition-colors text-sm font-medium"
               data-testid="link-sign-in"
             >
               Sign In
-            </a>
+            </button>
           </div>
         </div>
       </nav>
