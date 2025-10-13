@@ -225,6 +225,7 @@ export default function AppBuilderPage() {
       return await response.json();
     },
     onSuccess: (data: any) => {
+      setImplementationPlan(data?.plan ?? null);
       setCurrentStep('implementation');
       setProgress(100);
       toast({
