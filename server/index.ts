@@ -57,6 +57,18 @@ app.use((req, res, next) => {
   } catch (err) {
     console.warn('Auth routes not available:', err);
   }
+  try {
+    const supaCfg = await import('./routes/supabase-config');
+    app.use(supaCfg.default);
+  } catch (err) {
+    console.warn('Supabase config route not available:', err);
+  }
+  try {
+    const adminRouter = await import('./routes/admin');
+    app.use('/api/admin', adminRouter.default);
+  } catch (err) {
+    console.warn('Admin routes not available:', err);
+  }
 
   // const server = await registerRoutes(app);
   const server = createServer(app);
