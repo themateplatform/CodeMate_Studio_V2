@@ -77,6 +77,8 @@ export default function LandingPage() {
         </div>
       </nav>
 
+      <AuthDialog open={authOpen} onOpenChange={setAuthOpen} />
+
       {/* Hero Section */}
       <div className="relative min-h-screen flex items-center justify-center px-4 pt-24 pb-32">
         {/* Gradient Background */}
