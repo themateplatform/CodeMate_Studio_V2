@@ -1,5 +1,6 @@
 # Release Pipeline for CodeMate Studio
 # Manual release workflow - requires manual version bumping
+# Auto-approval enabled for streamlined releases
 
 name: Release
 
@@ -14,12 +15,17 @@ on:
         description: 'Release notes (optional)'
         required: false
         type: string
+  push:
+    tags:
+      - 'v*'
 
 env:
   NODE_VERSION: '20'
 
 permissions:
   contents: write
+  pull-requests: write
+  checks: write
 
 concurrency:
   group: release-${{ github.ref }}
