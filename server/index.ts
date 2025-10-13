@@ -1,5 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { createServer } from "http";
+import { WebSocketServer } from "ws";
 import fs from "fs";
 import path from "path";
 import session from "express-session";
@@ -8,6 +9,7 @@ import pg from "pg";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { healthRouter, trackRequest } from "./health";
+import { yjsServer } from "./collaboration/yjs-server";
 
 const app = express();
 app.use(express.json());
@@ -80,6 +82,33 @@ app.use((req, res, next) => {
   
   const server = createServer(app);
 
+  // Set up WebSocket server for real-time collaboration
+  const wss = new WebSocketServer({ 
+    server,
+    path: "/collaboration"
+  });
+
+  // Initialize Yjs collaboration server
+  yjsServer.initialize(wss);
+
+  // Handle WebSocket connections
+  wss.on("connection", (ws, req) => {
+    const url = new URL(req.url!, `http://${req.headers.host}`);
+    const roomId = url.searchParams.get("room");
+    const userId = url.searchParams.get("user");
+    const projectId = url.searchParams.get("project");
+    const fileId = url.searchParams.get("file");
+
+    if (!roomId || !userId || !projectId || !fileId) {
+      ws.close(1008, "Missing required parameters");
+      return;
+    }
+
+    yjsServer.handleConnection(ws, roomId, userId, projectId, fileId);
+  });
+
+  log("WebSocket collaboration server initialized");
+
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
@@ -124,6 +153,17 @@ app.use((req, res, next) => {
   const port = parseInt(process.env.PORT || '5000', 10);
   server.listen(port, () => {
     log(`serving on port ${port}`);
+    log(`WebSocket collaboration available at ws://localhost:${port}/collaboration`);
+  });
+
+  // Handle graceful shutdown
+  process.on("SIGTERM", async () => {
+    log("SIGTERM received, shutting down gracefully");
+    await yjsServer.shutdown();
+    server.close(() => {
+      log("Server closed");
+      process.exit(0);
+    });
   });
   
 })();

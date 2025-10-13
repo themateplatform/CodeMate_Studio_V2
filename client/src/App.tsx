@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/lib/auth-context";
+import { CollaborationProvider } from "@/lib/collaboration-context";
 import { useAuth } from "@/hooks/useAuth";
 import { GlobalShell } from "@/components/layout/GlobalShell";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -113,12 +114,14 @@ function App() {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <TooltipProvider>
-            <Router />
-            <Toaster />
-            <PWAInstallPrompt />
-            <NetworkStatusBadge />
-          </TooltipProvider>
+          <CollaborationProvider>
+            <TooltipProvider>
+              <Router />
+              <Toaster />
+              <PWAInstallPrompt />
+              <NetworkStatusBadge />
+            </TooltipProvider>
+          </CollaborationProvider>
         </AuthProvider>
       </QueryClientProvider>
     </ErrorBoundary>
