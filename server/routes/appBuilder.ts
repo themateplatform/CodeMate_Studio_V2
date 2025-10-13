@@ -22,7 +22,7 @@ router.use(async (req, res, next) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    (req as any).currentUser = user satisfies RequestUser;
+    (req as any).currentUser = user as RequestUser;
     next();
   } catch (error) {
     console.error('App Builder auth guard failed', error);
