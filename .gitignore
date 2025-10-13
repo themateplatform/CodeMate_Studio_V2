@@ -3,4 +3,16 @@ dist
 .DS_Store
 server/public
 vite.config.ts.*
+
+# Test output
+coverage
+test-results
+.generated
+
+# Supabase local
+supabase/.temp
+
+# Backups
+*.backup.ts
+
 *.tar.gz
