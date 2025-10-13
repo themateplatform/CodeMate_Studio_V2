@@ -69,6 +69,12 @@ app.use((req, res, next) => {
   } catch (err) {
     console.warn('Admin routes not available:', err);
   }
+  try {
+    const appBuilderRouter = await import('./routes/appBuilder');
+    app.use('/api/app-builder', appBuilderRouter.default);
+  } catch (err) {
+    console.warn('App builder routes not available:', err);
+  }
 
   // const server = await registerRoutes(app);
   const server = createServer(app);
