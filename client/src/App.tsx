@@ -11,6 +11,7 @@ import { PWAInstallPrompt, NetworkStatusBadge } from "@/components/pwa/PWACompon
 import LandingPage from "@/pages/landing";
 import IDEPage from "@/pages/ide";
 import ProjectsPageSimplified from "./pages/projects-simplified";
+import { ProjectsDashboard } from "./pages/projects-dashboard";
 import AppBuilderPage from "./pages/app-builder";
 import SpecEditorPage from "./pages/spec-editor";
 import TemplatesPage from "./pages/templates";
@@ -37,7 +38,8 @@ function Router() {
       <Route path="/pricing" component={PricingPage} />
       <Route path="/docs" component={DocsPage} />
       <Route path="/about" component={AboutPage} />
-      <Route path="/projects" component={ProjectsPageSimplified} />
+      <Route path="/projects" component={ProjectsDashboard} />
+      <Route path="/projects-old" component={ProjectsPageSimplified} />
       <Route path="/app-builder" component={AppBuilderPage} />
       <Route path="/spec-editor" component={SpecEditorPage} />
       <Route path="/ide/:projectId">
