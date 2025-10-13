@@ -1,14 +1,8 @@
 import { createClient } from '@supabase/supabase-js'
+import { env } from './config/env'
 
-// Server-side Supabase configuration with service role
-const supabaseUrl = process.env.SUPABASE_URL
-const supabaseServiceRole = process.env.SUPABASE_SERVICE_ROLE
-
-if (!supabaseUrl || !supabaseServiceRole) {
-  throw new Error(
-    'Missing Supabase environment variables. Please set SUPABASE_URL and SUPABASE_SERVICE_ROLE'
-  )
-}
+const supabaseUrl = env.supabaseUrl
+const supabaseServiceRole = env.supabaseServiceRole
 
 // Server-side client with service role for admin operations
 export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRole, {
@@ -19,11 +13,7 @@ export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRole, {
 })
 
 // Standard client for user operations
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY
-
-if (!supabaseAnonKey) {
-  throw new Error('Missing SUPABASE_ANON_KEY environment variable')
-}
+const supabaseAnonKey = env.supabaseAnonKey
 
 export const supabaseServer = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
