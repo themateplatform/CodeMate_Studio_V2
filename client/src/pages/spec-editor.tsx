@@ -27,6 +27,10 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { AISpecAnalysis } from "@/components/ai/AISpecAnalysis";
+import { AISuggestions } from "@/components/ai/AISuggestions";
+import { AITextImprover } from "@/components/ai/AITextImprover";
+import { AIUserStories } from "@/components/ai/AIUserStories";
 
 interface SpecData {
   title: string;
@@ -316,6 +320,11 @@ export default function SpecEditorPage() {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
+            {/* AI Spec Analysis - Shown when not editing */}
+            {!isEditing && specData.title && (
+              <AISpecAnalysis specData={specData} />
+            )}
+
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -346,31 +355,66 @@ export default function SpecEditorPage() {
                     <label className="text-sm font-medium text-slate-700">
                       Target Audience *
                     </label>
-                    {isEditing ? (
-                      <Input
-                        value={specData.audience}
-                        onChange={(e) => setSpecData(prev => ({ ...prev, audience: e.target.value }))}
-                        placeholder="e.g., Small business teams, freelancers"
-                      />
-                    ) : (
-                      <p className="text-slate-900 p-2 bg-slate-50 rounded">
-                        {specData.audience || "No audience defined"}
-                      </p>
-                    )}
+                    <div className="flex gap-2">
+                      {isEditing ? (
+                        <>
+                          <Input
+                            value={specData.audience}
+                            onChange={(e) => setSpecData(prev => ({ ...prev, audience: e.target.value }))}
+                            placeholder="e.g., Small business teams, freelancers"
+                            className="flex-1"
+                          />
+                          <AISuggestions
+                            context="audience"
+                            label="Audience"
+                            relatedContent={{
+                              title: specData.title,
+                              purpose: specData.purpose,
+                            }}
+                            onSelect={(suggestion) => setSpecData(prev => ({ ...prev, audience: suggestion }))}
+                          />
+                        </>
+                      ) : (
+                        <p className="text-slate-900 p-2 bg-slate-50 rounded flex-1">
+                          {specData.audience || "No audience defined"}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-700">
-                    Purpose Statement *
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-slate-700">
+                      Purpose Statement *
+                    </label>
+                    {isEditing && specData.purpose && (
+                      <AITextImprover
+                        text={specData.purpose}
+                        onSelect={(improvedText) => setSpecData(prev => ({ ...prev, purpose: improvedText }))}
+                      />
+                    )}
+                  </div>
                   {isEditing ? (
-                    <Textarea
-                      value={specData.purpose}
-                      onChange={(e) => setSpecData(prev => ({ ...prev, purpose: e.target.value }))}
-                      placeholder="Why does this product exist? What value does it provide?"
-                      rows={3}
-                    />
+                    <div className="space-y-2">
+                      <Textarea
+                        value={specData.purpose}
+                        onChange={(e) => setSpecData(prev => ({ ...prev, purpose: e.target.value }))}
+                        placeholder="Why does this product exist? What value does it provide?"
+                        rows={3}
+                      />
+                      {!specData.purpose && (
+                        <AISuggestions
+                          context="purpose"
+                          label="Purpose"
+                          relatedContent={{
+                            title: specData.title,
+                            audience: specData.audience,
+                          }}
+                          onSelect={(suggestion) => setSpecData(prev => ({ ...prev, purpose: suggestion }))}
+                        />
+                      )}
+                    </div>
                   ) : (
                     <p className="text-slate-900 p-3 bg-slate-50 rounded whitespace-pre-wrap">
                       {specData.purpose || "No purpose defined"}
@@ -379,16 +423,38 @@ export default function SpecEditorPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-700">
-                    Problem Statement
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-slate-700">
+                      Problem Statement
+                    </label>
+                    {isEditing && specData.problemStatement && (
+                      <AITextImprover
+                        text={specData.problemStatement}
+                        onSelect={(improvedText) => setSpecData(prev => ({ ...prev, problemStatement: improvedText }))}
+                      />
+                    )}
+                  </div>
                   {isEditing ? (
-                    <Textarea
-                      value={specData.problemStatement}
-                      onChange={(e) => setSpecData(prev => ({ ...prev, problemStatement: e.target.value }))}
-                      placeholder="What problem are you solving? What pain points exist today?"
-                      rows={3}
-                    />
+                    <div className="space-y-2">
+                      <Textarea
+                        value={specData.problemStatement}
+                        onChange={(e) => setSpecData(prev => ({ ...prev, problemStatement: e.target.value }))}
+                        placeholder="What problem are you solving? What pain points exist today?"
+                        rows={3}
+                      />
+                      {!specData.problemStatement && (
+                        <AISuggestions
+                          context="problem"
+                          label="Problem"
+                          relatedContent={{
+                            title: specData.title,
+                            purpose: specData.purpose,
+                            audience: specData.audience,
+                          }}
+                          onSelect={(suggestion) => setSpecData(prev => ({ ...prev, problemStatement: suggestion }))}
+                        />
+                      )}
+                    </div>
                   ) : (
                     <p className="text-slate-900 p-3 bg-slate-50 rounded whitespace-pre-wrap">
                       {specData.problemStatement || "No problem statement defined"}
@@ -397,16 +463,38 @@ export default function SpecEditorPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-700">
-                    Solution Overview
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-slate-700">
+                      Solution Overview
+                    </label>
+                    {isEditing && specData.solutionOverview && (
+                      <AITextImprover
+                        text={specData.solutionOverview}
+                        onSelect={(improvedText) => setSpecData(prev => ({ ...prev, solutionOverview: improvedText }))}
+                      />
+                    )}
+                  </div>
                   {isEditing ? (
-                    <Textarea
-                      value={specData.solutionOverview}
-                      onChange={(e) => setSpecData(prev => ({ ...prev, solutionOverview: e.target.value }))}
-                      placeholder="How does your solution address the problem? What makes it unique?"
-                      rows={3}
-                    />
+                    <div className="space-y-2">
+                      <Textarea
+                        value={specData.solutionOverview}
+                        onChange={(e) => setSpecData(prev => ({ ...prev, solutionOverview: e.target.value }))}
+                        placeholder="How does your solution address the problem? What makes it unique?"
+                        rows={3}
+                      />
+                      {!specData.solutionOverview && (
+                        <AISuggestions
+                          context="solution"
+                          label="Solution"
+                          relatedContent={{
+                            title: specData.title,
+                            purpose: specData.purpose,
+                            audience: specData.audience,
+                          }}
+                          onSelect={(suggestion) => setSpecData(prev => ({ ...prev, solutionOverview: suggestion }))}
+                        />
+                      )}
+                    </div>
                   ) : (
                     <p className="text-slate-900 p-3 bg-slate-50 rounded whitespace-pre-wrap">
                       {specData.solutionOverview || "No solution overview provided"}
@@ -475,13 +563,26 @@ export default function SpecEditorPage() {
           <TabsContent value="journeys" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="w-5 h-5" />
-                  User Journeys
-                </CardTitle>
-                <p className="text-sm text-slate-600">
-                  Define the core user experiences and journeys your product supports
-                </p>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="w-5 h-5" />
+                      User Journeys
+                    </CardTitle>
+                    <p className="text-sm text-slate-600 mt-1">
+                      Define the core user experiences and journeys your product supports
+                    </p>
+                  </div>
+                  <AIUserStories
+                    specData={{
+                      title: specData.title,
+                      purpose: specData.purpose,
+                      audience: specData.audience,
+                      problemStatement: specData.problemStatement,
+                      proposedSolution: specData.solutionOverview,
+                    }}
+                  />
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8 text-slate-500">
