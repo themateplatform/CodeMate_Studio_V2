@@ -22,6 +22,7 @@ import PricingPage from "./pages/pricing";
 import DocsPage from "./pages/docs";
 import AboutPage from "./pages/about";
 import GeneratorPage from "./pages/generator";
+import AdminPage from "./pages/admin";
 import NotFound from "@/pages/not-found";
 
 // No authentication - direct access to all routes
