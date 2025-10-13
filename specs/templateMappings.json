@@ -1,0 +1,7 @@
+{
+  "keywords": {
+    "blog": ["blog", "article", "post", "content", "cms"],
+    "dashboard": ["dashboard", "admin", "analytics", "metrics", "charts"],
+    "landing": ["landing", "marketing", "homepage", "product page"]
+  }
+}

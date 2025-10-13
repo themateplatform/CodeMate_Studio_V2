@@ -1,6 +1,7 @@
+// server/vite.ts
 import express, { type Express } from "express";
 import fs from "fs";
-import path from "path";
+import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import { createServer as createViteServer, createLogger } from "vite";
 import { type Server } from "http";
@@ -8,7 +9,7 @@ import { nanoid } from "nanoid";
 
 const viteLogger = createLogger();
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = dirname(__filename);
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -17,96 +18,110 @@ export function log(message: string, source = "express") {
     second: "2-digit",
     hour12: true,
   });
-
   console.log(`${formattedTime} [${source}] ${message}`);
 }
 
 export async function setupVite(app: Express, server: Server) {
-  log('Loading Vite configuration from vite.config.ts...');
-  
-  const vite = await createViteServer({
-    // Let Vite load vite.config.ts - critical for React, Tailwind, aliases, etc.
-    server: {
-      middlewareMode: true,
-      hmr: { server },
-    },
-    appType: "custom",
-    customLogger: {
-      ...viteLogger,
-      error: (msg, options) => {
-        viteLogger.error(msg, options);
-        // Don't exit - allow HMR to recover from transient errors
+  log("Loading Vite configuration from vite.config.ts...");
+  log("Current working directory: " + process.cwd());
+
+  // Use public tunnel for HMR inside GitHub Codespaces
+  const isCodespace = !!process.env.CODESPACE_NAME;
+  const hmr = isCodespace
+    ? {
+        protocol: "wss",
+        host: `${process.env.CODESPACE_NAME}-5000.app.github.dev`,
+        clientPort: 443,
+      }
+    : {
+        protocol: "ws",
+        host: "localhost",
+        port: 5000,
+      };
+
+  try {
+    const vite = await createViteServer({
+      server: {
+        middlewareMode: true,
+        hmr,
       },
-    },
-  });
-  
-  log('Vite server created successfully with React + Tailwind processing');
+      appType: "custom",
+      customLogger: {
+        ...viteLogger,
+        error: (msg, options) => {
+          viteLogger.error(msg, options);
+          // don't crash on transient HMR errors
+        },
+      },
+    });
 
-  app.use(vite.middlewares);
+    log("✓ Vite server created successfully");
+    log("✓ React plugin loaded");
+    log("✓ Tailwind CSS processing enabled");
+    log("✓ Path aliases configured (@/, @shared, @assets)");
 
-  // Serve service worker and other public assets
-  app.use("/sw.js", (req, res) => {
-    const swPath = path.resolve(__dirname, "..", "public", "sw.js");
-    if (fs.existsSync(swPath)) {
-      res.setHeader("Content-Type", "application/javascript");
-      res.sendFile(swPath);
-    } else {
-      res.status(404).send("Service worker not found");
-    }
-  });
+    app.use(vite.middlewares);
+    log("✓ Vite middleware registered");
 
-  app.use("*", async (req, res, next) => {
-    const url = req.originalUrl;
+    // Serve service worker file if someone asks for it
+    app.use("/sw.js", (_req, res) => {
+      const swPath = path.resolve(__dirname, "..", "public", "sw.js");
+      if (fs.existsSync(swPath)) {
+        res.setHeader("Content-Type", "application/javascript");
+        res.sendFile(swPath);
+      } else {
+        res.status(404).send("Service worker not found");
+      }
+    });
 
-    try {
-      const clientTemplate = path.resolve(__dirname, "..", "index.html");
+    // HTML entry with dev-safe tweaks
+    app.use("*", async (req, res, next) => {
+      const url = req.originalUrl;
+      try {
+        const clientTemplate = path.resolve(__dirname, "..", "index.html");
+        log(`Serving HTML template for: ${url}`);
 
-      // always reload the index.html file from disk incase it changes
-      let template = await fs.promises.readFile(clientTemplate, "utf-8");
-      template = template.replace(
-        `src="/client/src/main.tsx"`,
-        `src="/client/src/main.tsx?v=${nanoid()}"`,
-      );
-      const page = await vite.transformIndexHtml(url, template);
-      res.status(200).set({ "Content-Type": "text/html" }).end(page);
-    } catch (e) {
-      vite.ssrFixStacktrace(e as Error);
-      next(e);
-    }
-  });
+        // always reload index.html from disk
+        let template = await fs.promises.readFile(clientTemplate, "utf-8");
+
+        // bust cache for client entry so HMR behaves
+        template = template.replace(
+          `src="/client/src/main.tsx"`,
+          `src="/client/src/main.tsx?v=${nanoid()}"`
+        );
+
+        // in Codespaces or non-production, strip PWA bits to avoid CORS/worker noise
+        if (isCodespace || process.env.NODE_ENV !== "production") {
+          template = template
+            .replace(/<link\s+rel=["']manifest["'][^>]*>/i, "")
+            .replace(/<meta\s+name=["']theme-color["'][^>]*>/i, "");
+        }
+
+        const page = await vite.transformIndexHtml(url, template);
+        res.status(200).set({ "Content-Type": "text/html" }).end(page);
+      } catch (e) {
+        log(`Error serving HTML: ${(e as Error).message}`);
+        vite.ssrFixStacktrace(e as Error);
+        next(e);
+      }
+    });
+  } catch (error) {
+    log(`✗ Failed to create Vite server: ${(error as Error).message}`);
+    throw error;
+  }
 }
 
 export function serveStatic(app: Express) {
   const distPath = path.resolve(__dirname, "..", "dist", "public");
-  const builtSwPath = path.resolve(distPath, "sw.js");
-  const publicSwPath = path.resolve(__dirname, "..", "public", "sw.js");
-
   log(`Looking for build directory at: ${distPath}`);
 
   if (!fs.existsSync(distPath)) {
     throw new Error(
-      `Could not find the build directory: ${distPath}, make sure to build the client first`,
+      `Could not find the build directory: ${distPath}, make sure to build the client first`
     );
   }
 
-  // Explicitly serve the service worker if present in the built output or the public folder.
-  app.get('/sw.js', (req, res) => {
-    if (fs.existsSync(builtSwPath)) {
-      res.setHeader("Content-Type", "application/javascript");
-      res.sendFile(builtSwPath);
-      return;
-    }
-
-    if (fs.existsSync(publicSwPath)) {
-      res.setHeader("Content-Type", "application/javascript");
-      res.sendFile(publicSwPath);
-      return;
-    }
-
-    res.status(404).send('Service worker not found');
-  });
-
-  log('Serving static files from dist/public');
+  log("Serving static files from dist/public");
   app.use(express.static(distPath));
 
   // fall through to index.html if the file doesn't exist

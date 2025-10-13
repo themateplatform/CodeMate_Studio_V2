@@ -1,0 +1,4 @@
+ - [x] Wire API route for generator
+ - [x] Register admin page route
+ - [x] Add skipped Playwright E2E placeholder
+ - [x] Update README documentation

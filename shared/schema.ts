@@ -162,6 +162,144 @@ export const projects = pgTable("projects", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// =============================================================================
+// SPECIFICATION SYSTEM - Living specifications as single source of truth
+// =============================================================================
+
+// Main specification documents - the living spec that guides everything
+export const specs = pgTable("specs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  projectId: varchar("project_id").references(() => projects.id).notNull(),
+  title: text("title").notNull(),
+  description: text("description"),
+  
+  // Core spec components (living specification)
+  purpose: text("purpose").notNull(), // Why this product exists
+  audience: text("audience").notNull(), // Who it's for
+  problemStatement: text("problem_statement"), // What problem it solves
+  solutionOverview: text("solution_overview"), // How it solves the problem
+  
+  // Success criteria
+  successMetrics: jsonb("success_metrics"), // KPIs and success measurements
+  acceptanceCriteria: jsonb("acceptance_criteria"), // When it's done
+  
+  // Metadata
+  status: text("status").default("draft"), // draft, review, approved, implemented
+  version: integer("version").default(1),
+  isActive: boolean("is_active").default(true),
+  isTemplate: boolean("is_template").default(false), // Can be used as template
+  
+  // Governance
+  createdBy: varchar("created_by").references(() => users.id).notNull(),
+  approvedBy: varchar("approved_by").references(() => users.id),
+  approvedAt: timestamp("approved_at"),
+  
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => [
+  index("idx_specs_project").on(table.projectId),
+  index("idx_specs_status").on(table.status),
+  index("idx_specs_template").on(table.isTemplate),
+]);
+
+// Version history for specs - immutable record of changes
+export const specVersions = pgTable("spec_versions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  specId: varchar("spec_id").references(() => specs.id).notNull(),
+  version: integer("version").notNull(),
+  title: text("title").notNull(),
+  content: jsonb("content").notNull(), // Full spec content snapshot
+  changeSummary: text("change_summary"), // What changed in this version
+  changedBy: varchar("changed_by").references(() => users.id).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => [
+  unique("unique_spec_version").on(table.specId, table.version),
+  index("idx_spec_versions_spec").on(table.specId),
+]);
+
+// Extracted requirements from specs - functional and non-functional
+export const specRequirements = pgTable("spec_requirements", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  specId: varchar("spec_id").references(() => specs.id).notNull(),
+  type: text("type").notNull(), // functional, non-functional, business, technical
+  category: text("category").notNull(), // ui, api, data, security, performance, etc.
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  priority: text("priority").default("medium"), // high, medium, low
+  acceptanceCriteria: jsonb("acceptance_criteria"), // How to verify completion
+  status: text("status").default("pending"), // pending, in-progress, completed, cancelled
+  assignedTo: varchar("assigned_to").references(() => users.id),
+  estimatedEffort: integer("estimated_effort"), // Story points or hours
+  actualEffort: integer("actual_effort"), // Actual time spent
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => [
+  index("idx_spec_requirements_spec").on(table.specId),
+  index("idx_spec_requirements_type").on(table.type),
+  index("idx_spec_requirements_status").on(table.status),
+  index("idx_spec_requirements_assigned").on(table.assignedTo),
+]);
+
+// User journeys defined in specs - the core user experiences
+export const specUserJourneys = pgTable("spec_user_journeys", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  specId: varchar("spec_id").references(() => specs.id).notNull(),
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  userType: text("user_type").notNull(), // primary, secondary, admin, etc.
+  steps: jsonb("steps").notNull(), // Ordered list of journey steps
+  successCriteria: jsonb("success_criteria"), // How to measure journey success
+  painPoints: jsonb("pain_points"), // Current problems this journey solves
+  priority: text("priority").default("medium"), // high, medium, low
+  status: text("status").default("draft"), // draft, reviewed, implemented
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => [
+  index("idx_spec_journeys_spec").on(table.specId),
+  index("idx_spec_journeys_user_type").on(table.userType),
+]);
+
+// Data models defined in specs - entities and relationships
+export const specDataModels = pgTable("spec_data_models", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  specId: varchar("spec_id").references(() => specs.id).notNull(),
+  name: text("name").notNull(),
+  description: text("description"),
+  type: text("type").notNull(), // entity, value_object, aggregate, etc.
+  fields: jsonb("fields").notNull(), // Field definitions with types, constraints
+  relationships: jsonb("relationships"), // Relations to other data models
+  businessRules: jsonb("business_rules"), // Validation rules, constraints
+  status: text("status").default("draft"), // draft, reviewed, implemented
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => [
+  index("idx_spec_data_models_spec").on(table.specId),
+  index("idx_spec_data_models_type").on(table.type),
+]);
+
+// Success criteria and KPIs from specs
+export const specSuccessCriteria = pgTable("spec_success_criteria", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  specId: varchar("spec_id").references(() => specs.id).notNull(),
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  type: text("type").notNull(), // kpi, metric, goal, outcome
+  category: text("category").notNull(), // user_engagement, business, technical, quality
+  targetValue: jsonb("target_value"), // Numeric target or qualitative measure
+  currentValue: jsonb("current_value"), // Current measurement
+  measurementMethod: text("measurement_method"), // How it's measured
+  frequency: text("frequency"), // daily, weekly, monthly, quarterly
+  responsible: varchar("responsible").references(() => users.id), // Who owns this metric
+  status: text("status").default("active"), // active, paused, achieved, cancelled
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => [
+  index("idx_spec_success_criteria_spec").on(table.specId),
+  index("idx_spec_success_criteria_type").on(table.type),
+  index("idx_spec_success_criteria_category").on(table.category),
+]);
+
 // GitHub webhooks and sync tracking
 export const githubSyncEvents = pgTable("github_sync_events", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -749,6 +887,77 @@ export const githubReleasesRelations = relations(githubReleases, ({ one }) => ({
   }),
 }));
 
+// =============================================================================
+// SPECIFICATION SYSTEM RELATIONS
+// =============================================================================
+
+export const specsRelations = relations(specs, ({ one, many }) => ({
+  project: one(projects, {
+    fields: [specs.projectId],
+    references: [projects.id],
+  }),
+  createdBy: one(users, {
+    fields: [specs.createdBy],
+    references: [users.id],
+  }),
+  approvedBy: one(users, {
+    fields: [specs.approvedBy],
+    references: [users.id],
+  }),
+  versions: many(specVersions),
+  requirements: many(specRequirements),
+  userJourneys: many(specUserJourneys),
+  dataModels: many(specDataModels),
+  successCriteria: many(specSuccessCriteria),
+}));
+
+export const specVersionsRelations = relations(specVersions, ({ one }) => ({
+  spec: one(specs, {
+    fields: [specVersions.specId],
+    references: [specs.id],
+  }),
+  changedBy: one(users, {
+    fields: [specVersions.changedBy],
+    references: [users.id],
+  }),
+}));
+
+export const specRequirementsRelations = relations(specRequirements, ({ one }) => ({
+  spec: one(specs, {
+    fields: [specRequirements.specId],
+    references: [specs.id],
+  }),
+  assignedTo: one(users, {
+    fields: [specRequirements.assignedTo],
+    references: [users.id],
+  }),
+}));
+
+export const specUserJourneysRelations = relations(specUserJourneys, ({ one }) => ({
+  spec: one(specs, {
+    fields: [specUserJourneys.specId],
+    references: [specs.id],
+  }),
+}));
+
+export const specDataModelsRelations = relations(specDataModels, ({ one }) => ({
+  spec: one(specs, {
+    fields: [specDataModels.specId],
+    references: [specs.id],
+  }),
+}));
+
+export const specSuccessCriteriaRelations = relations(specSuccessCriteria, ({ one }) => ({
+  spec: one(specs, {
+    fields: [specSuccessCriteria.specId],
+    references: [specs.id],
+  }),
+  responsible: one(users, {
+    fields: [specSuccessCriteria.responsible],
+    references: [users.id],
+  }),
+}));
+
 // Real-time Collaboration System Tables
 
 // Collaboration rooms - one per file for isolated collaboration
@@ -1029,6 +1238,46 @@ export const insertCollaborationCursorSchema = createInsertSchema(collaborationC
   lastUpdated: true,
 });
 
+// =============================================================================
+// SPECIFICATION SYSTEM ZOD SCHEMAS
+// =============================================================================
+
+export const insertSpecSchema = createInsertSchema(specs).omit({
+  id: true,
+  version: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertSpecVersionSchema = createInsertSchema(specVersions).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertSpecRequirementSchema = createInsertSchema(specRequirements).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertSpecUserJourneySchema = createInsertSchema(specUserJourneys).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertSpecDataModelSchema = createInsertSchema(specDataModels).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertSpecSuccessCriteriaSchema = createInsertSchema(specSuccessCriteria).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Types
 export type Organization = typeof organizations.$inferSelect;
 export type InsertOrganization = z.infer<typeof insertOrganizationSchema>;
@@ -1105,6 +1354,28 @@ export type InsertSecretRotation = z.infer<typeof insertSecretRotationSchema>;
 
 export type SecretToken = typeof secretTokens.$inferSelect;
 export type InsertSecretToken = z.infer<typeof insertSecretTokenSchema>;
+
+// =============================================================================
+// SPECIFICATION SYSTEM TYPES
+// =============================================================================
+
+export type Spec = typeof specs.$inferSelect;
+export type InsertSpec = z.infer<typeof insertSpecSchema>;
+
+export type SpecVersion = typeof specVersions.$inferSelect;
+export type InsertSpecVersion = z.infer<typeof insertSpecVersionSchema>;
+
+export type SpecRequirement = typeof specRequirements.$inferSelect;
+export type InsertSpecRequirement = z.infer<typeof insertSpecRequirementSchema>;
+
+export type SpecUserJourney = typeof specUserJourneys.$inferSelect;
+export type InsertSpecUserJourney = z.infer<typeof insertSpecUserJourneySchema>;
+
+export type SpecDataModel = typeof specDataModels.$inferSelect;
+export type InsertSpecDataModel = z.infer<typeof insertSpecDataModelSchema>;
+
+export type SpecSuccessCriteria = typeof specSuccessCriteria.$inferSelect;
+export type InsertSpecSuccessCriteria = z.infer<typeof insertSpecSuccessCriteriaSchema>;
 
 // AGENTIC BUILDER SYSTEM TABLES
 

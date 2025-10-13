@@ -3,7 +3,6 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { ToastProvider } from "@/components/ui/toast";
 import { useAuth } from "@/hooks/useAuth";
 import { GlobalShell } from "@/components/layout/GlobalShell";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -11,6 +10,7 @@ import LandingPage from "@/pages/landing";
 import IDEPage from "@/pages/ide";
 import ProjectsPageSimplified from "./pages/projects-simplified";
 import AppBuilderPage from "./pages/app-builder";
+import SpecEditorPage from "./pages/spec-editor";
 import TemplatesPage from "./pages/templates";
 import ComponentsPage from "./pages/components";
 import AIAssistantPage from "./pages/ai-assistant";
@@ -18,6 +18,10 @@ import DeployPage from "./pages/deploy";
 import SettingsPage from "./pages/settings";
 import SecretsPage from "./pages/secrets";
 import LoginPage from "./pages/login";
+import PricingPage from "./pages/pricing";
+import DocsPage from "./pages/docs";
+import AboutPage from "./pages/about";
+import GeneratorPage from "./pages/generator";
 import NotFound from "@/pages/not-found";
 
 // No authentication - direct access to all routes
@@ -28,6 +32,7 @@ function Router() {
       <Route path="/projects" component={ProjectsPageSimplified} />
       <Route path="/app-builder" component={AppBuilderPage} />
       <Route path="/login" component={LoginPage} />
+      <Route path="/spec-editor" component={SpecEditorPage} />
       <Route path="/ide/:projectId">
         {() => (
           <GlobalShell>
@@ -46,6 +51,13 @@ function Router() {
         {() => (
           <GlobalShell>
             <ComponentsPage />
+          </GlobalShell>
+        )}
+      </Route>
+      <Route path="/admin/generator">
+        {() => (
+          <GlobalShell>
+            <GeneratorPage />
           </GlobalShell>
         )}
       </Route>
@@ -77,6 +89,9 @@ function Router() {
           </GlobalShell>
         )}
       </Route>
+      <Route path="/pricing" component={PricingPage} />
+      <Route path="/docs" component={DocsPage} />
+      <Route path="/about" component={AboutPage} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -89,10 +104,8 @@ function App() {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <ToastProvider>
-            <Toaster />
-            <Router />
-          </ToastProvider>
+          <Router />
+          <Toaster />
         </TooltipProvider>
       </QueryClientProvider>
     </ErrorBoundary>
