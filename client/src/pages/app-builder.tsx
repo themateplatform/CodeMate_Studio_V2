@@ -106,7 +106,8 @@ export default function AppBuilderPage() {
   const [recommendedAgents, setRecommendedAgents] = useState<RecommendedAgent[]>([]);
   const [mcpServers, setMcpServers] = useState<MCPServer[]>([]);
   const [designBrief, setDesignBrief] = useState<DesignBrief | null>(null);
-  
+  const [implementationPlan, setImplementationPlan] = useState<{ summary?: string; nextActions?: string[]; confidence?: string } | null>(null);
+
   // Chat state
   const [messages, setMessages] = useState<Array<{id: string, type: 'user' | 'ai', content: string, timestamp: Date}>>([]);
   const [isProcessing, setIsProcessing] = useState(false);
