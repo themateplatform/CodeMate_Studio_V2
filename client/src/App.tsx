@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
 import { GlobalShell } from "@/components/layout/GlobalShell";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { PWAInstallPrompt, NetworkStatusBadge } from "@/components/pwa/PWAComponents";
 import LandingPage from "@/pages/landing";
 import IDEPage from "@/pages/ide";
 import ProjectsPageSimplified from "./pages/projects-simplified";
@@ -104,6 +105,8 @@ function App() {
         <TooltipProvider>
           <Router />
           <Toaster />
+          <PWAInstallPrompt />
+          <NetworkStatusBadge />
         </TooltipProvider>
       </QueryClientProvider>
     </ErrorBoundary>
