@@ -43,6 +43,7 @@ export default function LandingPage() {
           {/* Logo */}
           <div className="flex items-center gap-3">
             <img src="https://cdn.builder.io/api/v1/image/assets%2F7f4f17bc2420491a95f23b47a94e6efc%2Fcf2bb14f9f634632acd8da085020bfdb?format=webp&width=800" alt="CodeMate Studio Logo" className="h-10 w-auto" />
+            <span className="ml-2 text-xl font-bold text-white select-none" aria-label="CodeMate Studio">CodeMate Studio</span>
           </div>
           
           {/* Navigation Links */}
