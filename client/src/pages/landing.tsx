@@ -3,10 +3,10 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { ArrowRight, Code2 } from 'lucide-react';
 import { AuthDialog } from '@/components/auth/AuthDialog';
 import { Badge } from '@/components/ui/badge';
 import { ArrowRight, Code2, Sparkles, Zap, Users, Shield, Rocket, Github } from 'lucide-react';
+import { useLocation } from 'wouter';
 
 export default function LandingPage() {
   const [, setLocation] = useLocation();
