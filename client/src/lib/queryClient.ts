@@ -58,6 +58,9 @@ export async function apiRequest(
     const token = await getCSRFToken();
     if (token && token.length > 0) {
       headers['X-CSRF-Token'] = token;
+      if (process.env.NODE_ENV === 'development') {
+        console.debug('Attached CSRF token to headers:', token ? token.substring(0, 10) + '...' : 'null');
+      }
     }
   }
 
