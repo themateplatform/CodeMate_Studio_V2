@@ -26,8 +26,8 @@ router.get('/user', async (req, res) => {
         // If users table doesn't exist or query fails, fallback to basic user
         return res.json({ id: user.id, email: user.email });
       }
-    } catch (importErr) {
-      console.warn('/api/auth/user supabase client not configured:', importErr.message || importErr);
+    } catch (importErr: any) {
+      console.warn('/api/auth/user supabase client not configured:', (importErr && (importErr as any).message) || String(importErr));
       return res.status(500).json({ error: 'Supabase not configured on server' });
     }
   } catch (error) {
