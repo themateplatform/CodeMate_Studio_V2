@@ -21,7 +21,6 @@ import AIAssistantPage from "./pages/ai-assistant";
 import DeployPage from "./pages/deploy";
 import SettingsPage from "./pages/settings";
 import SecretsPage from "./pages/secrets";
-import LoginPage from "./pages/login";
 import PricingPage from "./pages/pricing";
 import DocsPage from "./pages/docs";
 import AboutPage from "./pages/about";
@@ -44,7 +43,6 @@ function Router() {
       <Route path="/projects" component={ProjectsDashboard} />
       <Route path="/projects-old" component={ProjectsPageSimplified} />
       <Route path="/app-builder" component={AppBuilderPage} />
-      <Route path="/login" component={LoginPage} />
       <Route path="/spec-editor" component={SpecEditorPage} />
       <Route path="/ide/:projectId">
         {() => (
