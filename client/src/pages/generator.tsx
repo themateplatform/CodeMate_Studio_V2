@@ -1,14 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
+import { apiRequest } from "@/lib/queryClient";
 
 interface GeneratorResponse {
   success: boolean;
   recipeName: string;
+  confidence?: number;
+  projectName: string;
   outputPath: string;
   filesGenerated: number;
+  stats?: {
+    totalFiles: number;
+    totalLines: number;
+    totalSize: number;
+    avgFileSize: number;
+  };
+  assembly?: {
+    outputPath: string;
+    filesWritten: number;
+    structure: string[];
+  };
+  summary?: string;
   message: string;
   prompt?: string | null;
   validation: null | {
@@ -16,6 +32,33 @@ interface GeneratorResponse {
     output: string;
   };
   error?: string;
+  parsed?: any;
+  suggestions?: string[];
+}
+
+interface ParseResponse {
+  parsed: {
+    intent: string;
+    features: string[];
+    entities: string[];
+    keywords: string[];
+    confidence: number;
+  };
+  match: {
+    recipeName: string;
+    confidence: number;
+    matchedKeywords: string[];
+    suggestions?: string[];
+  } | null;
+  templateType: string | null;
+  suggestions: string[];
+}
+
+interface RecipeMetadata {
+  name: string;
+  description: string;
+  pages: number;
+  components: number;
 }
 
 const RECIPES = [
@@ -30,8 +73,59 @@ export default function GeneratorPage(): JSX.Element {
   const [generatePrompt, setGeneratePrompt] = useState("Build a polished blog with posts and about page.");
   const [shouldValidate, setShouldValidate] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<GeneratorResponse | null>(null);
+  const [parseResult, setParseResult] = useState<ParseResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [recipes, setRecipes] = useState<RecipeMetadata[]>([]);
+
+  // Load available recipes on mount
+  useEffect(() => {
+    async function loadRecipes() {
+      try {
+        const response = await fetch("/api/generate/recipes");
+        if (response.ok) {
+          const data = await response.json();
+          setRecipes(data.recipes || []);
+        }
+      } catch (err) {
+        console.error("Failed to load recipes:", err);
+      }
+    }
+    loadRecipes();
+  }, []);
+
+  // Analyze prompt as user types (debounced)
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      if (generatePrompt.trim().length > 10) {
+        await analyzePrompt(generatePrompt);
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [generatePrompt]);
+
+  async function analyzePrompt(prompt: string) {
+    if (!prompt.trim()) return;
+    
+    setAnalyzing(true);
+    try {
+      const response = await apiRequest("POST", "/api/generate/parse", { prompt });
+      if (response.ok) {
+        const data = await response.json();
+        setParseResult(data);
+        
+        // Auto-select best match if confidence is high
+        if (data.match && data.match.confidence > 0.5) {
+          setRecipe(data.match.recipeName as typeof recipe);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to analyze prompt:", err);
+    } finally {
+      setAnalyzing(false);
+    }
+  }
 
   async function handleGenerate(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -40,15 +134,11 @@ export default function GeneratorPage(): JSX.Element {
     setResult(null);
 
     try {
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt: generatePrompt,
-          recipe,
-          name: projectName,
-          validate: shouldValidate,
-        }),
+      const response = await apiRequest("POST", "/api/generate", {
+        prompt: generatePrompt,
+        recipe,
+        name: projectName,
+        validate: shouldValidate,
       });
 
       const json = (await response.json()) as GeneratorResponse;
@@ -65,11 +155,26 @@ export default function GeneratorPage(): JSX.Element {
     }
   }
 
+  function getConfidenceColor(confidence: number): string {
+    if (confidence >= 0.7) return "bg-green-500";
+    if (confidence >= 0.4) return "bg-yellow-500";
+    return "bg-red-500";
+  }
+
+  function getConfidenceLabel(confidence: number): string {
+    if (confidence >= 0.7) return "High";
+    if (confidence >= 0.4) return "Medium";
+    return "Low";
+  }
+
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle>Prompt → Site Generator</CardTitle>
+          <CardDescription>
+            Describe your project in natural language or select a recipe to generate a complete Vite + React + TypeScript application
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form className="space-y-6" onSubmit={handleGenerate}>
@@ -86,6 +191,52 @@ export default function GeneratorPage(): JSX.Element {
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="prompt">Describe your project</Label>
+              <textarea
+                id="prompt"
+                className="w-full min-h-[96px] rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-500"
+                value={generatePrompt}
+                onChange={(event) => setGeneratePrompt(event.target.value)}
+                placeholder="Build a blog with posts, categories, and an about page..."
+              />
+              {analyzing && (
+                <p className="text-xs text-slate-400">Analyzing prompt...</p>
+              )}
+              {parseResult && (
+                <div className="space-y-2 rounded-md border border-slate-700 bg-slate-900/50 p-3 text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-400">Detected:</span>
+                    <Badge variant="outline" className="text-xs">
+                      {parseResult.parsed.intent}
+                    </Badge>
+                    {parseResult.parsed.features.map((feature) => (
+                      <Badge key={feature} variant="secondary" className="text-xs">
+                        {feature}
+                      </Badge>
+                    ))}
+                  </div>
+                  {parseResult.match && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-slate-400">Best match:</span>
+                      <Badge className="text-xs">{parseResult.match.recipeName}</Badge>
+                      <div className="flex items-center gap-1">
+                        <div className={`h-2 w-2 rounded-full ${getConfidenceColor(parseResult.match.confidence)}`} />
+                        <span className="text-xs text-slate-400">
+                          {getConfidenceLabel(parseResult.match.confidence)} ({Math.round(parseResult.match.confidence * 100)}%)
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  {parseResult.suggestions && parseResult.suggestions.length > 0 && (
+                    <div className="text-xs text-slate-400">
+                      Suggestions: {parseResult.suggestions.join(", ")}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="recipe">Recipe</Label>
               <select
                 id="recipe"
@@ -99,17 +250,26 @@ export default function GeneratorPage(): JSX.Element {
                   </option>
                 ))}
               </select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="prompt">Prompt (optional)</Label>
-              <textarea
-                id="prompt"
-                className="w-full min-h-[96px] rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-500"
-                value={generatePrompt}
-                onChange={(event) => setGeneratePrompt(event.target.value)}
-                placeholder="Describe the site you want to create"
-              />
+              {recipes.length > 0 && (
+                <div className="grid gap-2 pt-2 sm:grid-cols-3">
+                  {recipes.map((r) => (
+                    <div
+                      key={r.name}
+                      className={`rounded-md border p-2 text-xs ${
+                        recipe === r.name
+                          ? "border-slate-500 bg-slate-800"
+                          : "border-slate-700 bg-slate-900/50"
+                      }`}
+                    >
+                      <div className="font-semibold text-slate-100">{r.name}</div>
+                      <div className="text-slate-400">{r.description}</div>
+                      <div className="mt-1 text-slate-500">
+                        {r.pages} pages • {r.components} components
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             <label className="flex items-center gap-3 text-sm text-slate-200">
@@ -138,22 +298,68 @@ export default function GeneratorPage(): JSX.Element {
         <div className="grid gap-4 lg:grid-cols-2">
           <Card className="bg-slate-950">
             <CardHeader>
-              <CardTitle>Status</CardTitle>
+              <CardTitle>Generation Results</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-sm text-slate-200">
               {error ? (
-                <p className="text-red-400">{error}</p>
-              ) : result ? (
                 <div className="space-y-2">
+                  <p className="text-red-400">{error}</p>
+                  {result?.suggestions && result.suggestions.length > 0 && (
+                    <div className="rounded-md border border-yellow-500/20 bg-yellow-500/10 p-2">
+                      <p className="font-semibold text-yellow-400">Suggestions:</p>
+                      <ul className="ml-4 list-disc text-xs text-yellow-300">
+                        {result.suggestions.map((suggestion, i) => (
+                          <li key={i}>{suggestion}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              ) : result ? (
+                <div className="space-y-3">
                   <p className="font-medium text-slate-100">{result.message}</p>
-                  <p>
-                    Files generated: <span className="font-semibold">{result.filesGenerated}</span>
-                  </p>
-                  <p>
-                    Output path: <span className="font-semibold text-slate-100">{result.outputPath}</span>
-                  </p>
+                  
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                      <span className="text-slate-400">Recipe:</span>
+                      <span className="ml-2 font-semibold">{result.recipeName}</span>
+                    </div>
+                    {result.confidence && (
+                      <div>
+                        <span className="text-slate-400">Confidence:</span>
+                        <span className="ml-2 font-semibold">{Math.round(result.confidence * 100)}%</span>
+                      </div>
+                    )}
+                    <div>
+                      <span className="text-slate-400">Files:</span>
+                      <span className="ml-2 font-semibold">{result.filesGenerated}</span>
+                    </div>
+                    {result.stats && (
+                      <div>
+                        <span className="text-slate-400">Total lines:</span>
+                        <span className="ml-2 font-semibold">{result.stats.totalLines}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <p className="text-slate-400">Output path:</p>
+                    <code className="block rounded bg-slate-900 p-2 text-xs text-slate-100">
+                      {result.outputPath}
+                    </code>
+                  </div>
+
+                  {result.summary && (
+                    <div>
+                      <p className="text-slate-400">Summary:</p>
+                      <pre className="whitespace-pre-wrap rounded bg-slate-900 p-2 text-xs text-slate-300">
+                        {result.summary}
+                      </pre>
+                    </div>
+                  )}
+
                   {result.prompt && (
-                    <p className="text-slate-400">Prompt: {result.prompt}</p>
+                    <p className="text-xs text-slate-400">Prompt: {result.prompt}</p>
                   )}
                 </div>
               ) : null}
@@ -162,12 +368,29 @@ export default function GeneratorPage(): JSX.Element {
 
           <Card className="bg-slate-950">
             <CardHeader>
-              <CardTitle>Validation Output</CardTitle>
+              <CardTitle>
+                {result?.assembly ? "File Structure" : "Validation Output"}
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <pre className="max-h-64 overflow-auto whitespace-pre-wrap text-xs text-slate-200">
-                {result?.validation?.output || (shouldValidate ? "Awaiting validation output" : "Validation skipped")}
-              </pre>
+              {result?.assembly ? (
+                <div className="space-y-2">
+                  <div className="text-xs text-slate-400">
+                    {result.assembly.filesWritten} files written
+                  </div>
+                  <pre className="max-h-64 overflow-auto whitespace-pre-wrap rounded bg-slate-900 p-2 text-xs text-slate-300 font-mono">
+                    {result.assembly.structure.map((file, i) => (
+                      <div key={i} className="hover:bg-slate-800">
+                        {file}
+                      </div>
+                    ))}
+                  </pre>
+                </div>
+              ) : (
+                <pre className="max-h-64 overflow-auto whitespace-pre-wrap text-xs text-slate-200">
+                  {result?.validation?.output || (shouldValidate ? "Awaiting validation output" : "Validation skipped")}
+                </pre>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -175,3 +398,4 @@ export default function GeneratorPage(): JSX.Element {
     </div>
   );
 }
+

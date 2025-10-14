@@ -3,12 +3,16 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AuthProvider } from "@/lib/auth-context";
+import { CollaborationProvider } from "@/lib/collaboration-context";
 import { useAuth } from "@/hooks/useAuth";
 import { GlobalShell } from "@/components/layout/GlobalShell";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { PWAInstallPrompt, NetworkStatusBadge } from "@/components/pwa/PWAComponents";
 import LandingPage from "@/pages/landing";
 import IDEPage from "@/pages/ide";
 import ProjectsPageSimplified from "./pages/projects-simplified";
+import { ProjectsDashboard } from "./pages/projects-dashboard";
 import AppBuilderPage from "./pages/app-builder";
 import SpecEditorPage from "./pages/spec-editor";
 import TemplatesPage from "./pages/templates";
@@ -23,14 +27,22 @@ import DocsPage from "./pages/docs";
 import AboutPage from "./pages/about";
 import GeneratorPage from "./pages/generator";
 import AdminPage from "./pages/admin";
+import { Login } from "./pages/login";
+import { Register } from "./pages/register";
 import NotFound from "@/pages/not-found";
 
-// No authentication - direct access to all routes
+// Authentication and public routes
 function Router() {
   return (
     <Switch>
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
       <Route path="/" component={LandingPage} />
-      <Route path="/projects" component={ProjectsPageSimplified} />
+      <Route path="/pricing" component={PricingPage} />
+      <Route path="/docs" component={DocsPage} />
+      <Route path="/about" component={AboutPage} />
+      <Route path="/projects" component={ProjectsDashboard} />
+      <Route path="/projects-old" component={ProjectsPageSimplified} />
       <Route path="/app-builder" component={AppBuilderPage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/spec-editor" component={SpecEditorPage} />
@@ -105,10 +117,16 @@ function App() {
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Router />
-          <Toaster />
-        </TooltipProvider>
+        <AuthProvider>
+          <CollaborationProvider>
+            <TooltipProvider>
+              <Router />
+              <Toaster />
+              <PWAInstallPrompt />
+              <NetworkStatusBadge />
+            </TooltipProvider>
+          </CollaborationProvider>
+        </AuthProvider>
       </QueryClientProvider>
     </ErrorBoundary>
   );

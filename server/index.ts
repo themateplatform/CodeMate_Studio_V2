@@ -1,14 +1,42 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { createServer } from "http";
+import { WebSocketServer } from "ws";
 import fs from "fs";
 import path from "path";
-// import { registerRoutes } from "./routes";
+import session from "express-session";
+import connectPgSimple from "connect-pg-simple";
+import pg from "pg";
+import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { healthRouter, trackRequest } from "./health";
+import { yjsServer } from "./collaboration/yjs-server";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Configure session middleware with PostgreSQL store
+// Create a standard pg pool for sessions (Neon serverless pool doesn't work with connect-pg-simple)
+const sessionPool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+const PgSession = connectPgSimple(session);
+app.use(
+  session({
+    store: new PgSession({
+      pool: sessionPool,
+      tableName: "sessions",
+      createTableIfMissing: false, // Table already exists in schema
+    }),
+    secret: process.env.SESSION_SECRET || "dev-secret-change-in-production",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      sameSite: "lax",
+    },
+  })
+);
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -77,7 +105,38 @@ app.use((req, res, next) => {
   }
 
   // const server = await registerRoutes(app);
+  
+  // Register all API routes
+  registerRoutes(app);
+  
   const server = createServer(app);
+
+  // Set up WebSocket server for real-time collaboration
+  const wss = new WebSocketServer({ 
+    server,
+    path: "/collaboration"
+  });
+
+  // Initialize Yjs collaboration server
+  yjsServer.initialize(wss);
+
+  // Handle WebSocket connections
+  wss.on("connection", (ws, req) => {
+    const url = new URL(req.url!, `http://${req.headers.host}`);
+    const roomId = url.searchParams.get("room");
+    const userId = url.searchParams.get("user");
+    const projectId = url.searchParams.get("project");
+    const fileId = url.searchParams.get("file");
+
+    if (!roomId || !userId || !projectId || !fileId) {
+      ws.close(1008, "Missing required parameters");
+      return;
+    }
+
+    yjsServer.handleConnection(ws, roomId, userId, projectId, fileId);
+  });
+
+  log("WebSocket collaboration server initialized");
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
@@ -123,6 +182,17 @@ app.use((req, res, next) => {
   const port = parseInt(process.env.PORT || '5000', 10);
   server.listen(port, () => {
     log(`serving on port ${port}`);
+    log(`WebSocket collaboration available at ws://localhost:${port}/collaboration`);
+  });
+
+  // Handle graceful shutdown
+  process.on("SIGTERM", async () => {
+    log("SIGTERM received, shutting down gracefully");
+    await yjsServer.shutdown();
+    server.close(() => {
+      log("Server closed");
+      process.exit(0);
+    });
   });
   
 })();
