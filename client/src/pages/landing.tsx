@@ -3,31 +3,34 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { ArrowRight, Code2 } from 'lucide-react';
+import { AuthDialog } from '@/components/auth/AuthDialog';
 import { Badge } from '@/components/ui/badge';
 import { ArrowRight, Code2, Sparkles, Zap, Users, Shield, Rocket, Github } from 'lucide-react';
 
 export default function LandingPage() {
   const [, setLocation] = useLocation();
   const [projectDescription, setProjectDescription] = useState("");
+  const [authOpen, setAuthOpen] = useState(false);
 
   // Sample project showcase data
   const showcaseProjects = [
     {
       id: 'hottr-hub',
       title: 'hottr-hub',
-      thumbnail: '/api/placeholder/400/300',
+      thumbnail: 'https://cdn.builder.io/api/v1/image/assets%2F7f4f17bc2420491a95f23b47a94e6efc%2F5165481a9b9f4ad88cf21bb71b022669?format=webp&width=800',
       gradient: 'from-pink-500 to-purple-600'
     },
     {
       id: 'hub-mate-studio',
       title: 'hub-mate-studio',
-      thumbnail: '/api/placeholder/400/300',
+      thumbnail: 'https://cdn.builder.io/api/v1/image/assets%2F7f4f17bc2420491a95f23b47a94e6efc%2F5165481a9b9f4ad88cf21bb71b022669?format=webp&width=800',
       gradient: 'from-blue-500 to-indigo-600'
     },
     {
       id: 'passion-to-plan-pro',
       title: 'passion-to-plan-pro',
-      thumbnail: '/api/placeholder/400/300',
+      thumbnail: 'https://cdn.builder.io/api/v1/image/assets%2F7f4f17bc2420491a95f23b47a94e6efc%2F5165481a9b9f4ad88cf21bb71b022669?format=webp&width=800',
       gradient: 'from-purple-600 to-pink-600'
     }
   ];
@@ -40,13 +43,13 @@ export default function LandingPage() {
           {/* Logo */}
           <div className="flex items-center gap-3">
             <img src="https://cdn.builder.io/api/v1/image/assets%2F7f4f17bc2420491a95f23b47a94e6efc%2Fcf2bb14f9f634632acd8da085020bfdb?format=webp&width=800" alt="CodeMate Studio Logo" className="h-10 w-auto" />
-            <span className="font-heading font-bold text-xl text-white">CodeMate Studio</span>
+            <span className="ml-2 text-xl font-bold text-white select-none" aria-label="CodeMate Studio">CodeMate Studio</span>
           </div>
           
           {/* Navigation Links */}
           <div className="flex items-center gap-8">
-            <a 
-              href="/projects" 
+            <a
+              href="/projects"
               className="text-white hover:text-[#FF0CB6] transition-colors text-sm font-medium"
               data-testid="link-community"
             >
@@ -66,16 +69,18 @@ export default function LandingPage() {
             >
               Docs
             </a>
-            <a 
-              href="/projects" 
+            <button
+              onClick={() => setAuthOpen(true)}
               className="text-white hover:text-[#FF0CB6] transition-colors text-sm font-medium"
               data-testid="link-sign-in"
             >
               Sign In
-            </a>
+            </button>
           </div>
         </div>
       </nav>
+
+      <AuthDialog open={authOpen} onOpenChange={setAuthOpen} />
 
       {/* Hero Section */}
       <div className="relative min-h-screen flex items-center justify-center px-4 pt-24 pb-32">

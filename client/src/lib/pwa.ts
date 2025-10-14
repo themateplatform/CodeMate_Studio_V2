@@ -1,9 +1,7 @@
-// client/src/lib/pwa.ts
-// Dev/Codespaces: disable Service Worker; provide safe stubs the app expects.
+// Dev/Codespaces-safe PWA helpers
 
 function isCodespaceHost() {
-  return typeof window !== "undefined" &&
-    window.location.hostname.endsWith(".app.github.dev");
+  return typeof window !== "undefined" && window.location.hostname.endsWith(".app.github.dev");
 }
 
 export interface PWAStatus {
@@ -17,15 +15,15 @@ export interface PWAStatus {
 export async function registerServiceWorker() {
   const isProd = import.meta.env.MODE === "production";
 
-  // In dev or Codespaces: unregister and bail to avoid reload loops and CORS weirdness.
+  // Disable SW in development or Codespaces; clean up any previous registrations
   if (!isProd || isCodespaceHost()) {
     try {
       if ("serviceWorker" in navigator) {
         const regs = await navigator.serviceWorker.getRegistrations();
-        await Promise.all(regs.map(r => r.unregister()));
+        await Promise.all(regs.map((r) => r.unregister()));
         if ("caches" in window) {
           const keys = await caches.keys();
-          await Promise.all(keys.map(k => caches.delete(k)));
+          await Promise.all(keys.map((k) => caches.delete(k)));
         }
         console.debug("[PWA] Dev/Codespaces: SW unregistered and caches cleared");
       }
@@ -46,14 +44,14 @@ export async function registerServiceWorker() {
   }
 }
 
-// Minimal stub object so existing imports keep working.
+// Minimal manager so existing hooks keep working without complex SW state
 export const pwaManager = {
   getStatus: (): PWAStatus => ({
     isInstalled: false,
     isInstallable: false,
     isOnline: typeof navigator !== "undefined" ? navigator.onLine : true,
     serviceWorkerReady: false,
-    updateAvailable: false
+    updateAvailable: false,
   }),
   onStatusChange: (_cb: (status: PWAStatus) => void) => () => {},
   promptInstall: async () => false,
@@ -62,7 +60,6 @@ export const pwaManager = {
     if (typeof window === "undefined" || !("caches" in window)) {
       return { size: 0, count: 0 };
     }
-
     try {
       const cacheNames = await caches.keys();
       const sizes = await Promise.all(
@@ -79,11 +76,10 @@ export const pwaManager = {
           return total;
         })
       );
-
-      const totalSize = sizes.reduce((acc, size) => acc + size, 0);
+      const totalSize = sizes.reduce((acc, v) => acc + v, 0);
       return { size: totalSize, count: cacheNames.length };
-    } catch (error) {
-      console.debug("[PWA] Unable to inspect caches", error);
+    } catch (e) {
+      console.debug("[PWA] Unable to inspect caches", e);
       return { size: 0, count: 0 };
     }
   },
@@ -91,34 +87,33 @@ export const pwaManager = {
     if (typeof window === "undefined" || !("caches" in window)) return;
     try {
       const cacheNames = await caches.keys();
-      await Promise.all(cacheNames.map((name) => caches.delete(name)));
-    } catch (error) {
-      console.debug("[PWA] Unable to clear caches", error);
+      await Promise.all(cacheNames.map((n) => caches.delete(n)));
+    } catch (e) {
+      console.debug("[PWA] Unable to clear caches", e);
     }
   },
   getStorageEstimate: async (): Promise<StorageEstimate | null> => {
     try {
-      if (typeof navigator !== "undefined" && navigator.storage && navigator.storage.estimate) {
+      if (typeof navigator !== "undefined" && navigator.storage?.estimate) {
         return await navigator.storage.estimate();
       }
-    } catch (error) {
-      console.debug("[PWA] storage.estimate failed", error);
+    } catch (e) {
+      console.debug("[PWA] storage.estimate failed", e);
     }
     return null;
   },
   requestPersistentStorage: async (): Promise<boolean> => {
     try {
-      if (typeof navigator !== "undefined" && navigator.storage && navigator.storage.persist) {
+      if (typeof navigator !== "undefined" && navigator.storage?.persist) {
         return await navigator.storage.persist();
       }
-    } catch (error) {
-      console.debug("[PWA] storage.persist failed", error);
+    } catch (e) {
+      console.debug("[PWA] storage.persist failed", e);
     }
     return false;
-  }
+  },
 };
 
-// Utilities expected elsewhere in the app
 export const formatBytes = (bytes: number): string => {
   if (!Number.isFinite(bytes) || bytes <= 0) return "0 Bytes";
   const units = ["Bytes", "KB", "MB", "GB", "TB"];

@@ -106,7 +106,8 @@ export default function AppBuilderPage() {
   const [recommendedAgents, setRecommendedAgents] = useState<RecommendedAgent[]>([]);
   const [mcpServers, setMcpServers] = useState<MCPServer[]>([]);
   const [designBrief, setDesignBrief] = useState<DesignBrief | null>(null);
-  
+  const [implementationPlan, setImplementationPlan] = useState<{ summary?: string; nextActions?: string[]; confidence?: string } | null>(null);
+
   // Chat state
   const [messages, setMessages] = useState<Array<{id: string, type: 'user' | 'ai', content: string, timestamp: Date}>>([]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -224,6 +225,7 @@ export default function AppBuilderPage() {
       return await response.json();
     },
     onSuccess: (data: any) => {
+      setImplementationPlan(data?.plan ?? null);
       setCurrentStep('implementation');
       setProgress(100);
       toast({
@@ -277,7 +279,7 @@ export default function AppBuilderPage() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <div className="border-b border-border p-6">
+        <div className="border-b border-border p-6 space-y-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
@@ -295,15 +297,52 @@ export default function AppBuilderPage() {
               {currentStepConfig.title}
             </Badge>
           </div>
-          
-          {/* Progress Bar */}
-          <div className="mt-4">
+
+          <div>
             <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
               <span>Progress</span>
               <span>{progress}% Complete</span>
             </div>
             <Progress value={progress} className="h-2" />
           </div>
+
+          {designBrief && (
+            <div className="rounded-3xl border border-white/20 bg-gradient-to-r from-[#14142A] via-[#2E1A47] to-[#0B0B15] p-6 text-white shadow-2xl">
+              <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                <div className="max-w-2xl space-y-2">
+                  <h2 className="text-xl font-semibold">Design Vision: {designBrief.title}</h2>
+                  <p className="text-sm text-white/80 leading-relaxed">{designBrief.description}</p>
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    {(designBrief.keyFeatures || []).slice(0, 4).map((feature, index) => (
+                      <Badge key={index} variant="secondary" className="bg-white/10 text-white border-white/20">
+                        {feature}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+                <div className="min-w-[220px] space-y-3 rounded-2xl bg-black/30 p-4">
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-white/60">Target Audience</p>
+                    <p className="text-sm font-medium">{designBrief.targetAudience}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-white/60">Timeline</p>
+                    <p className="text-sm font-medium">{designBrief.timeline}</p>
+                  </div>
+                  {implementationPlan?.nextActions && implementationPlan.nextActions.length > 0 && (
+                    <div>
+                      <p className="text-xs uppercase tracking-wide text-white/60">Next Actions</p>
+                      <ul className="list-disc list-inside text-sm space-y-1 text-white/80">
+                        {implementationPlan.nextActions.slice(0, 3).map((step, index) => (
+                          <li key={index}>{step}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Content Area */}

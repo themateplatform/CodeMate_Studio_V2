@@ -7,7 +7,8 @@ import { componentTagger } from "lovable-tagger";
 export default defineConfig(async ({ mode }) => ({
   plugins: [
     react(),
-    runtimeErrorOverlay(),
+    // Only enable the replit runtime error overlay when running inside Replit (REPL_ID present)
+    (process.env.REPL_ID !== undefined ? runtimeErrorOverlay() : null),
     mode === 'development' && componentTagger(),
     ...(process.env.NODE_ENV !== "production" &&
     process.env.REPL_ID !== undefined
@@ -34,6 +35,10 @@ export default defineConfig(async ({ mode }) => ({
   },
   server: {
     port: 8080,
+    // Disable the Vite in-browser error overlay to avoid runtime crashes when overlay expects structured stack frames
+    hmr: {
+      overlay: false,
+    },
     fs: {
       strict: true,
       deny: ["**/.*"],

@@ -21,10 +21,12 @@ import AIAssistantPage from "./pages/ai-assistant";
 import DeployPage from "./pages/deploy";
 import SettingsPage from "./pages/settings";
 import SecretsPage from "./pages/secrets";
+import LoginPage from "./pages/login";
 import PricingPage from "./pages/pricing";
 import DocsPage from "./pages/docs";
 import AboutPage from "./pages/about";
 import GeneratorPage from "./pages/generator";
+import AdminPage from "./pages/admin";
 import { Login } from "./pages/login";
 import { Register } from "./pages/register";
 import NotFound from "@/pages/not-found";
@@ -42,6 +44,7 @@ function Router() {
       <Route path="/projects" component={ProjectsDashboard} />
       <Route path="/projects-old" component={ProjectsPageSimplified} />
       <Route path="/app-builder" component={AppBuilderPage} />
+      <Route path="/login" component={LoginPage} />
       <Route path="/spec-editor" component={SpecEditorPage} />
       <Route path="/ide/:projectId">
         {() => (
@@ -102,6 +105,7 @@ function Router() {
       <Route path="/pricing" component={PricingPage} />
       <Route path="/docs" component={DocsPage} />
       <Route path="/about" component={AboutPage} />
+      <Route path="/admin" component={AdminPage} />
       <Route component={NotFound} />
     </Switch>
   );

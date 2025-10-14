@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from 'react';
 import { AlertCircle, Globe, Zap } from "lucide-react";
 import { Project, FileTreeNode } from "@/types";
 import { cn } from "@/lib/utils";
 import { useWebSocket } from "@/hooks/useWebSocket";
 import { useQuery } from "@tanstack/react-query";
+import { Button } from '@/components/ui/button';
+import { useLocation } from 'wouter';
 
 interface LivePreviewProps {
   currentProject: Project | null;
@@ -17,6 +19,18 @@ export function LivePreview({ currentProject, activeFile, mode = 'desktop', clas
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { isConnected, lastMessage, sendMessage } = useWebSocket();
+  const [, setLocation] = useLocation();
+
+  // Ensure user is authenticated before loading preview
+  const { data: user, isLoading: userLoading } = useQuery({
+    queryKey: ['/api/auth/user'],
+    queryFn: async () => {
+      const resp = await fetch('/api/auth/user', { headers: { Accept: 'application/json' } });
+      if (!resp.ok) throw new Error('Not authenticated');
+      return resp.json();
+    },
+    retry: false,
+  });
 
   // Load project files to build preview
   const { data: projectFiles } = useQuery({
@@ -27,7 +41,7 @@ export function LivePreview({ currentProject, activeFile, mode = 'desktop', clas
       if (!response.ok) throw new Error('Failed to load files');
       return response.json();
     },
-    enabled: !!currentProject?.id
+    enabled: !!currentProject?.id && !!user
   });
 
   // Generate preview URL for the project
@@ -76,13 +90,30 @@ export function LivePreview({ currentProject, activeFile, mode = 'desktop', clas
     }
   }, [lastMessage, currentProject?.id, previewUrl]);
 
-  if (isLoading) {
+  if (isLoading || userLoading) {
     return (
       <div className="flex-1 p-3">
         <div className="h-full bg-background rounded-lg border-2 border-border flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
             <p className="text-muted-foreground">Loading preview...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="flex-1 p-3">
+        <div className="h-full bg-background rounded-lg border-2 border-border flex items-center justify-center">
+          <div className="text-center">
+            <AlertCircle className="w-12 h-12 mx-auto mb-4 opacity-50" />
+            <h3 className="text-lg mb-2">Sign in to view previews</h3>
+            <p className="text-sm text-muted-foreground mb-4">Previews are only available to authenticated users.</p>
+            <div className="flex items-center justify-center">
+              <Button onClick={() => setLocation('/login')} variant="default">Sign in</Button>
+            </div>
           </div>
         </div>
       </div>

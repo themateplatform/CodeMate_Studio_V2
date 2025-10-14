@@ -5,13 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Plus, Github, Code, Calendar, Zap, ExternalLink, Edit2, Trash2, MoreVertical, Eye, Play, Sparkles, ArrowRight } from 'lucide-react';
+import { Plus, Github, Code, Calendar, Zap, ExternalLink, Edit2, Trash2, MoreVertical, Eye, Play, Sparkles, ArrowRight, Home } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 
@@ -154,16 +154,29 @@ export default function ProjectsPageSimplified() {
                 Build, deploy, and manage your applications
               </p>
             </div>
-            <Button 
-              size="lg" 
-              className="btn-primary gap-2 hover-neon"
-              onClick={() => setLocation('/')}
-              data-testid="button-create-project"
-            >
-              <Sparkles className="w-5 h-5" />
-              + Create New App
-              <ArrowRight className="w-4 h-4" />
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button
+                size="lg"
+                variant="ghost"
+                className="gap-2"
+                onClick={() => setLocation('/')}
+                data-testid="button-home"
+              >
+                <Home className="w-5 h-5" />
+                Home
+              </Button>
+
+              <Button
+                size="lg"
+                className="btn-primary gap-2 hover-neon"
+                onClick={() => setLocation('/')}
+                data-testid="button-create-project"
+              >
+                <Sparkles className="w-5 h-5" />
+                + Create New App
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
         </div>
 
