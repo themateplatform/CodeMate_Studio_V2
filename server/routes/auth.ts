@@ -1,6 +1,4 @@
 import { Router } from 'express';
-import { Router } from 'express';
-
 const router = Router();
 
 // Return the current user based on Authorization: Bearer <access_token>
