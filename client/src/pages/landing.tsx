@@ -405,7 +405,7 @@ export default function LandingPage() {
               <h2 className="text-3xl font-semibold">Connect GitHub</h2>
               <p className="text-white/70">
                 Bring in your live repository, sync to CodeMate Studio, and keep your workflow intact. We branch
-                as <span className="font-semibold">feat/auto-build-{{slug}}</span>, open human-readable PRs, and attach an instant preview.
+                as <span className="font-semibold">feat/auto-build-{"{slug}"}</span>, open human-readable PRs, and attach an instant preview.
               </p>
               <div className="flex flex-wrap items-center gap-4">
                 <Button
