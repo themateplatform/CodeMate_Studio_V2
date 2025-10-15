@@ -409,7 +409,7 @@ export default function LandingPage() {
               </p>
               <div className="flex flex-wrap items-center gap-4">
                 <Button
-                  onClick={() => setLocation("/github")}
+                  onClick={() => setLocation("/app-builder?connect=github")}
                   className="flex items-center gap-2 rounded-full bg-[color:var(--surfaces-card)] px-6 py-4 text-white hover:bg-[color:var(--surfaces-card)]/80"
                 >
                   <Github className="h-5 w-5" aria-hidden="true" />
@@ -417,7 +417,7 @@ export default function LandingPage() {
                 </Button>
                 <Button
                   variant="ghost"
-                  onClick={() => setLocation("/projects-dashboard")}
+                  onClick={() => setLocation("/projects")}
                   className="text-white/70 hover:text-white"
                 >
                   Open in CodeMate Studio
