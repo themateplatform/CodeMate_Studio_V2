@@ -315,7 +315,9 @@ export default function LandingPage() {
             <LogoLockup condensed={false} />
             <div className="mt-10 space-y-6">
               <h1 className="font-heading text-4xl font-bold text-white sm:text-5xl md:text-6xl">
-                Your Design Agency, On-Demand.
+                Your Design Agency
+                <br />
+                On-Demand
               </h1>
               <p className="mx-auto max-w-2xl text-lg text-white/80 sm:text-xl">
                 Design Studio power. Instant build.
