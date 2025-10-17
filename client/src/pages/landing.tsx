@@ -340,7 +340,7 @@ export default function LandingPage() {
                 On-Demand
               </h1>
               <p className="mx-auto max-w-2xl text-lg text-white/80 sm:text-xl">
-                Design Studio power. Instant build.
+                You Dream. We Build. You Launch
               </p>
             </div>
 
