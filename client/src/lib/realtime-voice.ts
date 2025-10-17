@@ -33,6 +33,8 @@ export class RealtimeVoiceClient {
 
   async connect(): Promise<void> {
     try {
+      console.log("[RealtimeAPI] Requesting microphone access...");
+
       // Request microphone access
       this.mediaStream = await navigator.mediaDevices.getUserMedia({
         audio: {
@@ -41,6 +43,8 @@ export class RealtimeVoiceClient {
           sampleRate: 24000,
         },
       });
+
+      console.log("[RealtimeAPI] Microphone access granted");
 
       // Initialize AudioContext
       this.audioContext = new AudioContext({ sampleRate: 24000 });
@@ -53,11 +57,15 @@ export class RealtimeVoiceClient {
         model: this.config.model || "gpt-4o-realtime-preview",
       });
 
-      this.ws = new WebSocket(`${wsUrl}?${params.toString()}`);
+      const fullWsUrl = `${wsUrl}?${params.toString()}`;
+      console.log("[RealtimeAPI] Connecting to:", fullWsUrl);
+
+      this.ws = new WebSocket(fullWsUrl);
 
       this.setupWebSocketHandlers();
       this.setMode("idle");
     } catch (error) {
+      console.error("[RealtimeAPI] Connection failed:", error);
       this.handleError(error as Error);
       throw error;
     }
@@ -99,16 +107,27 @@ export class RealtimeVoiceClient {
 
     this.ws.onerror = (error) => {
       console.error("[RealtimeAPI] WebSocket error:", error);
-      this.handleError(new Error("WebSocket error"));
+      console.error("[RealtimeAPI] WebSocket readyState:", this.ws?.readyState);
+      console.error("[RealtimeAPI] Error event details:", {
+        type: (error as any).type,
+        target: (error as any).target?.url,
+        message: (error as any).message,
+      });
+      this.handleError(new Error(`WebSocket connection failed. Check that the server proxy is running and OpenAI API key is set.`));
     };
 
-    this.ws.onclose = () => {
-      console.log("[RealtimeAPI] Disconnected");
+    this.ws.onclose = (event) => {
+      console.log("[RealtimeAPI] Disconnected", {
+        code: event.code,
+        reason: event.reason,
+        wasClean: event.wasClean,
+      });
       this.setMode("idle");
-      
-      // Attempt reconnection
-      if (this.reconnectAttempts < this.maxReconnectAttempts) {
+
+      // Attempt reconnection only if not closed cleanly
+      if (!event.wasClean && this.reconnectAttempts < this.maxReconnectAttempts) {
         this.reconnectAttempts++;
+        console.log(`[RealtimeAPI] Reconnection attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts} in ${2000 * this.reconnectAttempts}ms`);
         setTimeout(() => this.connect(), 2000 * this.reconnectAttempts);
       }
     };

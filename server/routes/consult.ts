@@ -121,22 +121,27 @@ Respond naturally as Jesse.`;
 
         // Try GPT-5 first, fallback to o1-preview, then gpt-4o
         const model = process.env.JESSE_MODEL || "gpt-5" || "o1-preview" || "gpt-4o";
+        const isReasoningModel = model.includes("o1") || model.includes("gpt-5");
 
-        const response = await client.chat.completions.create({
+        const requestParams: any = {
           model,
           messages: [
             { role: "system", content: JESSE_SYSTEM },
             { role: "user", content: userPrompt },
           ],
-          // Reasoning models benefit from lower temperature for strategic thinking
-          temperature: model.includes("o1") ? 0.3 : 0.7,
-          // Allow longer responses for complex reasoning
-          max_tokens: model.includes("o1") ? 500 : 200,
-          // Enable reasoning tokens for o1 models
-          ...(model.includes("o1") && {
-            reasoning_effort: "high",
-          }),
-        });
+        };
+
+        // Reasoning models (o1, gpt-5) use different parameters
+        if (isReasoningModel) {
+          requestParams.max_completion_tokens = 500;
+          // o1 models don't support temperature or reasoning_effort in the public API yet
+          // They use fixed internal parameters
+        } else {
+          requestParams.temperature = 0.7;
+          requestParams.max_tokens = 200;
+        }
+
+        const response = await client.chat.completions.create(requestParams);
 
         content = response.choices[0]?.message?.content || "";
       } catch (error) {
