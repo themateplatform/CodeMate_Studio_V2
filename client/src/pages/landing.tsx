@@ -643,7 +643,50 @@ export default function LandingPage() {
 
                   {/* Input */}
                   <div className="pt-4 border-t border-white/10">
+                    {/* Attachment badges */}
+                    {chatAttachments.length > 0 && (
+                      <div className="mb-3 flex flex-wrap gap-2">
+                        {chatAttachments.map((name, idx) => (
+                          <span
+                            key={idx}
+                            className="inline-flex items-center gap-1 rounded-2xl border border-white/20 bg-white/10 px-3 py-1 text-xs text-white/70"
+                          >
+                            <Paperclip className="h-3 w-3" />
+                            {name}
+                            <button
+                              onClick={() => setChatAttachments((current) => current.filter((_, i) => i !== idx))}
+                              className="ml-1 hover:text-white"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
                     <div className="flex gap-2">
+                      <input
+                        ref={chatFileInputRef}
+                        type="file"
+                        multiple
+                        className="hidden"
+                        onChange={(e) => {
+                          if (!e.target.files) return;
+                          const files = Array.from(e.target.files).map((f) => f.name);
+                          setChatAttachments((current) => Array.from(new Set([...current, ...files])));
+                          e.target.value = "";
+                        }}
+                        aria-hidden="true"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => chatFileInputRef.current?.click()}
+                        disabled={responsesMutation.isPending}
+                        className="rounded-2xl text-white/70 hover:text-white hover:bg-white/10"
+                      >
+                        <Paperclip className="h-4 w-4" />
+                      </Button>
                       <Input
                         ref={inputRef}
                         placeholder="Describe goals, users, vibe, integrations…"
