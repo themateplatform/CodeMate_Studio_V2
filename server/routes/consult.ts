@@ -2,6 +2,8 @@ import { Router } from "express";
 import { openaiClient } from "@/server/services/openaiClient";
 import type { LiveSpec, ConsultationPhase } from "@shared/consultation-flow";
 
+const express = require("express");
+
 const router = Router();
 
 // Jesse's personality and system prompt
