@@ -1,12 +1,12 @@
 import type { Application } from "express";
-import WebSocket from "ws";
+import WebSocket, { WebSocketServer } from "ws";
 
 /**
  * WebSocket proxy for OpenAI Realtime API
  * Handles authentication and message forwarding between client and OpenAI
  */
 export function setupVoiceProxy(app: Application, server: any) {
-  const wss = new WebSocket.Server({ 
+  const wss = new WebSocketServer({ 
     server,
     path: "/api/voice-proxy",
   });
