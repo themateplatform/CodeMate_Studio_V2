@@ -250,8 +250,10 @@ export default function LandingPage() {
   const [spec, setSpec] = useState<LiveSpec>(initialSpec);
   const [inputValue, setInputValue] = useState("");
   const [showSpec, setShowSpec] = useState(false);
+  const [chatAttachments, setChatAttachments] = useState<string[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const chatFileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
