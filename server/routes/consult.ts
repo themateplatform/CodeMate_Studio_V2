@@ -57,25 +57,39 @@ User just said: "${message}"
 
 Respond naturally as Jesse. If they've given a complete answer to the current phase question, acknowledge it and ask the next question. Keep it brief and conversational.`;
 
-    // Create OpenAI client directly (simpler than openAIClient wrapper)
-    const OpenAI = (await import("openai")).default;
-    const client = new OpenAI({ apiKey: process.env.OPEN_AI_KEY });
+    let content = "";
+    let shouldAdvance = false;
+    let nextPhase: ConsultationPhase | undefined = undefined;
 
-    const response = await client.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: JESSE_SYSTEM },
-        { role: "user", content: userPrompt },
-      ],
-      temperature: 0.7,
-      max_tokens: 150,
-    });
+    // Try to use OpenAI if key is set, otherwise use fallback
+    if (process.env.OPEN_AI_KEY) {
+      try {
+        const OpenAI = (await import("openai")).default;
+        const client = new OpenAI({ apiKey: process.env.OPEN_AI_KEY });
 
-    const content = response.choices[0]?.message?.content || "";
+        const response = await client.chat.completions.create({
+          model: "gpt-4o-mini",
+          messages: [
+            { role: "system", content: JESSE_SYSTEM },
+            { role: "user", content: userPrompt },
+          ],
+          temperature: 0.7,
+          max_tokens: 150,
+        });
+
+        content = response.choices[0]?.message?.content || "";
+      } catch (error) {
+        console.warn("OpenAI API error, using fallback:", error);
+        content = fallbackJesseResponse(phase);
+      }
+    } else {
+      // Use fallback response if no API key
+      content = fallbackJesseResponse(phase);
+    }
 
     // Determine if we should advance to next phase
-    const shouldAdvance = shouldMoveToNextPhase(phase, message, spec);
-    const nextPhase = shouldAdvance ? (phase + 1) as ConsultationPhase : undefined;
+    shouldAdvance = shouldMoveToNextPhase(phase, message, spec);
+    nextPhase = shouldAdvance ? (phase + 1) as ConsultationPhase : undefined;
 
     return res.json({
       message: content,
