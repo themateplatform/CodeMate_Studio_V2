@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { openaiClient } from "../services/openaiClient";
+import { openAIClient } from "../services/openaiClient";
 import type { LiveSpec, ConsultationPhase } from "../../shared/consultation-flow";
 
 const router = Router();
