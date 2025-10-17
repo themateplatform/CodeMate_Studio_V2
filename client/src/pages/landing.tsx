@@ -30,6 +30,10 @@ import {
   Send,
   Eye,
   EyeOff,
+  Mic,
+  MicOff,
+  Phone,
+  PhoneOff,
 } from "lucide-react";
 import { JesseAvatar } from "@/components/consult/JesseAvatar";
 import { MessageBubble } from "@/components/consult/MessageBubble";
@@ -46,6 +50,7 @@ import {
   updateSpec,
 } from "@/lib/consultation-flow";
 import type { LiveSpec } from "@/lib/consultation-flow";
+import { RealtimeVoiceClient, type VoiceMode } from "@/lib/realtime-voice";
 
 type PlanSummary = {
   goal: string;
@@ -255,6 +260,12 @@ export default function LandingPage() {
   const inputRef = useRef<HTMLInputElement>(null);
   const chatFileInputRef = useRef<HTMLInputElement | null>(null);
 
+  // Voice mode state
+  const [voiceMode, setVoiceMode] = useState<VoiceMode>("idle");
+  const [isVoiceActive, setIsVoiceActive] = useState(false);
+  const [voiceTranscript, setVoiceTranscript] = useState("");
+  const voiceClientRef = useRef<RealtimeVoiceClient | null>(null);
+
   useEffect(() => {
     const handleScroll = () => {
       const max = 160; // px over which we animate the logo handoff
@@ -299,6 +310,62 @@ export default function LandingPage() {
       scrollRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages, responsesMutation.isPending, chatMode]);
+
+  // Initialize voice client when chat mode activates
+  useEffect(() => {
+    if (chatMode && !voiceClientRef.current) {
+      // Get API key from environment or ask user
+      const apiKey = import.meta.env.VITE_OPENAI_API_KEY || "";
+
+      if (apiKey) {
+        voiceClientRef.current = new RealtimeVoiceClient({
+          apiKey,
+          model: "gpt-4o-realtime-preview",
+          voice: "shimmer",
+          instructions: `You are Jesse, a design consultant. ${spec.goal ? `The user is building: ${spec.goal}` : ""} Conduct a friendly, conversational discovery session.`,
+          onModeChange: (mode) => {
+            setVoiceMode(mode);
+          },
+          onTranscript: (text, isFinal) => {
+            if (isFinal) {
+              // Add as user message
+              const userMsg: ChatMessage = {
+                id: `msg-voice-${Date.now()}`,
+                role: "user",
+                content: text,
+                timestamp: Date.now(),
+              };
+              setMessages((m) => [...m, userMsg]);
+              setVoiceTranscript("");
+            } else {
+              setVoiceTranscript(text);
+            }
+          },
+          onResponse: (text) => {
+            // Add Jesse's voice response as message
+            const assistantMsg: ChatMessage = {
+              id: `msg-voice-${Date.now()}`,
+              role: "assistant",
+              content: text,
+              timestamp: Date.now(),
+            };
+            setMessages((m) => [...m, assistantMsg]);
+          },
+          onError: (error) => {
+            console.error("Voice error:", error);
+          },
+        });
+      }
+    }
+
+    // Cleanup on unmount
+    return () => {
+      if (voiceClientRef.current) {
+        voiceClientRef.current.disconnect();
+        voiceClientRef.current = null;
+      }
+    };
+  }, [chatMode, spec.goal]);
 
   const handleLaunch = () => {
     // Instead of navigating, transform the page into chat mode
@@ -414,6 +481,25 @@ export default function LandingPage() {
     },
     [inputValue, phase, spec, responsesMutation]
   );
+
+  // Voice mode handlers
+  const toggleVoiceMode = useCallback(async () => {
+    if (!voiceClientRef.current) return;
+
+    if (!isVoiceActive) {
+      try {
+        await voiceClientRef.current.connect();
+        await voiceClientRef.current.startListening();
+        setIsVoiceActive(true);
+      } catch (error) {
+        console.error("Failed to start voice mode:", error);
+        alert("Could not access microphone. Please check permissions.");
+      }
+    } else {
+      voiceClientRef.current.stopListening();
+      setIsVoiceActive(false);
+    }
+  }, [isVoiceActive]);
 
   return (
     <div className="min-h-screen bg-[color:var(--deep-navy)] text-foreground">
