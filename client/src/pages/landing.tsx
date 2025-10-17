@@ -744,6 +744,16 @@ export default function LandingPage() {
                       {responsesMutation.isPending && (
                         <MessageBubble role="assistant" content="" isLoading={true} />
                       )}
+                      {voiceTranscript && (
+                        <div className="flex items-start gap-3 opacity-60">
+                          <div className="flex-shrink-0 mt-1">
+                            <Mic className="w-5 h-5 text-white/70 animate-pulse" />
+                          </div>
+                          <div className="flex-1 rounded-2xl bg-white/5 border border-white/10 px-4 py-3 text-sm text-white/70 italic">
+                            {voiceTranscript}...
+                          </div>
+                        </div>
+                      )}
                       <div ref={scrollRef} />
                     </div>
                   </ScrollArea>
