@@ -669,32 +669,64 @@ export default function LandingPage() {
               {/* Chat header with Jesse */}
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <JesseAvatar state={responsesMutation.isPending ? "thinking" : "listening"} size="lg" />
+                  <JesseAvatar
+                    state={
+                      voiceMode === "thinking" ? "thinking" :
+                      voiceMode === "speaking" ? "excited" :
+                      voiceMode === "listening" ? "listening" :
+                      responsesMutation.isPending ? "thinking" : "listening"
+                    }
+                    size="lg"
+                  />
                   <div>
                     <h2 className="font-semibold text-white text-lg">Design Consultation with Jesse</h2>
                     <p className="text-xs text-white/60">
                       Phase {phase}/6 · {phaseConfig[phase]?.title}
+                      {voiceMode !== "idle" && ` · Voice: ${voiceMode}`}
                     </p>
                   </div>
                 </div>
-                <Button
-                  onClick={() => setShowSpec(!showSpec)}
-                  variant="ghost"
-                  className="text-white/70 hover:text-white hover:bg-white/10"
-                  size="sm"
-                >
-                  {showSpec ? (
-                    <>
-                      <EyeOff className="w-4 h-4 mr-2" />
-                      Hide Spec
-                    </>
-                  ) : (
-                    <>
-                      <Eye className="w-4 h-4 mr-2" />
-                      Show Spec
-                    </>
-                  )}
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    onClick={toggleVoiceMode}
+                    variant={isVoiceActive ? "default" : "ghost"}
+                    className={cn(
+                      "text-white/70 hover:text-white hover:bg-white/10",
+                      isVoiceActive && "bg-gradient-to-r from-[color:var(--core-brand-primary)] to-[color:var(--core-brand-secondary)] text-white animate-pulse"
+                    )}
+                    size="sm"
+                  >
+                    {isVoiceActive ? (
+                      <>
+                        <PhoneOff className="w-4 h-4 mr-2" />
+                        End Call
+                      </>
+                    ) : (
+                      <>
+                        <Phone className="w-4 h-4 mr-2" />
+                        Voice Mode
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    onClick={() => setShowSpec(!showSpec)}
+                    variant="ghost"
+                    className="text-white/70 hover:text-white hover:bg-white/10"
+                    size="sm"
+                  >
+                    {showSpec ? (
+                      <>
+                        <EyeOff className="w-4 h-4 mr-2" />
+                        Hide Spec
+                      </>
+                    ) : (
+                      <>
+                        <Eye className="w-4 h-4 mr-2" />
+                        Show Spec
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
 
               {/* Messages area */}
