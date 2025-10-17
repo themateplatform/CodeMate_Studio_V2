@@ -64,14 +64,6 @@ export default function ConsultPage() {
         timestamp: Date.now(),
       };
       setMessages([firstMessage]);
-
-      // If there's a brief, simulate the user sending it as first input
-      // This triggers Jesse's response with context
-      if (initialBrief) {
-        setTimeout(() => {
-          handleSendMessage(initialBrief);
-        }, 500);
-      }
     }
   }, []);
 
