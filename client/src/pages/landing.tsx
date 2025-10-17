@@ -673,10 +673,12 @@ export default function LandingPage() {
           )}
         </section>
 
-        <section
-          id="github-connect"
-          className="hidden"
-        >
+        {!chatMode && (
+          <>
+            <section
+              id="github-connect"
+              className="hidden"
+            >
           <div className="mx-auto grid max-w-5xl gap-8 md:grid-cols-[2fr_1fr] md:items-center">
             <div className="space-y-4 text-white">
               <p className="text-sm uppercase tracking-wide text-white/60">
@@ -776,6 +778,8 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
+          </>
+        )}
       </main>
 
       <Dialog open={isPreBriefOpen} onOpenChange={setIsPreBriefOpen}>
