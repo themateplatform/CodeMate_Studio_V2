@@ -18,6 +18,7 @@ import SpecEditorPage from "./pages/spec-editor";
 import TemplatesPage from "./pages/templates";
 import ComponentsPage from "./pages/components";
 import AIAssistantPage from "./pages/ai-assistant";
+import ConsultPage from "./pages/consult";
 import DeployPage from "./pages/deploy";
 import SettingsPage from "./pages/settings";
 import SecretsPage from "./pages/secrets";
@@ -76,6 +77,13 @@ function Router() {
         {() => (
           <GlobalShell>
             <AIAssistantPage />
+          </GlobalShell>
+        )}
+      </Route>
+      <Route path="/consult">
+        {() => (
+          <GlobalShell>
+            <ConsultPage />
           </GlobalShell>
         )}
       </Route>
