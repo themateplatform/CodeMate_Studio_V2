@@ -119,14 +119,23 @@ Respond naturally as Jesse.`;
         const OpenAI = (await import("openai")).default;
         const client = new OpenAI({ apiKey: process.env.OPEN_AI_KEY });
 
+        // Try GPT-5 first, fallback to o1-preview, then gpt-4o
+        const model = process.env.JESSE_MODEL || "gpt-5" || "o1-preview" || "gpt-4o";
+
         const response = await client.chat.completions.create({
-          model: "gpt-4o-mini",
+          model,
           messages: [
             { role: "system", content: JESSE_SYSTEM },
             { role: "user", content: userPrompt },
           ],
-          temperature: 0.7,
-          max_tokens: 150,
+          // Reasoning models benefit from lower temperature for strategic thinking
+          temperature: model.includes("o1") ? 0.3 : 0.7,
+          // Allow longer responses for complex reasoning
+          max_tokens: model.includes("o1") ? 500 : 200,
+          // Enable reasoning tokens for o1 models
+          ...(model.includes("o1") && {
+            reasoning_effort: "high",
+          }),
         });
 
         content = response.choices[0]?.message?.content || "";
