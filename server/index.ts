@@ -149,6 +149,15 @@ app.use((req, res, next) => {
     yjsServer.handleConnection(ws, roomId, userId, projectId, fileId);
   });
 
+  // Set up voice proxy for OpenAI Realtime API
+  try {
+    const { setupVoiceProxy } = await import('./routes/voice-proxy');
+    setupVoiceProxy(app, server);
+    log("[VoiceProxy] OpenAI Realtime API proxy initialized");
+  } catch (err) {
+    console.warn('Voice proxy not available:', err);
+  }
+
   log("WebSocket collaboration server initialized");
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

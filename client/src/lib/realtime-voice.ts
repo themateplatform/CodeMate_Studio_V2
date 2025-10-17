@@ -45,18 +45,14 @@ export class RealtimeVoiceClient {
       // Initialize AudioContext
       this.audioContext = new AudioContext({ sampleRate: 24000 });
 
-      // Connect to Realtime API WebSocket
-      // Note: Browser WebSocket doesn't support custom headers, so we need to use a different approach
-      // The actual implementation will require a proxy server endpoint or URL-based auth
-      // For now, we'll document this limitation
-      const wsUrl = "wss://api.openai.com/v1/realtime";
+      // Connect to Realtime API via server proxy
+      // Browser WebSocket doesn't support custom headers, so we use a server-side proxy
+      const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+      const wsUrl = `${protocol}//${window.location.host}/api/voice-proxy`;
       const params = new URLSearchParams({
         model: this.config.model || "gpt-4o-realtime-preview",
       });
 
-      // TODO: In production, this needs to go through a server proxy endpoint
-      // that adds the Authorization header, since browser WebSocket doesn't support it
-      // Example: wss://your-server.com/api/voice-proxy
       this.ws = new WebSocket(`${wsUrl}?${params.toString()}`);
 
       this.setupWebSocketHandlers();
