@@ -116,22 +116,16 @@ app.use((req, res, next) => {
   } catch (err) {
     console.warn('App builder routes not available:', err);
   }
-  try {
-    const consultRouter = await import('./routes/consult');
-    app.use('/api/consult', consultRouter.default);
-  } catch (err) {
-    console.warn('Consultation routes not available:', err);
-  }
 
   // const server = await registerRoutes(app);
-  
+
   // Register all API routes
   registerRoutes(app);
-  
+
   const server = createServer(app);
 
   // Set up WebSocket server for real-time collaboration
-  const wss = new WebSocketServer({ 
+  const wss = new WebSocketServer({
     server,
     path: "/collaboration"
   });
@@ -164,6 +158,14 @@ app.use((req, res, next) => {
     res.status(status).json({ message });
     throw err;
   });
+
+  // Register consultation routes BEFORE Vite catch-all to ensure API routes work
+  try {
+    const consultRouter = await import('./routes/consult');
+    app.use('/api/consult', consultRouter.default);
+  } catch (err) {
+    console.warn('Consultation routes not available:', err);
+  }
 
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
