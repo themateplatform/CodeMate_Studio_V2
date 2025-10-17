@@ -314,48 +314,53 @@ export default function LandingPage() {
   // Initialize voice client when chat mode activates
   useEffect(() => {
     if (chatMode && !voiceClientRef.current) {
-      // Get API key from environment or ask user
-      const apiKey = import.meta.env.VITE_OPENAI_API_KEY || "";
+      // Note: API key is not needed on client side since we're using server proxy
+      // The server proxy handles authentication with OpenAI
+      console.log("[Landing] Initializing voice client...");
 
-      if (apiKey) {
-        voiceClientRef.current = new RealtimeVoiceClient({
-          apiKey,
-          model: "gpt-4o-realtime-preview",
-          voice: "shimmer",
-          instructions: `You are Jesse, a design consultant. ${spec.goal ? `The user is building: ${spec.goal}` : ""} Conduct a friendly, conversational discovery session.`,
-          onModeChange: (mode) => {
-            setVoiceMode(mode);
-          },
-          onTranscript: (text, isFinal) => {
-            if (isFinal) {
-              // Add as user message
-              const userMsg: ChatMessage = {
-                id: `msg-voice-${Date.now()}`,
-                role: "user",
-                content: text,
-                timestamp: Date.now(),
-              };
-              setMessages((m) => [...m, userMsg]);
-              setVoiceTranscript("");
-            } else {
-              setVoiceTranscript(text);
-            }
-          },
-          onResponse: (text) => {
-            // Add Jesse's voice response as message
-            const assistantMsg: ChatMessage = {
+      voiceClientRef.current = new RealtimeVoiceClient({
+        apiKey: "not-needed-using-server-proxy", // Dummy key since proxy handles auth
+        model: "gpt-4o-realtime-preview",
+        voice: "shimmer",
+        instructions: `You are Jesse, a design consultant. ${spec.goal ? `The user is building: ${spec.goal}` : ""} Conduct a friendly, conversational discovery session.`,
+        onModeChange: (mode) => {
+          console.log("[Landing] Voice mode changed:", mode);
+          setVoiceMode(mode);
+        },
+        onTranscript: (text, isFinal) => {
+          console.log("[Landing] Transcript:", text, "Final:", isFinal);
+          if (isFinal) {
+            // Add as user message
+            const userMsg: ChatMessage = {
               id: `msg-voice-${Date.now()}`,
-              role: "assistant",
+              role: "user",
               content: text,
               timestamp: Date.now(),
             };
-            setMessages((m) => [...m, assistantMsg]);
-          },
-          onError: (error) => {
-            console.error("Voice error:", error);
-          },
-        });
-      }
+            setMessages((m) => [...m, userMsg]);
+            setVoiceTranscript("");
+          } else {
+            setVoiceTranscript(text);
+          }
+        },
+        onResponse: (text) => {
+          console.log("[Landing] Voice response:", text);
+          // Add Jesse's voice response as message
+          const assistantMsg: ChatMessage = {
+            id: `msg-voice-${Date.now()}`,
+            role: "assistant",
+            content: text,
+            timestamp: Date.now(),
+          };
+          setMessages((m) => [...m, assistantMsg]);
+        },
+        onError: (error) => {
+          console.error("[Landing] Voice error:", error);
+          alert(`Voice mode error: ${error.message}\n\nPlease check:\n1. Microphone permissions\n2. Server is running\n3. OpenAI API key is set (OPEN_AI_KEY)`);
+        },
+      });
+
+      console.log("[Landing] Voice client initialized");
     }
 
     // Cleanup on unmount
