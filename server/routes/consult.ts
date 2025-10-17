@@ -202,8 +202,8 @@ function shouldMoveToNextPhase(
   message: string,
   spec: LiveSpec
 ): boolean {
-  const lower = message.toLowerCase();
-  const minLength = 10; // Minimum message length
+  const lower = message.toLowerCase().replace(/_/g, " "); // Handle underscores in quick replies
+  const minLength = 3; // Minimum message length (quick replies can be short)
 
   // Check if response meets minimum quality
   if (message.trim().length < minLength) {
@@ -213,23 +213,41 @@ function shouldMoveToNextPhase(
   // Phase-specific checks
   switch (phase) {
     case 1:
-      // If they've described a problem, move forward
-      return spec.goal.length > 0 || /\b(helps?|solves?|makes?|enables?|allows?|lets?)\b/.test(lower);
+      // If they've provided any substantive response to problem question, advance
+      // This includes quick replies (makes work easier, saves time/money, builds community, enables new capability)
+      return (
+        spec.goal.length > 0 ||
+        /\b(problem|solves?|helps?|makes?|enables?|allows?|lets?|saves?|builds?|easier|time|money|community|capability)\b/i.test(lower)
+      );
     case 2:
-      // If they've described an audience, move forward
-      return spec.audience.length > 0 || /\b(business|freelancer|student|customer|user|people|team)\b/i.test(lower);
+      // If they've described an audience, advance
+      return (
+        spec.audience.length > 0 ||
+        /\b(business|freelancer|solopreneur|startup|enterprise|student|customer|user|people|team|owner|manager|developer|creator)\b/i.test(lower)
+      );
     case 3:
-      // If they've defined success, move forward
-      return spec.successMetric.length > 0 || /\b(sign up|purchase|book|download|sign|revenue|users?|growth)\b/i.test(lower);
+      // If they've defined a success metric, advance
+      return (
+        spec.successMetric.length > 0 ||
+        /\b(sign up|signup|purchase|book|booking|download|revenue|users?|growth|leads?|conversions?|engagement|retention)\b/i.test(lower)
+      );
     case 4:
-      // If they've indicated tech level, move forward
-      return spec.techLevel !== "intermediate" || /\b(stripe|auth|cms|api|integration)\b/i.test(lower);
+      // If they've indicated tech level or integrations, advance
+      // Always advance if they've selected a tech level
+      return (
+        spec.techLevel !== "intermediate" ||
+        /\b(code|write|expert|beginner|team|stripe|auth|payment|cms|api|integration|react|vue|svelte|next|existing)\b/i.test(lower)
+      );
     case 5:
-      // If they've given design preference, move forward
-      return spec.designVibe !== "elegant" || /\b(minimal|bold|elegant|playful|clean|modern|simple)\b/i.test(lower);
+      // If they've given design preference, advance
+      // Always advance if design vibe has been set
+      return (
+        spec.designVibe !== "elegant" ||
+        /\b(minimal|clean|bold|vibrant|elegant|refined|playful|friendly|modern|simple|color|aesthetic|reference|site|look)\b/i.test(lower)
+      );
     case 6:
-      // Final phase - move to completion
-      return /\b(looks? good|great|perfect|approve|yes|let'?s? build)\b/i.test(lower);
+      // Final phase - user approves the spec
+      return /\b(looks? good|great|perfect|approve|approved|yes|looks? right|ready|build|let'?s?)\b/i.test(lower);
     default:
       return false;
   }
