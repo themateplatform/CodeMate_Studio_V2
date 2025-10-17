@@ -158,23 +158,76 @@ export function updateSpec(spec: LiveSpec, phase: ConsultationPhase, response: s
 export function getAdaptiveFollowUp(phase: ConsultationPhase, spec: LiveSpec): string {
   const config = phaseConfig[phase];
 
-  if (phase === 3) {
-    if (spec.successMetric.toLowerCase().includes("revenue")) {
-      return "Great—what's realistic? $1k MRR? $100k? Help me set expectations.";
-    }
-    if (spec.successMetric.toLowerCase().includes("users")) {
-      return "Got it. How many users is success? Hundreds? Thousands?";
+  // Phase 2: After audience, ask about their specific needs
+  if (phase === 2) {
+    if (spec.audience.length > 0) {
+      const audience = spec.audience[0].toLowerCase();
+      if (audience.includes("freelancer") || audience.includes("solopreneur")) {
+        return `Perfect for freelancers. What's the biggest pain point they face that your idea solves?`;
+      }
+      if (audience.includes("small business") || audience.includes("startup")) {
+        return `Small business owners get it. What workflow are you trying to simplify or improve for them?`;
+      }
+      if (audience.includes("enterprise")) {
+        return `Enterprise audiences are tough to please. What's the main outcome they need from this?`;
+      }
     }
   }
 
+  // Phase 3: After success metric, probe deeper
+  if (phase === 3) {
+    if (spec.successMetric) {
+      const metric = spec.successMetric.toLowerCase();
+      if (metric.includes("revenue")) {
+        return `Revenue-driven—that's clear. In your first 90 days, what's a realistic target?`;
+      }
+      if (metric.includes("user") || metric.includes("signup")) {
+        return `User acquisition is your north star. How many users would feel like a win in the first quarter?`;
+      }
+      if (metric.includes("book") || metric.includes("appointment") || metric.includes("purchase")) {
+        return `So conversions matter. What conversion rate would make this a success for you?`;
+      }
+      if (metric.includes("credibility") || metric.includes("brand") || metric.includes("awareness")) {
+        return `Building credibility is the goal. How will you measure that? Reviews, testimonials, press mentions?`;
+      }
+    }
+  }
+
+  // Phase 4: Based on tech level and goal, ask specific questions
   if (phase === 4) {
     if (spec.techLevel === "beginner") {
-      return "No worries! We'll keep it simple. Any existing code, or starting fresh?";
+      if (spec.goal.toLowerCase().includes("payment") || spec.goal.toLowerCase().includes("stripe")) {
+        return `No worries! We'll use Stripe for payments—it's straightforward. Do you have a Stripe account, or should we set one up?`;
+      }
+      return `Perfect. We'll keep the tech stack simple. Any platforms you already use that we should integrate with?`;
     }
-    if (spec.techLevel === "expert") {
-      return "Nice. Any specific tech stack preferences? (React, Next, Svelte, etc.)";
+    if (spec.techLevel === "expert" || spec.techLevel === "team") {
+      if (spec.goal.toLowerCase().includes("real-time") || spec.goal.toLowerCase().includes("collaboration")) {
+        return `Nice. For real-time features like this, are you leaning toward WebSocket, Server-Sent Events, or a service like Firebase?`;
+      }
+      return `Great. Any specific frameworks or tech you want to use? (React, Next.js, etc.)`;
     }
   }
 
+  // Phase 5: Design vibe follow-up based on their choice
+  if (phase === 5) {
+    if (spec.designVibe) {
+      const vibe = spec.designVibe.toLowerCase();
+      if (vibe.includes("minimal")) {
+        return `Minimal and clean—love that. Whitespace-heavy, or do you want subtle color accents?`;
+      }
+      if (vibe.includes("bold")) {
+        return `Bold and vibrant! Are you thinking neon/gradient heavy, or more muted bold tones?`;
+      }
+      if (vibe.includes("elegant")) {
+        return `Elegant and refined—classy. Serif fonts, or keeping it modern sans-serif?`;
+      }
+      if (vibe.includes("playful")) {
+        return `Playful and friendly! Do you have a color palette in mind, or should we explore what works?`;
+      }
+    }
+  }
+
+  // Fallback to standard follow-up for the phase
   return config.followUp;
 }
