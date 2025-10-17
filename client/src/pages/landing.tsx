@@ -466,96 +466,211 @@ export default function LandingPage() {
           />
           <div className="absolute inset-0 bg-[color:var(--deep-navy)]/30" aria-hidden="true" />
 
-          <div className="relative mx-auto flex w-full max-w-5xl flex-col items-center text-center">
-            <LogoLockup variant="hero" progress={scrollProgress} />
-            <div className="mt-10 space-y-6">
-              <h1 className="font-heading text-4xl font-bold text-white sm:text-5xl md:text-6xl">
-                Your Design Agency
-                <br />
-                On-Demand
-              </h1>
-              <p className="mx-auto max-w-2xl text-lg text-white/80 sm:text-xl">
-                You Dream. We Build. You Launch
+          {!chatMode ? (
+            /* HERO MODE - Original landing page */
+            <div
+              className="relative mx-auto flex w-full max-w-5xl flex-col items-center text-center transition-opacity duration-[800ms]"
+              style={{ opacity: chatMode ? 0 : 1 }}
+            >
+              <LogoLockup variant="hero" progress={scrollProgress} />
+              <div className="mt-10 space-y-6">
+                <h1 className="font-heading text-4xl font-bold text-white sm:text-5xl md:text-6xl">
+                  Your Design Agency
+                  <br />
+                  On-Demand
+                </h1>
+                <p className="mx-auto max-w-2xl text-lg text-white/80 sm:text-xl">
+                  You Dream. We Build. You Launch
+                </p>
+              </div>
+
+              <div className="mt-10 w-full max-w-3xl">
+                <label htmlFor="idea-textarea" className="sr-only">
+                  Design brief prompt
+                </label>
+                <Textarea
+                  id="idea-textarea"
+                  value={idea}
+                  onChange={(event) => setIdea(event.target.value)}
+                  placeholder="Tell us what you want to build… paste links or drop files."
+                  rows={isInputFocused ? 6 : 4}
+                  onFocus={() => setIsInputFocused(true)}
+                  onBlur={() => setIsInputFocused(false)}
+                  className="min-h-[10rem] resize-none rounded-2xl border border-white/20 bg-white/10 px-6 py-5 text-base text-white shadow-lg backdrop-blur-md placeholder:text-white/60 focus-visible:ring-2 focus-visible:ring-semantic-primary"
+                />
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    multiple
+                    className="hidden"
+                    onChange={handleAttachmentChange}
+                    aria-hidden="true"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleAttachmentClick}
+                    className="flex items-center gap-2 rounded-2xl border-white/30 bg-transparent text-white hover:border-white hover:bg-white/10"
+                  >
+                    <Paperclip className="h-4 w-4" aria-hidden="true" />
+                    Attach file
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIdea((current) => `${current}\nLink: `)}
+                    className="flex items-center gap-2 rounded-2xl border-white/30 bg-transparent text-white hover:border-white hover:bg-white/10"
+                  >
+                    <LinkIcon className="h-4 w-4" aria-hidden="true" />
+                    Paste reference
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={() => setLocation("/app-builder?connect=github")}
+                    className="flex items-center gap-2 rounded-2xl border border-white/30 bg-white/10 px-6 py-4 text-white hover:border-white hover:bg-white/20"
+                  >
+                    <Github className="h-4 w-4" aria-hidden="true" />
+                    Connect Repo
+                  </Button>
+                  <div className="ml-auto flex items-center gap-3">
+                    <Button
+                      size="lg"
+                      onClick={handleLaunch}
+                      className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[color:var(--core-brand-primary)] to-[color:var(--core-brand-secondary)] px-8 py-6 text-lg font-semibold text-white shadow-lg transition-transform motion-safe:hover:scale-105"
+                    >
+                      Launch
+                      <ArrowRight className="h-5 w-5" aria-hidden="true" />
+                    </Button>
+                  </div>
+                </div>
+                {attachmentLabels.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2 text-sm text-white/70">
+                    {attachmentLabels.map((name) => (
+                      <span
+                        key={name}
+                        className="rounded-2xl border border-white/20 bg-white/10 px-3 py-1"
+                      >
+                        {name}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <p className="mt-6 text-sm text-white/70">
+                Launch creates a fast brief. Attachments stay private to your project.
               </p>
             </div>
-
-            <div className="mt-10 w-full max-w-3xl">
-              <label htmlFor="idea-textarea" className="sr-only">
-                Design brief prompt
-              </label>
-              <Textarea
-                id="idea-textarea"
-                value={idea}
-                onChange={(event) => setIdea(event.target.value)}
-                placeholder="Tell us what you want to build… paste links or drop files."
-                rows={isInputFocused ? 6 : 4}
-                onFocus={() => setIsInputFocused(true)}
-                onBlur={() => setIsInputFocused(false)}
-                className="min-h-[10rem] resize-none rounded-2xl border border-white/20 bg-white/10 px-6 py-5 text-base text-white shadow-lg backdrop-blur-md placeholder:text-white/60 focus-visible:ring-2 focus-visible:ring-semantic-primary"
-              />
-              <div className="mt-4 flex flex-wrap items-center gap-3">
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  multiple
-                  className="hidden"
-                  onChange={handleAttachmentChange}
-                  aria-hidden="true"
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleAttachmentClick}
-                  className="flex items-center gap-2 rounded-2xl border-white/30 bg-transparent text-white hover:border-white hover:bg-white/10"
-                >
-                  <Paperclip className="h-4 w-4" aria-hidden="true" />
-                  Attach file
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setIdea((current) => `${current}\nLink: `)}
-                  className="flex items-center gap-2 rounded-2xl border-white/30 bg-transparent text-white hover:border-white hover:bg-white/10"
-                >
-                  <LinkIcon className="h-4 w-4" aria-hidden="true" />
-                  Paste reference
-                </Button>
-                <Button
-                  type="button"
-                  onClick={() => setLocation("/app-builder?connect=github")}
-                  className="flex items-center gap-2 rounded-2xl border border-white/30 bg-white/10 px-6 py-4 text-white hover:border-white hover:bg-white/20"
-                >
-                  <Github className="h-4 w-4" aria-hidden="true" />
-                  Connect Repo
-                </Button>
-                <div className="ml-auto flex items-center gap-3">
-                  <Button
-                    size="lg"
-                    onClick={handleLaunch}
-                    className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[color:var(--core-brand-primary)] to-[color:var(--core-brand-secondary)] px-8 py-6 text-lg font-semibold text-white shadow-lg transition-transform motion-safe:hover:scale-105"
-                  >
-                    Launch
-                    <ArrowRight className="h-5 w-5" aria-hidden="true" />
-                  </Button>
+          ) : (
+            /* CHAT MODE - Jesse consultation interface */
+            <div
+              className="relative mx-auto flex w-full max-w-4xl flex-col h-[calc(100vh-8rem)] transition-opacity duration-[800ms]"
+              style={{ opacity: chatMode ? 1 : 0 }}
+            >
+              {/* Chat header with Jesse */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <JesseAvatar state={responsesMutation.isPending ? "thinking" : "listening"} size="lg" />
+                  <div>
+                    <h2 className="font-semibold text-white text-lg">Design Consultation with Jesse</h2>
+                    <p className="text-xs text-white/60">
+                      Phase {phase}/6 · {phaseConfig[phase]?.title}
+                    </p>
+                  </div>
                 </div>
+                <Button
+                  onClick={() => setShowSpec(!showSpec)}
+                  variant="ghost"
+                  className="text-white/70 hover:text-white hover:bg-white/10"
+                  size="sm"
+                >
+                  {showSpec ? (
+                    <>
+                      <EyeOff className="w-4 h-4 mr-2" />
+                      Hide Spec
+                    </>
+                  ) : (
+                    <>
+                      <Eye className="w-4 h-4 mr-2" />
+                      Show Spec
+                    </>
+                  )}
+                </Button>
               </div>
-              {attachmentLabels.length > 0 && (
-                <div className="mt-3 flex flex-wrap gap-2 text-sm text-white/70">
-                  {attachmentLabels.map((name) => (
-                    <span
-                      key={name}
-                      className="rounded-2xl border border-white/20 bg-white/10 px-3 py-1"
-                    >
-                      {name}
-                    </span>
-                  ))}
+
+              {/* Messages area */}
+              <div className="flex-1 flex gap-4 overflow-hidden">
+                <div className="flex-1 flex flex-col overflow-hidden">
+                  <ScrollArea className="flex-1 pr-4">
+                    <div className="space-y-6">
+                      {messages.map((msg) => (
+                        <MessageBubble
+                          key={msg.id}
+                          role={msg.role}
+                          content={msg.content}
+                        />
+                      ))}
+                      {responsesMutation.isPending && (
+                        <MessageBubble role="assistant" content="" isLoading={true} />
+                      )}
+                      <div ref={scrollRef} />
+                    </div>
+                  </ScrollArea>
+
+                  {/* Quick replies */}
+                  {!responsesMutation.isPending && messages.length > 0 && phaseConfig[phase]?.quickReplies && (
+                    <div className="py-4">
+                      <QuickReplies
+                        replies={phaseConfig[phase].quickReplies}
+                        onSelect={handleQuickReply}
+                        isLoading={responsesMutation.isPending}
+                      />
+                    </div>
+                  )}
+
+                  {/* Input */}
+                  <div className="pt-4 border-t border-white/10">
+                    <div className="flex gap-2">
+                      <Input
+                        ref={inputRef}
+                        placeholder="Describe goals, users, vibe, integrations…"
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault();
+                            handleSendMessage();
+                          }
+                        }}
+                        disabled={responsesMutation.isPending}
+                        className="flex-1 rounded-2xl bg-white/10 border-white/20 text-white placeholder:text-white/60 focus:bg-white/15 focus:border-white/40"
+                      />
+                      <Button
+                        onClick={() => handleSendMessage()}
+                        disabled={!inputValue.trim() || responsesMutation.isPending}
+                        className="rounded-2xl bg-gradient-to-r from-[color:var(--core-brand-primary)] to-[color:var(--core-brand-secondary)] hover:shadow-lg"
+                      >
+                        <Send className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    <p className="text-xs text-white/50 mt-2">
+                      Press Enter to send • Or pick a quick reply above
+                    </p>
+                  </div>
                 </div>
-              )}
+
+                {/* Spec sidebar */}
+                {showSpec && (
+                  <SpecSidebar
+                    spec={spec}
+                    phase={phase}
+                    onClose={() => setShowSpec(false)}
+                    className="w-80 border-l border-white/10 pl-4"
+                  />
+                )}
+              </div>
             </div>
-            <p className="mt-6 text-sm text-white/70">
-              Launch creates a fast brief. Attachments stay private to your project.
-            </p>
-          </div>
+          )}
         </section>
 
         <section
