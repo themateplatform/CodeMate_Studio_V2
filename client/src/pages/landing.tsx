@@ -289,7 +289,7 @@ export default function LandingPage() {
           isHeaderCondensed ? "border-b border-white/10" : "border-b border-transparent"
         )}
         style={{
-          backgroundColor: `rgba(16,20,30, ${0.18 * scrollProgress})`,
+          backgroundColor: scrollProgress === 0 ? "transparent" : `rgba(16,20,30, ${0.18 * scrollProgress})`,
           backdropFilter: scrollProgress > 0 ? "saturate(120%) blur(10px)" : "none",
         }}
         aria-label="Primary"
@@ -318,9 +318,9 @@ export default function LandingPage() {
 
       <AuthDialog open={isAuthOpen} onOpenChange={setIsAuthOpen} />
 
-      <main className="pt-24">
+      <main className="pt-0">
         <section
-          className="relative flex min-h-screen flex-col justify-center px-4 pb-24 pt-16"
+          className="relative flex min-h-screen flex-col justify-center px-4 pb-24 pt-28 md:pt-32"
         >
           <div
             className="absolute inset-0"
