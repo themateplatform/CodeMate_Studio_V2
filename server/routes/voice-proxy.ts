@@ -12,21 +12,28 @@ export function setupVoiceProxy(app: Application, server: any) {
   });
 
   wss.on("connection", (clientWs, req) => {
-    console.log("[VoiceProxy] Client connected");
+    console.log("[VoiceProxy] Client connected from:", req.headers.origin);
 
     // Extract model from query params
     const url = new URL(req.url!, `http://${req.headers.host}`);
     const model = url.searchParams.get("model") || "gpt-4o-realtime-preview";
+    console.log("[VoiceProxy] Requested model:", model);
 
     // Get API key from environment
     const apiKey = process.env.OPEN_AI_KEY;
     if (!apiKey) {
+      console.error("[VoiceProxy] ERROR: OPEN_AI_KEY not set in environment");
       clientWs.close(1008, "Server configuration error: Missing OpenAI API key");
       return;
     }
 
+    console.log("[VoiceProxy] API key found, connecting to OpenAI...");
+
     // Connect to OpenAI Realtime API
-    const openaiWs = new WebSocket("wss://api.openai.com/v1/realtime", {
+    const openaiWsUrl = `wss://api.openai.com/v1/realtime?model=${model}`;
+    console.log("[VoiceProxy] Connecting to:", openaiWsUrl);
+
+    const openaiWs = new WebSocket(openaiWsUrl, {
       headers: {
         "Authorization": `Bearer ${apiKey}`,
         "OpenAI-Beta": "realtime=v1",
@@ -55,12 +62,22 @@ export function setupVoiceProxy(app: Application, server: any) {
     // Handle errors
     openaiWs.on("error", (error) => {
       console.error("[VoiceProxy] OpenAI WebSocket error:", error);
-      clientWs.close(1011, "Upstream connection error");
+      console.error("[VoiceProxy] Error details:", {
+        message: error.message,
+        stack: error.stack,
+      });
+      clientWs.close(1011, `Upstream connection error: ${error.message}`);
     });
 
     clientWs.on("error", (error) => {
       console.error("[VoiceProxy] Client WebSocket error:", error);
-      openaiWs.close();
+      console.error("[VoiceProxy] Client error details:", {
+        message: error.message,
+        stack: error.stack,
+      });
+      if (openaiWs.readyState === WebSocket.OPEN || openaiWs.readyState === WebSocket.CONNECTING) {
+        openaiWs.close();
+      }
     });
 
     // Handle disconnections
