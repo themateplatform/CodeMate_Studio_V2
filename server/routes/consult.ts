@@ -52,12 +52,20 @@ router.post("/jesse-response", async (req, res) => {
 
     const userPrompt = `${phaseContext}
 
-Conversation so far (spec context):
+CONVERSATION CONTEXT:
 ${specSummary}
 
 User just said: "${message}"
 
-Respond naturally as Jesse. If they've given a complete answer to the current phase question, acknowledge it and ask the next question. Keep it brief and conversational.`;
+INSTRUCTIONS FOR THIS RESPONSE:
+1. Acknowledge what they said specifically—reference their exact words if possible
+2. Ask ONE follow-up question that clearly builds on what they said
+3. Your question must be specific to THEIR project and context, never generic
+4. If moving to the next phase, explain why you're moving forward (e.g., "Now that I understand X about your project...")
+5. Keep it conversational and brief (1-2 sentences, max 3)
+6. Show that you've been listening by referencing previous details if relevant
+
+Respond naturally as Jesse.`;
 
     let content = "";
     let shouldAdvance = false;
