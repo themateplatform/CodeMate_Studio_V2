@@ -118,24 +118,57 @@ Respond naturally as Jesse.`;
 // Helper: Get context for the current phase
 function getPhaseContext(phase: ConsultationPhase): string {
   const contexts = {
-    1: `Phase 1: Understanding the Problem
-User should describe what problem their idea solves.
-Ask follow-ups about the problem space, then move to understanding their audience.`,
-    2: `Phase 2: Understanding the Audience
-User should describe who will use this and what they need.
-Ask about audience characteristics, then move to success metrics.`,
-    3: `Phase 3: Goals & Success
-User should define the primary action/success metric.
-Ask about timeline and differentiation, then move to technical reality check.`,
-    4: `Phase 4: Technical Reality
-User should share their tech comfort level and must-have integrations.
-Ask about timeline and existing code, then move to design vibe.`,
-    5: `Phase 5: Design & Vibe
-User should describe their brand feeling and design preferences.
-Ask about reference sites and priorities, then move to structure.`,
-    6: `Phase 6: Review & Handoff
-Summarize the spec and confirm everything looks good.
-Get approval to move to building.`,
+    1: `PHASE 1: Understanding the Problem & Opportunity
+GOAL: Deeply unpack what they're building and why it matters
+YOUR ROLE:
+- Show you understand the core brief by referencing it specifically
+- Ask clarifying questions that prove you've thought about the implications
+- Explore the problem space, competitive landscape, and opportunity
+WHEN TO ADVANCE: Only move forward when they've clearly articulated the problem and you've shown you understand it
+EXAMPLE: If they say "a dating app," ask "What makes yours different? What's broken about existing apps for your target user?"`,
+
+    2: `PHASE 2: Understanding the Audience
+GOAL: Get crystal clear on who they're building for
+YOUR ROLE:
+- Reference what they said about the product in Phase 1
+- Ask about the audience's pain points, behaviors, and expectations
+- Help them think through audience-specific needs
+WHEN TO ADVANCE: When they can describe a day-in-the-life scenario for their user
+EXAMPLE: If they said "for younger singles," ask "What's their biggest frustration with dating right now? How much time do they spend swiping vs. actually meeting people?"`,
+
+    3: `PHASE 3: Goals & Success Metrics
+GOAL: Define what winning looks like
+YOUR ROLE:
+- Reference both the product (Phase 1) and audience (Phase 2) you discussed
+- Ask them to define their primary metric
+- Help them set realistic timelines
+WHEN TO ADVANCE: When they've named a specific, measurable success metric
+EXAMPLE: "So you're building for [audience] to solve [problem]. What's THE metric that would prove success in the first 3 months?"`,
+
+    4: `PHASE 4: Technical Reality Check
+GOAL: Understand their technical constraints and requirements
+YOUR ROLE:
+- Reference their tech level preference
+- Ask about specific integrations needed based on their product
+- Help them think through technical dependencies
+WHEN TO ADVANCE: When they've given you a realistic sense of their tech comfort and must-haves
+EXAMPLE: For a payment-based product, ask "Do you need payment processing? If so, Stripe or something else?"`,
+
+    5: `PHASE 5: Design & Brand Vibe
+GOAL: Capture their visual and brand direction
+YOUR ROLE:
+- Reference the product they described and the audience they're targeting
+- Ask about design preferences, color directions, and reference sites
+- Help them articulate their brand feeling
+WHEN TO ADVANCE: When they've given you a clear design direction or reference
+EXAMPLE: "For [your audience], do you want something minimal and professional, or bold and playful?"`,
+
+    6: `PHASE 6: Review & Handoff
+GOAL: Summarize the complete spec and get sign-off
+YOUR ROLE:
+- Present everything you've learned as a cohesive picture
+- Show how it all connects (product → audience → metrics → tech → design)
+- Get their approval before moving to building`,
   } as Record<ConsultationPhase, string>;
 
   return contexts[phase] || contexts[1];
