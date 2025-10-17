@@ -1,47 +1,14 @@
 // Consultation flow engine: manages phases, questions, and adaptive routing
-export type ConsultationPhase = 1 | 2 | 3 | 4 | 5 | 6;
-
-export interface ConsultationState {
-  phase: ConsultationPhase;
-  messages: ChatMessage[];
-  spec: LiveSpec;
-  responses: Record<string, string>;
-}
-
-export interface ChatMessage {
-  id: string;
-  role: "assistant" | "user";
-  content: string;
-  timestamp: number;
-}
-
-export interface LiveSpec {
-  goal: string;
-  audience: string[];
-  successMetric: string;
-  differentiator: string;
-  pages: string[];
-  integrations: string[];
-  timeline: string;
-  techLevel: "beginner" | "intermediate" | "expert" | "team";
-  designVibe: "minimal" | "bold" | "elegant" | "playful" | "custom";
-  scope: "mvp" | "full" | "phased";
-  notes: string[];
-}
-
-export const initialSpec: LiveSpec = {
-  goal: "",
-  audience: [],
-  successMetric: "",
-  differentiator: "",
-  pages: [],
-  integrations: [],
-  timeline: "",
-  techLevel: "intermediate",
-  designVibe: "elegant",
-  scope: "mvp",
-  notes: [],
-};
+import type {
+  ConsultationPhase,
+  ConsultationState,
+  ChatMessage,
+  LiveSpec,
+  PhaseConfig,
+  QuickReply,
+} from "@shared/consultation-flow";
+export { initialSpec } from "@shared/consultation-flow";
+export type { ConsultationPhase, ConsultationState, ChatMessage, LiveSpec, PhaseConfig, QuickReply };
 
 // Phase configs: prompts, quick replies, and routing logic
 export const phaseConfig = {
