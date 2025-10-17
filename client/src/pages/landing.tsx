@@ -242,7 +242,7 @@ export default function LandingPage() {
     setClarifyingAnswer("");
     setClarifyTouched(false);
     const qs = new URLSearchParams();
-    qs.set("brief", encodeURIComponent(plan.combinedBrief));
+    qs.set("brief", plan.combinedBrief);
     setLocation(`/consult?${qs.toString()}`);
   };
 
