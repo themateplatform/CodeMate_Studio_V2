@@ -145,14 +145,22 @@ Get approval to move to building.`,
 function buildSpecSummary(spec: LiveSpec): string {
   const parts: string[] = [];
 
-  if (spec.goal) parts.push(`Goal: ${spec.goal}`);
-  if (spec.audience.length > 0) parts.push(`Audience: ${spec.audience.join(", ")}`);
-  if (spec.successMetric) parts.push(`Success: ${spec.successMetric}`);
-  if (spec.techLevel) parts.push(`Tech level: ${spec.techLevel}`);
-  if (spec.designVibe) parts.push(`Design vibe: ${spec.designVibe}`);
-  if (spec.integrations.length > 0) parts.push(`Integrations: ${spec.integrations.join(", ")}`);
+  // Always include the core brief first if it exists
+  if (spec.goal) {
+    parts.push(`CORE BRIEF: "${spec.goal}"`);
+    parts.push("---");
+  }
 
-  return parts.join("\n");
+  // Then add other collected context
+  if (spec.audience.length > 0) parts.push(`Audience: ${spec.audience.join(", ")}`);
+  if (spec.successMetric) parts.push(`Success metric: ${spec.successMetric}`);
+  if (spec.techLevel && spec.techLevel !== "intermediate") parts.push(`Tech level: ${spec.techLevel}`);
+  if (spec.designVibe && spec.designVibe !== "elegant") parts.push(`Design vibe: ${spec.designVibe}`);
+  if (spec.integrations.length > 0) parts.push(`Must-have integrations: ${spec.integrations.join(", ")}`);
+  if (spec.pages.length > 0) parts.push(`Key pages/features: ${spec.pages.join(", ")}`);
+  if (spec.notes.length > 0) parts.push(`Additional notes: ${spec.notes.join(", ")}`);
+
+  return parts.length === 0 ? "No context collected yet." : parts.join("\n");
 }
 
 // Helper: Determine if we should advance phase
