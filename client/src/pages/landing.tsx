@@ -303,9 +303,12 @@ export default function LandingPage() {
             <a className="text-white transition-colors" href="#gallery">
               Gallery
             </a>
-            <a className="text-white transition-colors" href="#github-connect">
+            <button
+              onClick={() => setLocation("/app-builder?connect=github")}
+              className="text-white transition-colors focus:outline-none focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-ring"
+            >
               GitHub
-            </a>
+            </button>
             <button
               onClick={() => setIsAuthOpen(true)}
               className="text-white transition-colors focus:outline-none focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-ring"
@@ -385,6 +388,14 @@ export default function LandingPage() {
                   <LinkIcon className="h-4 w-4" aria-hidden="true" />
                   Paste reference
                 </Button>
+                <Button
+                  type="button"
+                  onClick={() => setLocation("/app-builder?connect=github")}
+                  className="flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 py-4 text-white hover:border-white hover:bg-white/20"
+                >
+                  <Github className="h-4 w-4" aria-hidden="true" />
+                  Connect Repo
+                </Button>
                 <div className="ml-auto flex items-center gap-3">
                   <Button
                     size="lg"
@@ -417,7 +428,7 @@ export default function LandingPage() {
 
         <section
           id="github-connect"
-          className="relative border-t border-white/10 bg-[color:var(--surfaces-background)]/60 px-4 py-16"
+          className="hidden"
         >
           <div className="mx-auto grid max-w-5xl gap-8 md:grid-cols-[2fr_1fr] md:items-center">
             <div className="space-y-4 text-white">
@@ -598,12 +609,13 @@ export default function LandingPage() {
                 Just Build
               </Button>
             </div>
-            <a
-              href="#github-connect"
+            <button
+              type="button"
+              onClick={() => setLocation("/app-builder?connect=github")}
               className="text-center text-sm text-white/60 hover:text-white"
             >
               Connect GitHub instead
-            </a>
+            </button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
