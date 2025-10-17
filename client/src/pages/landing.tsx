@@ -174,6 +174,8 @@ const createPlanSummary = (text: string, attachments: string[]): PlanSummary => 
   };
 };
 
+const LOGO_SRC = "https://cdn.builder.io/api/v1/image/assets%2F7f4f17bc2420491a95f23b47a94e6efc%2Fd0552b1fb2604d9eb8dac79cd27b4993?format=webp&width=800";
+
 function LogoLockup({ condensed }: { condensed: boolean }) {
   return (
     <div
@@ -183,12 +185,15 @@ function LogoLockup({ condensed }: { condensed: boolean }) {
       )}
       aria-label="CodeMate Studio"
     >
-      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[color:var(--core-brand-primary)] to-[color:var(--core-brand-secondary)] shadow-lg">
-        <Code2 className="h-6 w-6 text-white" />
-      </div>
-      <span className="text-xl font-semibold text-white md:text-2xl">
-        CodeMate Studio
-      </span>
+      <img
+        src={LOGO_SRC}
+        alt="CodeMate Studio"
+        className={cn(
+          "block object-contain",
+          condensed ? "h-8 w-auto" : "h-20 w-auto md:h-24",
+          "transition-all duration-500"
+        )}
+      />
     </div>
   );
 }
@@ -275,20 +280,20 @@ export default function LandingPage() {
         aria-label="Primary"
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <LogoLockup condensed={isHeaderCondensed} />
+          {isHeaderCondensed ? <LogoLockup condensed={true} /> : <div className="w-36" aria-hidden="true" /> }
           <div className="flex items-center gap-6 text-sm">
-            <a className="text-muted-foreground transition-colors hover:text-white" href="#why">
+            <a className="text-white transition-colors" href="#why">
               Why CodeMate
             </a>
-            <a className="text-muted-foreground transition-colors hover:text-white" href="#gallery">
+            <a className="text-white transition-colors" href="#gallery">
               Gallery
             </a>
-            <a className="text-muted-foreground transition-colors hover:text-white" href="#github-connect">
+            <a className="text-white transition-colors" href="#github-connect">
               GitHub
             </a>
             <button
               onClick={() => setIsAuthOpen(true)}
-              className="text-muted-foreground transition-colors hover:text-white focus:outline-none focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-ring"
+              className="text-white transition-colors focus:outline-none focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-ring"
             >
               Sign in
             </button>
@@ -312,7 +317,7 @@ export default function LandingPage() {
           <div className="absolute inset-0 bg-[color:var(--deep-navy)]/30" aria-hidden="true" />
 
           <div className="relative mx-auto flex w-full max-w-5xl flex-col items-center text-center">
-            <LogoLockup condensed={false} />
+            <LogoLockup condensed={isHeaderCondensed} />
             <div className="mt-10 space-y-6">
               <h1 className="font-heading text-4xl font-bold text-white sm:text-5xl md:text-6xl">
                 Your Design Agency
