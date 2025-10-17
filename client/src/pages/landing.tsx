@@ -1,8 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { AuthDialog } from "@/components/auth/AuthDialog";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -25,7 +27,25 @@ import {
   ShieldCheck,
   Sparkles,
   Workflow,
+  Send,
+  Eye,
+  EyeOff,
 } from "lucide-react";
+import { JesseAvatar } from "@/components/consult/JesseAvatar";
+import { MessageBubble } from "@/components/consult/MessageBubble";
+import { QuickReplies } from "@/components/consult/QuickReplies";
+import { SpecSidebar } from "@/components/consult/SpecSidebar";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import {
+  ConsultationPhase,
+  ChatMessage,
+  initialSpec,
+  phaseConfig,
+  extractIntent,
+  updateSpec,
+} from "@/lib/consultation-flow";
+import type { LiveSpec } from "@/lib/consultation-flow";
 
 type PlanSummary = {
   goal: string;
@@ -223,6 +243,16 @@ export default function LandingPage() {
   const [attachmentLabels, setAttachmentLabels] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  // Chat mode state
+  const [chatMode, setChatMode] = useState(false);
+  const [phase, setPhase] = useState<ConsultationPhase>(1);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [spec, setSpec] = useState<LiveSpec>(initialSpec);
+  const [inputValue, setInputValue] = useState("");
+  const [showSpec, setShowSpec] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     const handleScroll = () => {
       const max = 160; // px over which we animate the logo handoff
@@ -238,12 +268,76 @@ export default function LandingPage() {
 
   const plan = useMemo(() => createPlanSummary(idea, attachmentLabels), [idea, attachmentLabels]);
 
+  // API mutation for getting Jesse responses
+  const responsesMutation = useMutation({
+    mutationFn: async (data: { message: string; phase: ConsultationPhase; spec: LiveSpec }) =>
+      apiRequest("POST", "/api/consult/jesse-response", data),
+    onSuccess: (response: any) => {
+      const msg: ChatMessage = {
+        id: `msg-${Date.now()}`,
+        role: "assistant",
+        content: response.message || response.content,
+        timestamp: Date.now(),
+      };
+      setMessages((m) => [...m, msg]);
+
+      // Check if we should advance phase
+      if (response.nextPhase && response.nextPhase > phase) {
+        setPhase(response.nextPhase);
+      }
+
+      // Focus input for next message
+      setTimeout(() => inputRef.current?.focus(), 100);
+    },
+  });
+
+  // Auto-scroll to bottom in chat mode
+  useEffect(() => {
+    if (chatMode) {
+      scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, responsesMutation.isPending, chatMode]);
+
   const handleLaunch = () => {
-    setClarifyingAnswer("");
-    setClarifyTouched(false);
-    const qs = new URLSearchParams();
-    qs.set("brief", plan.combinedBrief);
-    setLocation(`/consult?${qs.toString()}`);
+    // Instead of navigating, transform the page into chat mode
+    setChatMode(true);
+
+    // Initialize spec with the brief
+    const initializedSpec = { ...initialSpec, goal: idea.trim() || "" };
+    setSpec(initializedSpec);
+
+    // Add Jesse's first message
+    const firstMessage: ChatMessage = {
+      id: "msg-init",
+      role: "assistant",
+      content: phaseConfig[1].prompt,
+      timestamp: Date.now(),
+    };
+    setMessages([firstMessage]);
+
+    // If there's a brief, simulate sending it to Jesse
+    if (idea.trim()) {
+      setTimeout(() => {
+        const userMsg: ChatMessage = {
+          id: `msg-${Date.now()}`,
+          role: "user",
+          content: idea.trim(),
+          timestamp: Date.now(),
+        };
+        setMessages((m) => [...m, userMsg]);
+
+        // Get Jesse's response to the brief
+        const intent = extractIntent(idea.trim(), 1);
+        const updatedSpec = updateSpec(initializedSpec, 1, idea.trim(), intent);
+        setSpec(updatedSpec);
+
+        responsesMutation.mutate({
+          message: idea.trim(),
+          phase: 1,
+          spec: updatedSpec,
+        });
+      }, 800); // Wait for fade animation
+    }
   };
 
   const handleMeetJesse = () => {
@@ -282,6 +376,42 @@ export default function LandingPage() {
     setAttachmentLabels((current) => Array.from(new Set([...current, ...files])));
     event.target.value = "";
   };
+
+  // Handle quick reply selection
+  const handleQuickReply = useCallback(
+    (value: string) => {
+      if (responsesMutation.isPending) return;
+      handleSendMessage(value);
+    },
+    [responsesMutation.isPending]
+  );
+
+  // Handle sending message in chat mode
+  const handleSendMessage = useCallback(
+    (messageText?: string) => {
+      const content = messageText || inputValue.trim();
+      if (!content || responsesMutation.isPending) return;
+
+      // Add user message
+      const userMsg: ChatMessage = {
+        id: `msg-${Date.now()}`,
+        role: "user",
+        content,
+        timestamp: Date.now(),
+      };
+      setMessages((m) => [...m, userMsg]);
+      setInputValue("");
+
+      // Extract intent and update spec
+      const intent = extractIntent(content, phase);
+      const updatedSpec = updateSpec(spec, phase, content, intent);
+      setSpec(updatedSpec);
+
+      // Get Jesse's response
+      responsesMutation.mutate({ message: content, phase, spec: updatedSpec });
+    },
+    [inputValue, phase, spec, responsesMutation]
+  );
 
   return (
     <div className="min-h-screen bg-[color:var(--deep-navy)] text-foreground">
