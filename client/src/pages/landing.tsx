@@ -374,7 +374,7 @@ export default function LandingPage() {
                   type="button"
                   variant="outline"
                   onClick={handleAttachmentClick}
-                  className="flex items-center gap-2 border-white/30 bg-transparent text-white hover:border-white hover:bg-white/10"
+                  className="flex items-center gap-2 rounded-2xl border-white/30 bg-transparent text-white hover:border-white hover:bg-white/10"
                 >
                   <Paperclip className="h-4 w-4" aria-hidden="true" />
                   Attach file
@@ -383,7 +383,7 @@ export default function LandingPage() {
                   type="button"
                   variant="outline"
                   onClick={() => setIdea((current) => `${current}\nLink: `)}
-                  className="flex items-center gap-2 border-white/30 bg-transparent text-white hover:border-white hover:bg-white/10"
+                  className="flex items-center gap-2 rounded-2xl border-white/30 bg-transparent text-white hover:border-white hover:bg-white/10"
                 >
                   <LinkIcon className="h-4 w-4" aria-hidden="true" />
                   Paste reference
@@ -391,7 +391,7 @@ export default function LandingPage() {
                 <Button
                   type="button"
                   onClick={() => setLocation("/app-builder?connect=github")}
-                  className="flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 py-4 text-white hover:border-white hover:bg-white/20"
+                  className="flex items-center gap-2 rounded-2xl border border-white/30 bg-white/10 px-6 py-4 text-white hover:border-white hover:bg-white/20"
                 >
                   <Github className="h-4 w-4" aria-hidden="true" />
                   Connect Repo
@@ -400,7 +400,7 @@ export default function LandingPage() {
                   <Button
                     size="lg"
                     onClick={handleLaunch}
-                    className="flex items-center gap-2 rounded-full bg-gradient-to-r from-[color:var(--core-brand-primary)] to-[color:var(--core-brand-secondary)] px-8 py-6 text-lg font-semibold text-white shadow-lg transition-transform motion-safe:hover:scale-105"
+                    className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[color:var(--core-brand-primary)] to-[color:var(--core-brand-secondary)] px-8 py-6 text-lg font-semibold text-white shadow-lg transition-transform motion-safe:hover:scale-105"
                   >
                     Launch
                     <ArrowRight className="h-5 w-5" aria-hidden="true" />
@@ -412,7 +412,7 @@ export default function LandingPage() {
                   {attachmentLabels.map((name) => (
                     <span
                       key={name}
-                      className="rounded-full border border-white/20 bg-white/10 px-3 py-1"
+                      className="rounded-2xl border border-white/20 bg-white/10 px-3 py-1"
                     >
                       {name}
                     </span>
