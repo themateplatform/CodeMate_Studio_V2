@@ -57,8 +57,11 @@ User just said: "${message}"
 
 Respond naturally as Jesse. If they've given a complete answer to the current phase question, acknowledge it and ask the next question. Keep it brief and conversational.`;
 
-    // Get response from OpenAI
-    const response = await openaiClient.chat.completions.create({
+    // Create OpenAI client directly (simpler than openAIClient wrapper)
+    const OpenAI = (await import("openai")).default;
+    const client = new OpenAI({ apiKey: process.env.OPEN_AI_KEY });
+
+    const response = await client.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
         { role: "system", content: JESSE_SYSTEM },
