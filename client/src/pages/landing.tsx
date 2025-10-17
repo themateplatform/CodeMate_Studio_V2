@@ -455,7 +455,10 @@ export default function LandingPage() {
 
       <main className="pt-0">
         <section
-          className="relative flex min-h-screen flex-col justify-center px-4 pb-24 pt-28 md:pt-32"
+          className={cn(
+            "relative flex min-h-screen flex-col px-4 pb-24 pt-28 md:pt-32",
+            chatMode ? "justify-start" : "justify-center"
+          )}
         >
           <div
             className="absolute inset-0"
