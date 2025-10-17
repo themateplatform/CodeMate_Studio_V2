@@ -56,45 +56,21 @@ export default function ConsultPage() {
   // Initialize with Jesse's first message
   useEffect(() => {
     if (messages.length === 0) {
+      // Always start with generic greeting
+      const firstMessage: ChatMessage = {
+        id: "msg-init",
+        role: "assistant",
+        content: phaseConfig[1].prompt,
+        timestamp: Date.now(),
+      };
+      setMessages([firstMessage]);
+
+      // If there's a brief, simulate the user sending it as first input
+      // This triggers Jesse's response with context
       if (initialBrief) {
-        // If user provided a brief, generate a personalized greeting that unpacks it
-        responsesMutation.mutate(
-          {
-            message: initialBrief,
-            phase: 1,
-            spec: { ...initialSpec, goal: initialBrief },
-          },
-          {
-            onSuccess: (response: any) => {
-              const firstMessage: ChatMessage = {
-                id: "msg-init",
-                role: "assistant",
-                content: response.message || phaseConfig[1].prompt,
-                timestamp: Date.now(),
-              };
-              setMessages([firstMessage]);
-            },
-            onError: () => {
-              // Fallback to generic greeting if LLM fails
-              const firstMessage: ChatMessage = {
-                id: "msg-init",
-                role: "assistant",
-                content: phaseConfig[1].prompt,
-                timestamp: Date.now(),
-              };
-              setMessages([firstMessage]);
-            },
-          }
-        );
-      } else {
-        // No brief provided, use generic greeting
-        const firstMessage: ChatMessage = {
-          id: "msg-init",
-          role: "assistant",
-          content: phaseConfig[1].prompt,
-          timestamp: Date.now(),
-        };
-        setMessages([firstMessage]);
+        setTimeout(() => {
+          handleSendMessage(initialBrief);
+        }, 500);
       }
     }
   }, []);
