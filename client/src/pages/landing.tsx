@@ -568,8 +568,12 @@ export default function LandingPage() {
           ) : (
             /* CHAT MODE - Jesse consultation interface */
             <div
-              className="relative mx-auto flex w-full max-w-4xl flex-col h-[calc(100vh-8rem)] transition-opacity duration-[800ms]"
-              style={{ opacity: chatMode ? 1 : 0 }}
+              className="relative mx-auto flex w-full max-w-4xl flex-col h-[calc(100vh-8rem)]"
+              style={{
+                opacity: chatMode ? 1 : 0,
+                transition: 'opacity 800ms ease-in-out',
+                pointerEvents: chatMode ? 'auto' : 'none'
+              }}
             >
               {/* Chat header with Jesse */}
               <div className="flex items-center justify-between mb-6">
