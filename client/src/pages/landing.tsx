@@ -16,7 +16,6 @@ import {
 import { cn } from "@/lib/utils";
 import {
   ArrowRight,
-  Code2,
   Github,
   Layers,
   Link as LinkIcon,
@@ -176,22 +175,35 @@ const createPlanSummary = (text: string, attachments: string[]): PlanSummary => 
 
 const LOGO_SRC = "https://cdn.builder.io/api/v1/image/assets%2F7f4f17bc2420491a95f23b47a94e6efc%2Fd0552b1fb2604d9eb8dac79cd27b4993?format=webp&width=800";
 
-function LogoLockup({ condensed }: { condensed: boolean }) {
+function LogoLockup({ variant, progress }: { variant: "hero" | "nav"; progress: number }) {
+  const p = Math.min(Math.max(progress, 0), 1);
+  const heroScaleStart = 1.2;
+  const heroScaleEnd = 0.9;
+  const navScaleStart = 0.8;
+  const navScaleEnd = 1.0;
+  const scale = variant === "hero"
+    ? heroScaleStart - (heroScaleStart - heroScaleEnd) * p
+    : navScaleStart + (navScaleEnd - navScaleStart) * p;
+  const opacity = variant === "nav" ? p : 1;
+
   return (
     <div
-      className={cn(
-        "flex items-center gap-3 rounded-full px-4 py-2 transition-all motion-safe:duration-500 motion-reduce:transition-none",
-        condensed ? "scale-90" : "scale-[1.2]"
-      )}
+      className="flex items-center gap-3 px-2 py-1"
       aria-label="CodeMate Studio"
+      style={{
+        transform: `scale(${scale})`,
+        opacity,
+        transition: "transform 0.1s linear, opacity 0.1s linear",
+        willChange: "transform, opacity",
+        pointerEvents: variant === "nav" && p === 0 ? "none" : undefined,
+      }}
     >
       <img
         src={LOGO_SRC}
         alt="CodeMate Studio"
         className={cn(
           "block object-contain",
-          condensed ? "h-8 w-auto" : "h-20 w-auto md:h-24",
-          "transition-all duration-500"
+          variant === "hero" ? "h-24 w-auto md:h-28" : "h-8 w-auto md:h-9"
         )}
       />
     </div>
@@ -204,6 +216,7 @@ export default function LandingPage() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [isHeaderCondensed, setIsHeaderCondensed] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const [isPreBriefOpen, setIsPreBriefOpen] = useState(false);
   const [clarifyingAnswer, setClarifyingAnswer] = useState("");
   const [clarifyTouched, setClarifyTouched] = useState(false);
@@ -212,7 +225,10 @@ export default function LandingPage() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsHeaderCondensed(window.scrollY > 48);
+      const max = 160; // px over which we animate the logo handoff
+      const p = Math.min(Math.max(window.scrollY / max, 0), 1);
+      setScrollProgress(p);
+      setIsHeaderCondensed(p > 0.05);
     };
 
     handleScroll();
@@ -269,18 +285,17 @@ export default function LandingPage() {
     <div className="min-h-screen bg-[color:var(--deep-navy)] text-foreground">
       <nav
         className={cn(
-          "fixed inset-x-0 top-0 z-40 transition-all motion-safe:duration-500 motion-reduce:transition-none",
-          "border-b border-border/30 backdrop-blur-md"
+          "fixed inset-x-0 top-0 z-40 transition-all motion-safe:duration-300",
+          isHeaderCondensed ? "border-b border-white/10" : "border-b border-transparent"
         )}
         style={{
-          backgroundColor: isHeaderCondensed
-            ? "color-mix(in srgb, var(--surfaces-background) 85%, transparent)"
-            : "transparent",
+          backgroundColor: `rgba(16,20,30, ${0.18 * scrollProgress})`,
+          backdropFilter: scrollProgress > 0 ? "saturate(120%) blur(10px)" : "none",
         }}
         aria-label="Primary"
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          {isHeaderCondensed ? <LogoLockup condensed={true} /> : <div className="w-36" aria-hidden="true" /> }
+          <LogoLockup variant="nav" progress={scrollProgress} />
           <div className="flex items-center gap-6 text-sm">
             <a className="text-white transition-colors" href="#why">
               Why CodeMate
@@ -317,7 +332,7 @@ export default function LandingPage() {
           <div className="absolute inset-0 bg-[color:var(--deep-navy)]/30" aria-hidden="true" />
 
           <div className="relative mx-auto flex w-full max-w-5xl flex-col items-center text-center">
-            <LogoLockup condensed={isHeaderCondensed} />
+            <LogoLockup variant="hero" progress={scrollProgress} />
             <div className="mt-10 space-y-6">
               <h1 className="font-heading text-4xl font-bold text-white sm:text-5xl md:text-6xl">
                 Your Design Agency
