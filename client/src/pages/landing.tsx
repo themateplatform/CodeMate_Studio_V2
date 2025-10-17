@@ -469,8 +469,12 @@ export default function LandingPage() {
           {!chatMode ? (
             /* HERO MODE - Original landing page */
             <div
-              className="relative mx-auto flex w-full max-w-5xl flex-col items-center text-center transition-opacity duration-[800ms]"
-              style={{ opacity: chatMode ? 0 : 1 }}
+              className="relative mx-auto flex w-full max-w-5xl flex-col items-center text-center"
+              style={{
+                opacity: chatMode ? 0 : 1,
+                transition: 'opacity 800ms ease-in-out',
+                pointerEvents: chatMode ? 'none' : 'auto'
+              }}
             >
               <LogoLockup variant="hero" progress={scrollProgress} />
               <div className="mt-10 space-y-6">
