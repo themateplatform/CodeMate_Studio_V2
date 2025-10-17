@@ -664,11 +664,13 @@ export default function LandingPage() {
           ) : (
             /* CHAT MODE - Jesse consultation interface */
             <div
-              className="relative mx-auto flex w-full max-w-4xl flex-col h-[calc(100vh-8rem)]"
+              className="relative mx-auto flex w-full max-w-4xl flex-col"
               style={{
                 opacity: chatMode ? 1 : 0,
                 transition: 'opacity 800ms ease-in-out',
-                pointerEvents: chatMode ? 'auto' : 'none'
+                pointerEvents: chatMode ? 'auto' : 'none',
+                height: 'calc(100vh - 12rem)',
+                paddingTop: '1rem'
               }}
             >
               {/* Chat header with Jesse */}
@@ -692,27 +694,6 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Button
-                    onClick={toggleVoiceMode}
-                    variant={isVoiceActive ? "default" : "ghost"}
-                    className={cn(
-                      "text-white/70 hover:text-white hover:bg-white/10",
-                      isVoiceActive && "bg-gradient-to-r from-[color:var(--core-brand-primary)] to-[color:var(--core-brand-secondary)] text-white animate-pulse"
-                    )}
-                    size="sm"
-                  >
-                    {isVoiceActive ? (
-                      <>
-                        <PhoneOff className="w-4 h-4 mr-2" />
-                        End Call
-                      </>
-                    ) : (
-                      <>
-                        <Phone className="w-4 h-4 mr-2" />
-                        Voice Mode
-                      </>
-                    )}
-                  </Button>
                   <Button
                     onClick={() => setShowSpec(!showSpec)}
                     variant="ghost"
@@ -819,6 +800,19 @@ export default function LandingPage() {
                         className="rounded-2xl text-white/70 hover:text-white hover:bg-white/10"
                       >
                         <Paperclip className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        onClick={toggleVoiceMode}
+                        variant={isVoiceActive ? "default" : "ghost"}
+                        size="icon"
+                        className={cn(
+                          "rounded-2xl text-white/70 hover:text-white hover:bg-white/10",
+                          isVoiceActive && "bg-gradient-to-r from-[color:var(--core-brand-primary)] to-[color:var(--core-brand-secondary)] text-white animate-pulse"
+                        )}
+                        disabled={responsesMutation.isPending}
+                        title={isVoiceActive ? "End Call" : "Voice Mode"}
+                      >
+                        {isVoiceActive ? <PhoneOff className="h-4 w-4" /> : <Phone className="h-4 w-4" />}
                       </Button>
                       <Input
                         ref={inputRef}
