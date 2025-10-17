@@ -241,7 +241,9 @@ export default function LandingPage() {
   const handleLaunch = () => {
     setClarifyingAnswer("");
     setClarifyTouched(false);
-    setIsPreBriefOpen(true);
+    const qs = new URLSearchParams();
+    qs.set("brief", encodeURIComponent(plan.combinedBrief));
+    setLocation(`/consult?${qs.toString()}`);
   };
 
   const handleMeetJesse = () => {
