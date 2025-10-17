@@ -116,6 +116,12 @@ app.use((req, res, next) => {
   } catch (err) {
     console.warn('App builder routes not available:', err);
   }
+  try {
+    const consultRouter = await import('./routes/consult');
+    app.use('/api/consult', consultRouter.default);
+  } catch (err) {
+    console.warn('Consultation routes not available:', err);
+  }
 
   // const server = await registerRoutes(app);
   
