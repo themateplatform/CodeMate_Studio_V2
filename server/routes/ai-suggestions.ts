@@ -2,9 +2,7 @@ import type { Request, Response, Express, RequestHandler } from "express";
 import OpenAI from "openai";
 import "../types/session";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const getOpenAI = () => new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
 
 interface AnalyzeSpecRequest {
   title?: string;
@@ -67,6 +65,7 @@ Provide feedback in the following JSON format:
   "completenessScore": <number 0-100>
 }`;
 
+      const openai = getOpenAI();
       const completion = await openai.chat.completions.create({
         model: "gpt-4o-mini",
         messages: [
@@ -204,6 +203,7 @@ Format: JSON array of strings`;
           break;
       }
 
+      const openai = getOpenAI();
       const completion = await openai.chat.completions.create({
         model: "gpt-4o-mini",
         messages: [
@@ -277,6 +277,7 @@ Provide 2-3 improved versions with different tones:
 
 Format: JSON object with keys "formal", "concise", "friendly"`;
 
+      const openai = getOpenAI();
       const completion = await openai.chat.completions.create({
         model: "gpt-4o-mini",
         messages: [
@@ -344,6 +345,7 @@ Return JSON object with "stories" array of objects containing:
 - acceptanceCriteria: array of 2-3 acceptance criteria
 - priority: "high", "medium", or "low"`;
 
+      const openai = getOpenAI();
       const completion = await openai.chat.completions.create({
         model: "gpt-4o-mini",
         messages: [

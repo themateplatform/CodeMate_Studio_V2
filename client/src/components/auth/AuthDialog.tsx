@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "../../../../src/integrations/supabase/client";
+import { supabase } from "@/integrations/supabase/client";
 
 export function AuthDialog({
   open,

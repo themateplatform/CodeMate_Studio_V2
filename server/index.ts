@@ -15,17 +15,30 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Configure session middleware with PostgreSQL store
-// Create a standard pg pool for sessions (Neon serverless pool doesn't work with connect-pg-simple)
-const sessionPool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+const databaseUrl = process.env.DATABASE_URL?.trim();
 const PgSession = connectPgSimple(session);
-app.use(
-  session({
-    store: new PgSession({
+const sessionPool = databaseUrl
+  ? new pg.Pool({ connectionString: databaseUrl })
+  : null;
+
+if (!databaseUrl) {
+  console.warn("[session] DATABASE_URL not set — using in-memory session store");
+  if (process.env.DISABLE_DB !== "1") {
+    process.env.DISABLE_DB = "1";
+  }
+}
+
+const sessionStore = sessionPool
+  ? new PgSession({
       pool: sessionPool,
       tableName: "sessions",
       createTableIfMissing: false, // Table already exists in schema
-    }),
+    })
+  : new session.MemoryStore();
+
+app.use(
+  session({
+    store: sessionStore,
     secret: process.env.SESSION_SECRET || "dev-secret-change-in-production",
     resave: false,
     saveUninitialized: false,
@@ -105,14 +118,14 @@ app.use((req, res, next) => {
   }
 
   // const server = await registerRoutes(app);
-  
+
   // Register all API routes
   registerRoutes(app);
-  
+
   const server = createServer(app);
 
   // Set up WebSocket server for real-time collaboration
-  const wss = new WebSocketServer({ 
+  const wss = new WebSocketServer({
     server,
     path: "/collaboration"
   });
@@ -136,6 +149,15 @@ app.use((req, res, next) => {
     yjsServer.handleConnection(ws, roomId, userId, projectId, fileId);
   });
 
+  // Set up voice proxy for OpenAI Realtime API
+  try {
+    const { setupVoiceProxy } = await import('./routes/voice-proxy');
+    setupVoiceProxy(app, server);
+    log("[VoiceProxy] OpenAI Realtime API proxy initialized");
+  } catch (err) {
+    console.warn('Voice proxy not available:', err);
+  }
+
   log("WebSocket collaboration server initialized");
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -145,6 +167,14 @@ app.use((req, res, next) => {
     res.status(status).json({ message });
     throw err;
   });
+
+  // Register consultation routes BEFORE Vite catch-all to ensure API routes work
+  try {
+    const consultRouter = await import('./routes/consult');
+    app.use('/api/consult', consultRouter.default);
+  } catch (err) {
+    console.warn('Consultation routes not available:', err);
+  }
 
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
@@ -179,7 +209,7 @@ app.use((req, res, next) => {
   // Other ports are firewalled. Default to 5000 if not specified.
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || '5000', 10);
+  const port = Number(process.env.PORT) || 5001;
   server.listen(port, () => {
     log(`serving on port ${port}`);
     log(`WebSocket collaboration available at ws://localhost:${port}/collaboration`);
@@ -189,10 +219,21 @@ app.use((req, res, next) => {
   process.on("SIGTERM", async () => {
     log("SIGTERM received, shutting down gracefully");
     await yjsServer.shutdown();
+    if (sessionPool) {
+      try {
+        await sessionPool.end();
+      } catch (error) {
+        log(
+          `Error closing session pool: ${
+            error instanceof Error ? error.message : String(error)
+          }`
+        );
+      }
+    }
     server.close(() => {
       log("Server closed");
       process.exit(0);
     });
   });
-  
+
 })();
