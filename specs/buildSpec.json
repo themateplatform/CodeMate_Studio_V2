@@ -1,0 +1,227 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CodeMate Build Specification",
+  "description": "Specification for building applications with CodeMate Studio",
+  "type": "object",
+  "required": ["version", "project", "requirements"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Spec version",
+      "default": "1.0.0"
+    },
+    "project": {
+      "type": "object",
+      "required": ["name", "description"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Project name",
+          "pattern": "^[a-z0-9-]+$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Project description"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["web", "mobile", "fullstack", "api"],
+          "default": "web"
+        },
+        "template": {
+          "type": "string",
+          "enum": ["blank", "blog", "dashboard", "landing", "ecommerce", "saas"],
+          "description": "Base template to use"
+        }
+      }
+    },
+    "requirements": {
+      "type": "object",
+      "properties": {
+        "purpose": {
+          "type": "string",
+          "description": "Main purpose of the application"
+        },
+        "audience": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Target audience"
+        },
+        "userJourneys": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "steps"],
+            "properties": {
+              "name": { "type": "string" },
+              "description": { "type": "string" },
+              "steps": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          },
+          "description": "User journeys and flows"
+        },
+        "features": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Required features"
+        },
+        "dataModels": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "fields"],
+            "properties": {
+              "name": { "type": "string" },
+              "fields": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["name", "type"],
+                  "properties": {
+                    "name": { "type": "string" },
+                    "type": { "type": "string" },
+                    "required": { "type": "boolean" },
+                    "description": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "description": "Data models and schema"
+        }
+      }
+    },
+    "architecture": {
+      "type": "object",
+      "properties": {
+        "frontend": {
+          "type": "object",
+          "properties": {
+            "framework": {
+              "type": "string",
+              "enum": ["react", "vue", "angular", "svelte"],
+              "default": "react"
+            },
+            "language": {
+              "type": "string",
+              "enum": ["typescript", "javascript"],
+              "default": "typescript"
+            },
+            "styling": {
+              "type": "string",
+              "enum": ["tailwind", "css-modules", "styled-components", "emotion"],
+              "default": "tailwind"
+            }
+          }
+        },
+        "backend": {
+          "type": "object",
+          "properties": {
+            "provider": {
+              "type": "string",
+              "enum": ["none", "supabase", "firebase", "aws", "custom"],
+              "default": "none"
+            },
+            "database": {
+              "type": "string",
+              "enum": ["none", "postgresql", "mysql", "mongodb", "sqlite"],
+              "default": "none"
+            },
+            "auth": {
+              "type": "boolean",
+              "default": false
+            },
+            "api": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "hosting": {
+          "type": "object",
+          "properties": {
+            "provider": {
+              "type": "string",
+              "enum": ["vercel", "netlify", "aws", "cloudflare", "custom"],
+              "default": "vercel"
+            },
+            "domain": {
+              "type": "string",
+              "format": "hostname"
+            }
+          }
+        }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "properties": {
+        "accessibility": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable WCAG 2.1 AA compliance checks"
+        },
+        "performance": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable performance optimization"
+        },
+        "security": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable security validation"
+        },
+        "testing": {
+          "type": "object",
+          "properties": {
+            "unit": { "type": "boolean", "default": true },
+            "integration": { "type": "boolean", "default": false },
+            "e2e": { "type": "boolean", "default": false }
+          }
+        },
+        "thresholds": {
+          "type": "object",
+          "properties": {
+            "overall": { "type": "number", "minimum": 0, "maximum": 100, "default": 70 },
+            "testCoverage": { "type": "number", "minimum": 0, "maximum": 100, "default": 60 },
+            "accessibility": { "type": "number", "minimum": 0, "maximum": 100, "default": 80 },
+            "performance": { "type": "number", "minimum": 0, "maximum": 100, "default": 70 },
+            "security": { "type": "number", "minimum": 0, "maximum": 100, "default": 90 }
+          }
+        }
+      }
+    },
+    "automation": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "maxRetries": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10,
+          "default": 3
+        },
+        "autoApprove": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically approve when quality thresholds are met"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "version": { "type": "string" },
+        "author": { "type": "string" }
+      }
+    }
+  }
+}
