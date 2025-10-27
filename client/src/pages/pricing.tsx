@@ -7,7 +7,7 @@ import { Link } from "wouter";
 const plans = [
   {
     name: "Free",
-    description: "Perfect for trying out CodeMate Studio",
+    description: "Perfect for trying out BuildMate Studio",
     price: "$0",
     period: "forever",
     icon: Sparkles,

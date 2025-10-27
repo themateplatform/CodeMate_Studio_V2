@@ -105,9 +105,9 @@ export function GlobalShell({ children }: GlobalShellProps) {
         {/* Logo & Project Switcher */}
         <div className="p-4 border-b border-border">
           <div className="flex items-center gap-2 mb-4">
-            <img src="https://cdn.builder.io/api/v1/image/assets%2F7f4f17bc2420491a95f23b47a94e6efc%2Fcf2bb14f9f634632acd8da085020bfdb?format=webp&width=800" alt="CodeMate Studio Logo" className="h-8 w-auto" />
+            <img src="https://cdn.builder.io/api/v1/image/assets%2F7f4f17bc2420491a95f23b47a94e6efc%2Fcf2bb14f9f634632acd8da085020bfdb?format=webp&width=800" alt="BuildMate Studio Logo" className="h-8 w-auto" />
             <div>
-              <h1 className="font-heading font-semibold text-sm text-foreground">CodeMate Studio</h1>
+              <h1 className="font-heading font-semibold text-sm text-foreground">BuildMate Studio</h1>
               <p className="text-xs text-muted-foreground">Creative Coding Platform</p>
             </div>
           </div>

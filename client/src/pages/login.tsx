@@ -38,7 +38,7 @@ export function Login() {
           <div className="flex items-center justify-center mb-4">
             <div className="flex items-center gap-2">
               <Code2 className="h-8 w-8 text-blue-600" />
-              <span className="text-2xl font-bold">CodeMate Studio</span>
+              <span className="text-2xl font-bold">BuildMate Studio</span>
             </div>
           </div>
           <CardTitle className="text-2xl text-center">Welcome back</CardTitle>
