@@ -50,7 +50,7 @@ export default function ${componentName}({
       <h3 
         style={{ 
           fontSize: '${tokens.typography.fontSize.xl}',
-          fontWeight: ${tokens.typography.fontWeight.semibold},
+          fontWeight: '${tokens.typography.fontWeight.semibold}',
           marginBottom: '${tokens.spacing.sm}'
         }}
       >
@@ -110,11 +110,11 @@ export default function Button({
       {...props}
       style={{
         ...styles[variant],
-        padding: \`\${${tokens.spacing.sm}} \${${tokens.spacing.md}}\`,
+        padding: '${tokens.spacing.sm} ${tokens.spacing.md}',
         borderRadius: '${tokens.radius.md}',
         fontFamily: '${tokens.typography.fontFamily.sans}',
         fontSize: '${tokens.typography.fontSize.base}',
-        fontWeight: ${tokens.typography.fontWeight.medium},
+        fontWeight: '${tokens.typography.fontWeight.medium}',
         border: '1px solid',
         cursor: 'pointer',
         boxShadow: '${tokens.shadow.sm}',
