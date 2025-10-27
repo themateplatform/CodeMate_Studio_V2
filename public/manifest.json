@@ -1,6 +1,6 @@
 {
-  "name": "CodeMate Studio",
-  "short_name": "CodeMate",
+  "name": "BuildMate Studio",
+  "short_name": "BuildMate",
   "description": "AI-powered code generation and development platform with real-time collaboration and project management capabilities",
   "start_url": "/",
   "display": "standalone",
@@ -29,14 +29,14 @@
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "CodeMate Studio Dashboard"
+      "label": "BuildMate Studio Dashboard"
     },
     {
       "src": "/screenshots/screenshot-2.png",
       "sizes": "375x812",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "CodeMate Studio Mobile"
+      "label": "BuildMate Studio Mobile"
     }
   ],
   "shortcuts": [

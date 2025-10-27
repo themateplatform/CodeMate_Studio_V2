@@ -1,5 +1,5 @@
 /**
- * Types for CodeMate Studio Automation System
+ * Types for BuildMate Studio Automation System
  */
 
 import type { TaskType } from './modelRouter';
