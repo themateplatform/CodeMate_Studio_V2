@@ -1,8 +1,8 @@
-# CodeMate Studio V2
+# BuildMate Studio V2
 
 🚀 **AI-powered no/low-code platform** that transforms natural language prompts into production-ready applications.
 
-Unlike visual-only builders, CodeMate generates **real, scalable code** (TypeScript + React + Tailwind) while letting you **choose any backend or hosting provider**.
+Unlike visual-only builders, BuildMate generates **real, scalable code** (TypeScript + React + Tailwind) while letting you **choose any backend or hosting provider**.
 
 ## ✨ Key Features
 
@@ -16,19 +16,19 @@ Unlike visual-only builders, CodeMate generates **real, scalable code** (TypeScr
 ## 📚 Documentation
 
 ### Core Docs
-- **[Vision](./docs/vision.md)** - CodeMate Studio philosophy and comparison with other builders
+- **[Vision](./docs/vision.md)** - BuildMate Studio philosophy and comparison with other builders
 - **[Model Routing](./docs/model-routing.md)** - Intelligent AI model selection system
 - **[Getting Started](./docs/getting-started.md)** - Setup, deployment, and usage guide
 
 ### Additional Docs
-- **[Design Tokens](./docs/DESIGN_TOKENS.md)** - How CodeMate consumes shared design tokens from HubMate Studio
+- **[Design Tokens](./docs/DESIGN_TOKENS.md)** - How BuildMate consumes shared design tokens from HubMate Studio
 
 ## 🚀 Quick Start
 
 ### Installation
 ```bash
-git clone https://github.com/themateplatform/CodeMate_Studio_V2.git
-cd CodeMate_Studio_V2
+git clone https://github.com/themateplatform/BuildMate_Studio_V2.git
+cd BuildMate_Studio_V2
 npm install
 ```
 
@@ -60,7 +60,7 @@ Visit `http://localhost:5000` to start building!
 
 ### Using API
 ```typescript
-import { runAutomation } from '@/codemate';
+import { runAutomation } from '@/buildmate';
 
 const result = await runAutomation(
   'Create a blog with posts and dark mode',
@@ -77,13 +77,13 @@ See [Getting Started Guide](./docs/getting-started.md) for detailed instructions
 
 ## 🏗️ Architecture
 
-### CodeMate Core Modules
-- **Planner** (`src/codemate/planner.ts`) - Repository audit & architecture planning
-- **Executor** (`src/codemate/executor.ts`) - Code scaffolding & implementation
-- **Scorer** (`src/codemate/scorer.ts`) - Quality validation (tests, accessibility, security)
-- **Decider** (`src/codemate/decider.ts`) - State machine controller
-- **Model Router** (`src/codemate/modelRouter.ts`) - Intelligent AI model selection
-- **Orchestrator** (`src/codemate/orchestrator.ts`) - Main automation workflow
+### BuildMate Core Modules
+- **Planner** (`src/buildmate/planner.ts`) - Repository audit & architecture planning
+- **Executor** (`src/buildmate/executor.ts`) - Code scaffolding & implementation
+- **Scorer** (`src/buildmate/scorer.ts`) - Quality validation (tests, accessibility, security)
+- **Decider** (`src/buildmate/decider.ts`) - State machine controller
+- **Model Router** (`src/buildmate/modelRouter.ts`) - Intelligent AI model selection
+- **Orchestrator** (`src/buildmate/orchestrator.ts`) - Main automation workflow
 
 ### Backend & Hosting Connectors
 - **Backend Connectors** - Supabase, Firebase, AWS, Custom APIs
@@ -121,7 +121,7 @@ npm start
 - Vite + Vitest + Playwright
 - Wouter (routing) + TanStack Query (state)
 
-### CodeMate Platform
+### BuildMate Platform
 - Express.js + PostgreSQL + Drizzle ORM
 - Session-based Auth + WebSocket + Yjs
 - OpenAI, Anthropic, Google, xAI APIs

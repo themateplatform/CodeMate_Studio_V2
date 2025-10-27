@@ -309,4 +309,4 @@ Use our PR template which includes:
 
 ---
 
-Thank you for contributing to CodeMate Studio! Together, we're building the future of AI-powered application development.
+Thank you for contributing to BuildMate Studio! Together, we're building the future of AI-powered application development.
