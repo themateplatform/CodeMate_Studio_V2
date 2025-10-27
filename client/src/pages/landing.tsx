@@ -523,7 +523,7 @@ export default function LandingPage() {
           <LogoLockup variant="nav" progress={scrollProgress} />
           <div className="flex items-center gap-6 text-sm">
             <a className="text-white transition-colors" href="#why">
-              Why CodeMate
+              Why BuildMate
             </a>
             <a className="text-white transition-colors" href="#gallery">
               Gallery

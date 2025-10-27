@@ -1,5 +1,5 @@
 /**
- * CodeMate Studio Service Worker
+ * BuildMate Studio Service Worker
  * Provides offline capabilities, background sync, and push notifications
  */
 
@@ -277,12 +277,12 @@ self.addEventListener('push', (event) => {
     try {
       notificationData = event.data.json();
     } catch (error) {
-      notificationData = { title: 'CodeMate Studio', body: event.data.text() };
+      notificationData = { title: 'BuildMate Studio', body: event.data.text() };
     }
   }
   
   const options = {
-    title: notificationData.title || 'CodeMate Studio',
+    title: notificationData.title || 'BuildMate Studio',
     body: notificationData.body || 'You have a new notification',
     icon: '/icons/icon-192x192.png',
     badge: '/icons/badge-72x72.png',
