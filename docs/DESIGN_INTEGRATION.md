@@ -63,7 +63,12 @@ BuildMate generates code using CSS variables:
 
 **Good (design tokens):**
 ```tsx
-<button className="bg-[var(--employse-primary)] text-[var(--employse-on-primary)] px-[var(--spacing-md)] py-[var(--spacing-sm)]">
+<button 
+  className="bg-[var(--employse-primary)] 
+             text-[var(--employse-on-primary)] 
+             px-[var(--spacing-md)] 
+             py-[var(--spacing-sm)]"
+>
   Click Me
 </button>
 ```

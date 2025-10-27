@@ -329,8 +329,12 @@ export default function App() {
 **Sentry Error Tracking:**
 ```bash
 npm install @sentry/react
+```
 
-# Configure
+Configure:
+```typescript
+import * as Sentry from '@sentry/react';
+
 Sentry.init({
   dsn: "YOUR_SENTRY_DSN",
   environment: process.env.NODE_ENV
