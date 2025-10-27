@@ -24,16 +24,14 @@ export function AppSelector({ value, onChange }: AppSelectorProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const loadApps = async () => {
+      setLoading(true);
+      const availableApps = await designmateClient.getAvailableApps();
+      setApps(availableApps);
+      setLoading(false);
+    };
     loadApps();
   }, []);
-
-  const loadApps = async () => {
-    setLoading(true);
-    const availableApps = await designmateClient.getAvailableApps();
-    setApps(availableApps);
-    setLoading(false);
-  };
-
   return (
     <div className="space-y-2">
       <Label htmlFor="app-selector">Target App Design System</Label>
