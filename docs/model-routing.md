@@ -1,7 +1,7 @@
 # Model Routing System
 
 ## Overview
-CodeMate Studio uses an intelligent model routing system to select the optimal AI model for each task. Different models have different strengths, and the router automatically chooses the best one based on task type, context, and requirements.
+BuildMate Studio uses an intelligent model routing system to select the optimal AI model for each task. Different models have different strengths, and the router automatically chooses the best one based on task type, context, and requirements.
 
 ## Supported Models
 
@@ -380,4 +380,4 @@ As new models are released, they can be added to the registry:
 
 ## Conclusion
 
-The model routing system is a core strength of CodeMate Studio. By intelligently selecting the right AI model for each task, we ensure optimal quality, performance, and cost-efficiency. The system is designed to be extensible, allowing new models to be added as they become available.
+The model routing system is a core strength of BuildMate Studio. By intelligently selecting the right AI model for each task, we ensure optimal quality, performance, and cost-efficiency. The system is designed to be extensible, allowing new models to be added as they become available.

@@ -1,4 +1,4 @@
-# CodeMate Uplift Orchestrator - Agent Changelog
+# BuildMate Uplift Orchestrator - Agent Changelog
 
 ## Phase 0: Guardrails & Scoping - [INITIATED]
 **Date**: 2025-09-28  
@@ -35,7 +35,7 @@
 - `GITHUB_REPO` (if not already linked)
 
 ### Scope Definition
-Transform CodeMate Studio from current state to production-grade AI-powered app builder with:
+Transform BuildMate Studio from current state to production-grade AI-powered app builder with:
 - Supabase backend migration
 - Mobile app capabilities (Capacitor + Expo)
 - Store compliance wizard
@@ -126,4 +126,4 @@ Transform CodeMate Studio from current state to production-grade AI-powered app 
 
 ---
 
-*This changelog tracks all autonomous agent actions during the CodeMate Uplift process.*
+*This changelog tracks all autonomous agent actions during the BuildMate Uplift process.*

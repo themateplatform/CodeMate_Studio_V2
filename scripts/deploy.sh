@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# CodeMate Studio Deployment Script
+# BuildMate Studio Deployment Script
 # Manages multiple deployment types for Replit
 
 set -e  # Exit on any error
@@ -299,7 +299,7 @@ show_summary() {
 
 # Main deployment flow
 main() {
-    log_info "CodeMate Studio Deployment Script"
+    log_info "BuildMate Studio Deployment Script"
     log_info "=================================="
     
     check_environment

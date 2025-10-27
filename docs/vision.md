@@ -1,7 +1,7 @@
-# CodeMate Studio Vision
+# BuildMate Studio Vision
 
 ## Overview
-CodeMate Studio is an **AI-driven no/low-code environment** that transforms natural language prompts into **production-ready applications**. Unlike visual-only builders, CodeMate generates real, scalable code while giving users the flexibility to choose their own backend and hosting providers.
+BuildMate Studio is an **AI-driven no/low-code environment** that transforms natural language prompts into **production-ready applications**. Unlike visual-only builders, BuildMate generates real, scalable code while giving users the flexibility to choose their own backend and hosting providers.
 
 ## Core Philosophy
 
@@ -12,7 +12,7 @@ CodeMate Studio is an **AI-driven no/low-code environment** that transforms natu
 - **Inspectable** - understand and modify what's generated
 
 ### AI Engineering Team
-CodeMate behaves like a team of AI specialists:
+BuildMate behaves like a team of AI specialists:
 - **Planner** (Claude Sonnet 4.5) - Audits and drafts architecture
 - **Executor** (GPT-5 Codex) - Scaffolds and implements features
 - **Scorer** (GPT-5/Claude) - Validates quality, accessibility, performance
@@ -23,7 +23,7 @@ CodeMate behaves like a team of AI specialists:
 - **Hosting Options**: Vercel, Netlify, AWS, Cloudflare, custom
 - **Lightweight Integration**: Connector layer instead of lock-in
 
-## CodeMate vs Other Builders
+## BuildMate vs Other Builders
 
 ### vs Webflow / Framer
 **Webflow/Framer**: Visual editors with proprietary hosting
@@ -32,7 +32,7 @@ CodeMate behaves like a team of AI specialists:
 - ❌ Proprietary format
 - ❌ Difficult to export/customize
 
-**CodeMate Studio**:
+**BuildMate Studio**:
 - ✅ Real TypeScript + React code
 - ✅ Deploy anywhere
 - ✅ Full source control
@@ -45,7 +45,7 @@ CodeMate behaves like a team of AI specialists:
 - ❌ Vendor lock-in
 - ❌ Limited customization
 
-**CodeMate Studio**:
+**BuildMate Studio**:
 - ✅ Production-grade performance
 - ✅ Choose your own backend
 - ✅ Full code access
@@ -58,7 +58,7 @@ CodeMate behaves like a team of AI specialists:
 - ❌ Proprietary runtime
 - ❌ Vendor dependency
 
-**CodeMate Studio**:
+**BuildMate Studio**:
 - ✅ Open-source friendly
 - ✅ Standard web technologies
 - ✅ Pay for what you use
@@ -71,7 +71,7 @@ CodeMate behaves like a team of AI specialists:
 - ❌ Requires coding knowledge
 - ❌ Manual integration
 
-**CodeMate Studio**:
+**BuildMate Studio**:
 - ✅ Full app generation from prompts
 - ✅ Automated quality validation
 - ✅ Complete project scaffolding
@@ -86,7 +86,7 @@ Different AI models excel at different tasks:
 - **Documentation**: Gemini 2.5 Pro for clear narratives
 - **Quick Fixes**: Grok Code Fast 1 for speed
 
-CodeMate automatically selects the best model for each task.
+BuildMate automatically selects the best model for each task.
 
 ### 2. Automation Mode
 Plan → Execute → Score → Decide loop:
@@ -152,7 +152,7 @@ Abstract connector layer for:
 - **Build**: Vite
 - **Testing**: Vitest + Playwright
 
-### CodeMate Platform
+### BuildMate Platform
 - **Backend**: Express.js + PostgreSQL
 - **ORM**: Drizzle
 - **Authentication**: Session-based
@@ -206,6 +206,6 @@ Abstract connector layer for:
 
 ## Conclusion
 
-CodeMate Studio represents a new approach to application development: combining the ease of no-code platforms with the power and flexibility of traditional development. By generating real code, providing intelligent orchestration, and offering provider flexibility, CodeMate empowers both non-developers and professional teams to build production-ready applications quickly and confidently.
+BuildMate Studio represents a new approach to application development: combining the ease of no-code platforms with the power and flexibility of traditional development. By generating real code, providing intelligent orchestration, and offering provider flexibility, BuildMate empowers both non-developers and professional teams to build production-ready applications quickly and confidently.
 
 The future of development is collaborative - humans provide the vision, AI handles the implementation, and everyone benefits from higher quality, faster delivery, and greater flexibility.
