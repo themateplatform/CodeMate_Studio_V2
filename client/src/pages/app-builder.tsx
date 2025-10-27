@@ -28,6 +28,8 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { AppSelector } from "@/components/AppSelector";
+import { TokenPreview } from "@/components/TokenPreview";
 
 type AppBuilderStep = 'intake' | 'enhancement' | 'research' | 'brief' | 'agents' | 'implementation';
 
@@ -93,6 +95,7 @@ export default function AppBuilderPage() {
   const [location] = useLocation();
   const [currentStep, setCurrentStep] = useState<AppBuilderStep>('intake');
   const [progress, setProgress] = useState(0);
+  const [targetApp, setTargetApp] = useState('default');
   
   // Extract prompt from URL params
   const urlParams = new URLSearchParams(location.split('?')[1] || '');
@@ -455,6 +458,17 @@ export default function AppBuilderPage() {
             </div>
             
             <ScrollArea className="h-full p-4 space-y-4">
+              {/* Design System Selector */}
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm">Design System</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <AppSelector value={targetApp} onChange={setTargetApp} />
+                  <TokenPreview appName={targetApp} />
+                </CardContent>
+              </Card>
+
               {/* Requirements */}
               {projectRequirements.length > 0 && (
                 <Card>
