@@ -1,0 +1,92 @@
+name: Hottr Landing Page
+type: landing_page
+description: Modern landing page for Hottr dating app with smooth animations
+
+sections:
+  - hero:
+      title: "Find Your Perfect Match"
+      subtitle: "Where connections happen naturally"
+      cta_primary: "Get Started Free"
+      cta_secondary: "Watch Demo"
+      background: gradient
+      image: hero-illustration.png
+  
+  - features:
+      layout: grid
+      columns: 3
+      items:
+        - title: "Smart Matching"
+          icon: sparkles
+          description: "AI-powered algorithm finds your perfect match"
+        - title: "Verified Profiles"
+          icon: shield
+          description: "Every profile is verified for your safety"
+        - title: "Video Chat"
+          icon: video
+          description: "Get to know matches with video calls"
+  
+  - pricing:
+      plans:
+        - name: Free
+          price: 0
+          features:
+            - Basic matching
+            - 10 likes per day
+            - Limited messaging
+        - name: Premium
+          price: 9.99
+          period: month
+          featured: true
+          features:
+            - Unlimited likes
+            - See who likes you
+            - Unlimited messaging
+            - Video chat
+        - name: Elite
+          price: 19.99
+          period: month
+          features:
+            - Everything in Premium
+            - Priority support
+            - Profile boost
+            - Advanced filters
+  
+  - cta:
+      title: "Ready to Meet Someone Special?"
+      button: "Start Your Journey"
+      background_color: primary
+
+design_system: hottr
+framework: react
+ui_library: shadcn/ui
+animations: true
+responsive: mobile-first
+
+styling:
+  theme:
+    mode: light
+    accent_color: hottr-primary
+  typography:
+    headings: font-display
+    body: font-sans
+  spacing: comfortable
+
+performance:
+  lazy_loading: true
+  image_optimization: true
+  code_splitting: true
+
+seo:
+  title: "Hottr - Find Your Perfect Match"
+  description: "Join thousands finding love on Hottr. Smart matching, verified profiles, and video chat."
+  keywords:
+    - dating app
+    - online dating
+    - find love
+    - match making
+  og_image: og-image.png
+
+deployment:
+  platform: vercel
+  domain: hottr.app
+  analytics: google
