@@ -88,7 +88,11 @@ export function generateCardStyles(tokens: DesignTokens): string {
     borderRadius: '${tokens.radius.lg}',
     padding: '${tokens.spacing.lg}',
     boxShadow: '${tokens.shadow.md}'
-  `.trim();
+  `
+    .split('\n')
+    .map(line => line.trim())
+    .filter(line => line.length > 0)
+    .join('\n');
 }
 
 /**
