@@ -37,7 +37,7 @@ Vercel provides the best experience for React + TypeScript applications generate
    vercel
    ```
 
-3. **Configure environment variables** in Vercel dashboard:
+3. **Configure environment variables** in Vercel dashboard (see [Environment Variables](#environment-variables) section for complete list):
    - `DATABASE_URL`
    - `SUPABASE_URL`
    - `SUPABASE_ANON_KEY`

@@ -456,8 +456,8 @@ function CustomComponent() {
 
 - [Spec Format](./SPEC_FORMAT.md) - How to write specs
 - [API Reference](./API.md) - Programmatic API usage
-- [DesignMate Studio Docs](https://designmate-studio.com/docs) - Design token management
+- DesignMate Studio documentation (coming soon) - Design token management
 
 ---
 
-**Questions?** Contact the DesignMate team or check the [DesignMate Studio documentation](https://designmate-studio.com/docs).
+**Questions?** Contact the DesignMate team at designmate@themateplatform.com
