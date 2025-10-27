@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { AppSelector } from "@/components/AppSelector";
 
 type AppBuilderStep = 'intake' | 'enhancement' | 'research' | 'brief' | 'agents' | 'implementation';
 
@@ -97,6 +98,9 @@ export default function AppBuilderPage() {
   // Extract prompt from URL params
   const urlParams = new URLSearchParams(location.split('?')[1] || '');
   const initialPrompt = urlParams.get('prompt') || '';
+  
+  // DesignMate integration state
+  const [targetApp, setTargetApp] = useState("default");
   
   // State for each step
   const [userInput, setUserInput] = useState(initialPrompt);
@@ -455,6 +459,16 @@ export default function AppBuilderPage() {
             </div>
             
             <ScrollArea className="h-full p-4 space-y-4">
+              {/* Design System Selector */}
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm">Design System</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <AppSelector value={targetApp} onChange={setTargetApp} />
+                </CardContent>
+              </Card>
+
               {/* Requirements */}
               {projectRequirements.length > 0 && (
                 <Card>
