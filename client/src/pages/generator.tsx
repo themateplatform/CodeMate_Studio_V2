@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { apiRequest } from "@/lib/queryClient";
+import { AppSelector } from "@/components/AppSelector";
+import { TokenPreview } from "@/components/TokenPreview";
 
 interface GeneratorResponse {
   success: boolean;
@@ -78,6 +80,8 @@ export default function GeneratorPage(): JSX.Element {
   const [parseResult, setParseResult] = useState<ParseResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [recipes, setRecipes] = useState<RecipeMetadata[]>([]);
+  const [targetApp, setTargetApp] = useState("default");
+  const [showTokenPreview, setShowTokenPreview] = useState(false);
 
   // Load available recipes on mount
   useEffect(() => {
@@ -139,6 +143,7 @@ export default function GeneratorPage(): JSX.Element {
         recipe,
         name: projectName,
         validate: shouldValidate,
+        targetApp, // Include selected design system
       });
 
       const json = (await response.json()) as GeneratorResponse;
@@ -276,6 +281,27 @@ export default function GeneratorPage(): JSX.Element {
               <Switch checked={shouldValidate} onCheckedChange={setShouldValidate} id="validate" />
               Run build validation after generation
             </label>
+
+            {/* DesignMate Integration */}
+            <div className="space-y-4 rounded-md border border-slate-700 bg-slate-900/50 p-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-semibold text-slate-100">Design System</h3>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowTokenPreview(!showTokenPreview)}
+                >
+                  {showTokenPreview ? "Hide" : "Preview"} Tokens
+                </Button>
+              </div>
+              <AppSelector value={targetApp} onChange={setTargetApp} />
+              {showTokenPreview && (
+                <div className="mt-4">
+                  <TokenPreview appName={targetApp} />
+                </div>
+              )}
+            </div>
 
             <div className="flex gap-3">
               <Button type="submit" disabled={loading}>
