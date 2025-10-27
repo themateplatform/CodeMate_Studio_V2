@@ -1,4 +1,4 @@
-# Risk Assessment & Mitigation - CodeMate Uplift
+# Risk Assessment & Mitigation - BuildMate Uplift
 
 ## Risk Matrix Overview
 

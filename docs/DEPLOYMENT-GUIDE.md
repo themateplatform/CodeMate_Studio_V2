@@ -1,8 +1,8 @@
-# CodeMate Studio Deployment Guide
+# BuildMate Studio Deployment Guide
 
 ## Overview
 
-CodeMate Studio supports multiple deployment strategies on Replit, each optimized for different use cases and workloads. This guide covers all four deployment types and how to configure them for your needs.
+BuildMate Studio supports multiple deployment strategies on Replit, each optimized for different use cases and workloads. This guide covers all four deployment types and how to configure them for your needs.
 
 ## Deployment Types
 

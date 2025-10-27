@@ -1,13 +1,13 @@
 /**
- * Tests for CodeMate Studio Core Modules
+ * Tests for BuildMate Studio Core Modules
  */
 
 import { describe, it, expect } from 'vitest';
-import { selectModel, getRecommendedModel, getModelsForTask } from '../src/codemate/modelRouter';
-import { createPlan } from '../src/codemate/planner';
-import { meetsThresholds } from '../src/codemate/scorer';
-import { makeDecision, getNextState, isTerminalState } from '../src/codemate/decider';
-import type { Score, DecisionContext, AutomationState } from '../src/codemate/types';
+import { selectModel, getRecommendedModel, getModelsForTask } from '../src/buildmate/modelRouter';
+import { createPlan } from '../src/buildmate/planner';
+import { meetsThresholds } from '../src/buildmate/scorer';
+import { makeDecision, getNextState, isTerminalState } from '../src/buildmate/decider';
+import type { Score, DecisionContext, AutomationState } from '../src/buildmate/types';
 
 describe('Model Router', () => {
   it('should select appropriate model for code implementation', () => {

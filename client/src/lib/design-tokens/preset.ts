@@ -1,5 +1,5 @@
 /**
- * Design Tokens Preset for CodeMate Studio
+ * Design Tokens Preset for BuildMate Studio
  * Vendored from @themateplatform/design-tokens (temporary until package is available)
  * 
  * This preset provides shared design tokens from HubMate Studio following the schema:

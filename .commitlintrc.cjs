@@ -1,4 +1,4 @@
-// Conventional Commits configuration for CodeMate Studio
+// Conventional Commits configuration for BuildMate Studio
 // Phase 4: GitHub 2-Way Sync + CI Implementation
 
 /** @type {import('@commitlint/types').UserConfig} */

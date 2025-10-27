@@ -61,16 +61,12 @@ BuildMate automatically integrates with DesignMate Studio:
 
 Instead of:
 ```tsx
-<button className="bg-blue-500 text-white rounded-lg">
-  Click Me
-</button>
+<div className="bg-[#FF5733] text-[#FFFFFF]">
 ```
 
 BuildMate generates:
 ```tsx
-<button className="bg-[var(--employse-primary)] text-[var(--employse-on-primary)] rounded-[var(--radius-md)]">
-  Click Me
-</button>
+<div className="bg-employse-primary text-employse-text-light">
 ```
 
 **Result:** Consistent styling across all generated apps.

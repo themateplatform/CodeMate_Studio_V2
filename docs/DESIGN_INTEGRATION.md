@@ -1,225 +1,241 @@
-# Design Integration with DesignMate Studio
+# DesignMate Studio Integration
 
-BuildMate Studio automatically integrates with DesignMate Studio to ensure all generated applications follow your design system.
+BuildMate automatically fetches design tokens from DesignMate Studio to ensure consistency and compliance across all generated applications.
 
 ## Overview
 
-Instead of using hardcoded colors and styles, BuildMate:
-1. Queries DesignMate for design tokens
-2. Uses CSS variable references in generated code
-3. Ensures design system compliance across all apps
+The DesignMate Studio integration enables:
+- **Automatic token fetching**: Retrieves design tokens for the selected app
+- **Design system compliance**: Ensures all generated code follows brand guidelines
+- **Fallback support**: Works offline with sensible default tokens
+- **Live preview**: Shows tokens before code generation
+- **Validation**: Checks generated code for design compliance
 
 ## How It Works
 
-### 1. Design System Reference
+### 1. User Selects Target App
 
-In your spec, reference a design system:
-
-```yaml
-name: My App
-design_system: employse
-```
+When using the code generator or builder, users can select which app's design system to use:
+- Employse
+- Hottr
+- Noche
+- Default
 
 ### 2. Token Fetching
 
-BuildMate queries DesignMate Studio API:
-```
-GET /api/design-systems/employse/tokens
+BuildMate queries the DesignMate API for that app's design tokens:
+```typescript
+const tokens = await designmateClient.getTokensForApp('employse');
 ```
 
-Response includes:
-```json
-{
-  "colors": {
-    "primary": "#0066CC",
-    "secondary": "#6C757D",
-    "background": "#FFFFFF"
-  },
-  "spacing": {
-    "sm": "8px",
-    "md": "16px",
-    "lg": "24px"
-  },
-  "typography": {
-    "font-family": "Inter, sans-serif",
-    "sizes": {
-      "h1": "32px",
-      "body": "16px"
-    }
-  }
-}
-```
+Returns a structured token object containing:
+- **Colors**: primary, secondary, accent, background, foreground
+- **Typography**: font families, sizes, weights
+- **Spacing**: standardized spacing scale
+- **Radius**: border radius values
+- **Shadow**: box shadow definitions
 
 ### 3. Code Generation
 
-BuildMate generates code using CSS variables:
+The code generator uses token references instead of hardcoded values:
 
-**Bad (hardcoded):**
+**Before (hardcoded):**
 ```tsx
-<button className="bg-blue-500 text-white px-4 py-2">
-  Click Me
-</button>
+<Button className="bg-blue-500 text-white rounded-md px-4 py-2">
+  Click me
+</Button>
 ```
 
-**Good (design tokens):**
+**After (token-based):**
 ```tsx
-<button 
-  className="bg-[var(--employse-primary)] 
-             text-[var(--employse-on-primary)] 
-             px-[var(--spacing-md)] 
-             py-[var(--spacing-sm)]"
+<Button 
+  style={{
+    backgroundColor: tokens.colors.primary,
+    color: tokens.colors.foreground,
+    borderRadius: tokens.radius.md,
+    padding: `${tokens.spacing.sm} ${tokens.spacing.md}`
+  }}
 >
-  Click Me
-</button>
+  Click me
+</Button>
+```
+
+### 4. Compliance Validation
+
+After generation, BuildMate can validate the code:
+```typescript
+const report = await designmateClient.validateCompliance(code, 'employse');
+if (!report.compliant) {
+  console.warn('Design violations:', report.violations);
+}
+```
+
+## Components
+
+### AppSelector
+
+UI component for selecting the target app's design system:
+
+```tsx
+import { AppSelector } from '@/components/AppSelector';
+
+function MyBuilder() {
+  const [targetApp, setTargetApp] = useState('employse');
+  
+  return <AppSelector value={targetApp} onChange={setTargetApp} />;
+}
+```
+
+### TokenPreview
+
+Shows a visual preview of all design tokens:
+
+```tsx
+import { TokenPreview } from '@/components/TokenPreview';
+
+function MyBuilder() {
+  return <TokenPreview appName="employse" />;
+}
+```
+
+## API Contract
+
+### GET /api/apps
+
+Returns list of available design systems.
+
+**Response:**
+```json
+{
+  "apps": ["employse", "hottr", "noche", "default"]
+}
+```
+
+### GET /api/tokens/:appName
+
+Returns design tokens for specified app.
+
+**Response:**
+```json
+{
+  "colors": {
+    "primary": "#3b82f6",
+    "secondary": "#8b5cf6",
+    ...
+  },
+  "typography": {
+    "fontFamily": {
+      "sans": "Inter, system-ui, sans-serif",
+      "mono": "Monaco, monospace"
+    },
+    ...
+  },
+  ...
+}
+```
+
+### POST /api/validate
+
+Validates code against design system compliance.
+
+**Request:**
+```json
+{
+  "code": "const Button = () => <button className='bg-blue-500'>...",
+  "app": "employse"
+}
+```
+
+**Response:**
+```json
+{
+  "compliant": false,
+  "violations": [
+    {
+      "line": 1,
+      "message": "Hardcoded color value instead of design token",
+      "severity": "error"
+    }
+  ],
+  "score": 75
+}
 ```
 
 ## Configuration
 
-### Environment Variables
+Add to `.env`:
 
 ```bash
-# DesignMate Studio API
+# DesignMate Studio Integration
 VITE_DESIGNMATE_API_URL=https://designmate-studio-api.com
-VITE_DESIGNMATE_API_KEY=your_api_key
+VITE_DESIGNMATE_API_KEY=your-api-key-here
 ```
 
-### Design System Mapping
+## Fallback Mode
 
-If your design system has a different name in DesignMate, create a mapping:
+If DesignMate Studio is unavailable or not configured:
+
+1. A warning is logged to the console
+2. Default fallback tokens are used
+3. Generated code still works correctly
+4. No errors thrown to the user
+
+The fallback tokens provide sensible defaults based on modern design best practices.
+
+## Usage Example
 
 ```typescript
-// config/design-systems.ts
-export const designSystemMappings = {
-  'my-app': 'employse',
-  'marketing-site': 'hottr'
-};
-```
+import { designmateClient } from '@/services/designmateClient';
 
-## Token Categories
-
-### Colors
-```css
---{system}-primary
---{system}-secondary
---{system}-background
---{system}-surface
---{system}-error
---{system}-warning
---{system}-success
-```
-
-### Spacing
-```css
---spacing-xs: 4px
---spacing-sm: 8px
---spacing-md: 16px
---spacing-lg: 24px
---spacing-xl: 32px
-```
-
-### Typography
-```css
---font-family-primary
---font-family-secondary
---font-size-h1
---font-size-body
---font-weight-regular
---font-weight-bold
-```
-
-### Border Radius
-```css
---radius-sm: 4px
---radius-md: 8px
---radius-lg: 16px
---radius-full: 9999px
-```
-
-### Shadows
-```css
---shadow-sm
---shadow-md
---shadow-lg
+async function generateComponent(spec: ComponentSpec) {
+  // 1. Fetch tokens
+  const tokens = await designmateClient.getTokensForApp(spec.targetApp);
+  
+  // 2. Generate code using tokens
+  const code = `
+    <div style={{
+      backgroundColor: '${tokens.colors.background}',
+      color: '${tokens.colors.foreground}',
+      padding: '${tokens.spacing.md}',
+      borderRadius: '${tokens.radius.md}',
+      fontFamily: '${tokens.typography.fontFamily.sans}'
+    }}>
+      {children}
+    </div>
+  `;
+  
+  // 3. Validate compliance
+  const report = await designmateClient.validateCompliance(code, spec.targetApp);
+  
+  if (!report.compliant) {
+    console.warn('Compliance issues found:', report.violations);
+  }
+  
+  return code;
+}
 ```
 
 ## Benefits
 
-1. **Consistency**: All apps automatically match your design system
-2. **Easy Updates**: Change tokens in DesignMate, all apps update
-3. **No Manual Styling**: Developers don't need to know hex codes
-4. **Brand Compliance**: Enforces corporate identity automatically
+- **Consistency**: All apps use the same design language
+- **Maintainability**: Update designs in one place, propagate everywhere
+- **Compliance**: Automatic validation prevents design drift
+- **Speed**: No manual design token copying
+- **Quality**: Professional, polished output every time
 
-## Example: Complete Integration
+## Related Documentation
 
-### 1. Define Design System in DesignMate
+- [Design Tokens Overview](./DESIGN_TOKENS.md)
+- [Code Generation Guide](./CODE_GENERATION.md)
+- [Builder UI Guide](./BUILDER_UI.md)
 
-Create "employse" design system with tokens:
-- Primary: #0066CC
-- Secondary: #6C757D
-- Font: Inter
+## Support
 
-### 2. Reference in BuildMate Spec
+If you encounter issues with the DesignMate integration:
 
-```yaml
-name: Employee Portal
-design_system: employse
-features:
-  - dashboard
-  - employee_list
-```
+1. Check that environment variables are set correctly
+2. Verify API connectivity to DesignMate Studio
+3. Review console logs for specific error messages
+4. Fallback mode should handle most failures gracefully
 
-### 3. Generated Code Uses Tokens
-
-```tsx
-// components/Dashboard.tsx
-export function Dashboard() {
-  return (
-    <div className="bg-[var(--employse-background)] text-[var(--employse-on-background)]">
-      <h1 className="text-[var(--font-size-h1)] font-[var(--font-weight-bold)]">
-        Dashboard
-      </h1>
-      <button className="bg-[var(--employse-primary)] text-[var(--employse-on-primary)] rounded-[var(--radius-md)]">
-        Action
-      </button>
-    </div>
-  );
-}
-```
-
-## Testing
-
-Verify design integration:
-
-```bash
-# Generate app with design system
-npm run generate -- --spec examples/dashboard-spec.yaml
-
-# Check generated code uses tokens
-grep -r "var(--employse" generated/
-```
-
-## Troubleshooting
-
-### Design System Not Found
-```
-Error: Design system 'employse' not found in DesignMate
-```
-**Solution**: Verify design system exists in DesignMate Studio
-
-### Missing Tokens
-```
-Warning: Token 'primary' not found, using fallback
-```
-**Solution**: Add missing tokens to your design system
-
-### API Connection Failed
-```
-Error: Cannot connect to DesignMate API
-```
-**Solution**: Check `VITE_DESIGNMATE_API_URL` and network connectivity
-
-## Next Steps
-
-- [Spec Format](./SPEC_FORMAT.md) - Learn spec syntax
-- [API Reference](./API.md) - Programmatic usage
-- [Deployment](./DEPLOYMENT.md) - Deploy generated apps
+For persistent issues, contact the DesignMate Studio team.

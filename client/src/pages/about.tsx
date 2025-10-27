@@ -66,7 +66,7 @@ export default function AboutPage() {
           Software Development
         </h1>
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-          CodeMate Studio is an AI-powered development platform that transforms how teams build,
+          BuildMate Studio is an AI-powered development platform that transforms how teams build,
           collaborate, and ship software. From idea to production in minutes, not months.
         </p>
       </div>

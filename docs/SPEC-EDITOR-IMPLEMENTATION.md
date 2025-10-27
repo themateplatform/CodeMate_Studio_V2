@@ -316,7 +316,7 @@ The Spec Editor System is now **production-ready** and fully integrated with the
 3. **Generate** a complete application with one click
 4. **Iterate** on both spec and generated code
 
-This completes the core "describe what you want → get a working app" vision of CodeMate Studio.
+This completes the core "describe what you want → get a working app" vision of BuildMate Studio.
 
 **Bundle Impact**: Minimal (+140KB backend, +1KB frontend)
 **Type Safety**: 100% (TypeScript check passes)

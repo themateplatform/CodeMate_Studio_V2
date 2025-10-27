@@ -1,5 +1,5 @@
 -- Initial schema migration to Supabase
--- This creates the core tables for CodeMate Studio
+-- This creates the core tables for BuildMate Studio
 
 -- Enable necessary extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";

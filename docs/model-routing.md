@@ -1,7 +1,7 @@
 # Model Routing System
 
 ## Overview
-CodeMate Studio uses an intelligent model routing system to select the optimal AI model for each task. Different models have different strengths, and the router automatically chooses the best one based on task type, context, and requirements.
+BuildMate Studio uses an intelligent model routing system to select the optimal AI model for each task. Different models have different strengths, and the router automatically chooses the best one based on task type, context, and requirements.
 
 ## Supported Models
 
@@ -208,7 +208,7 @@ return candidates[0]
 
 ### Basic Selection
 ```typescript
-import { selectModel } from '@/codemate';
+import { selectModel } from '@/buildmate';
 
 const model = selectModel({
   taskType: 'code-implementation',
@@ -230,7 +230,7 @@ console.log(model.displayName); // "Grok Code Fast 1"
 
 ### Get Recommended Model
 ```typescript
-import { getRecommendedModel } from '@/codemate';
+import { getRecommendedModel } from '@/buildmate';
 
 const model = getRecommendedModel('documentation');
 console.log(model.displayName); // "Gemini 2.5 Pro"
@@ -238,7 +238,7 @@ console.log(model.displayName); // "Gemini 2.5 Pro"
 
 ### List All Models for Task
 ```typescript
-import { getModelsForTask } from '@/codemate';
+import { getModelsForTask } from '@/buildmate';
 
 const models = getModelsForTask('architecture-planning');
 models.forEach(m => console.log(m.displayName));
@@ -249,7 +249,7 @@ models.forEach(m => console.log(m.displayName));
 
 ### Explain Selection
 ```typescript
-import { explainModelSelection } from '@/codemate';
+import { explainModelSelection } from '@/buildmate';
 
 const explanation = explainModelSelection({
   taskType: 'code-scaffold',
@@ -265,7 +265,7 @@ console.log(explanation);
 
 ### Register Custom Model
 ```typescript
-import { registerModel } from '@/codemate';
+import { registerModel } from '@/buildmate';
 
 registerModel({
   provider: 'openai',
@@ -380,4 +380,4 @@ As new models are released, they can be added to the registry:
 
 ## Conclusion
 
-The model routing system is a core strength of CodeMate Studio. By intelligently selecting the right AI model for each task, we ensure optimal quality, performance, and cost-efficiency. The system is designed to be extensible, allowing new models to be added as they become available.
+The model routing system is a core strength of BuildMate Studio. By intelligently selecting the right AI model for each task, we ensure optimal quality, performance, and cost-efficiency. The system is designed to be extensible, allowing new models to be added as they become available.

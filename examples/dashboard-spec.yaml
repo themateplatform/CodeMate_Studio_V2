@@ -1,12 +1,71 @@
 name: Employse Dashboard
 type: dashboard
-description: Employee management dashboard with scheduling and notifications
+description: Employee management dashboard with shift scheduling and notifications
+
 features:
-  - employee_list
-  - shift_calendar
-  - notifications
+  - employee_list:
+      searchable: true
+      sortable: true
+      fields:
+        - name
+        - email
+        - role
+        - status
+  - shift_calendar:
+      view_modes:
+        - day
+        - week
+        - month
+      drag_and_drop: true
+  - notifications:
+      real_time: true
+      types:
+        - shift_changes
+        - new_employees
+        - time_off_requests
+
 design_system: employse
 framework: react
+ui_library: shadcn/ui
 database: supabase
 authentication: true
-responsive: true
+
+pages:
+  - name: Dashboard
+    route: /
+    components:
+      - EmployeeStats
+      - RecentActivity
+      - UpcomingShifts
+  
+  - name: Employees
+    route: /employees
+    components:
+      - EmployeeList
+      - EmployeeFilters
+      - EmployeeSearch
+  
+  - name: Schedule
+    route: /schedule
+    components:
+      - ShiftCalendar
+      - ShiftCreator
+      - ConflictResolver
+
+api_endpoints:
+  - path: /api/employees
+    methods: [GET, POST, PUT, DELETE]
+  - path: /api/shifts
+    methods: [GET, POST, PUT, DELETE]
+  - path: /api/notifications
+    methods: [GET, PATCH]
+
+deployment:
+  platform: vercel
+  environment:
+    - name: DATABASE_URL
+      required: true
+    - name: SUPABASE_URL
+      required: true
+    - name: SUPABASE_ANON_KEY
+      required: true

@@ -1,80 +1,241 @@
 # BuildMate Studio API Reference
 
-BuildMate Studio provides both a web interface and programmatic API for generating applications from specifications.
+This document provides comprehensive API documentation for BuildMate Studio, including REST endpoints, WebSocket connections, and programmatic usage.
+
+## Table of Contents
+
+- [REST API](#rest-api)
+- [WebSocket API](#websocket-api)
+- [JavaScript SDK](#javascript-sdk)
+- [CLI Tool](#cli-tool)
+- [Webhooks](#webhooks)
 
 ## REST API
 
 ### Base URL
+
 ```
-https://buildmate-studio.com/api
+https://api.buildmate-studio.com/v1
 ```
 
 ### Authentication
 
-Use API key authentication:
+All API requests require authentication using an API key:
+
 ```bash
 curl -H "Authorization: Bearer YOUR_API_KEY" \
-  https://buildmate-studio.com/api/generate
+     https://api.buildmate-studio.com/v1/projects
 ```
 
-## Endpoints
+### Rate Limits
 
-### Generate Application
+- **Free tier**: 100 requests/hour
+- **Pro tier**: 1000 requests/hour
+- **Enterprise**: Custom limits
 
-Generate code from a specification.
+### Endpoints
 
-**Endpoint:** `POST /api/generate`
+#### Projects
 
-**Request:**
+##### List Projects
+
+```http
+GET /projects
+```
+
+**Query Parameters:**
+- `page` (integer): Page number (default: 1)
+- `limit` (integer): Items per page (default: 20, max: 100)
+- `status` (string): Filter by status (draft, building, completed, failed)
+
+**Response:**
 ```json
 {
+  "projects": [
+    {
+      "id": "proj_abc123",
+      "name": "Employee Dashboard",
+      "type": "dashboard",
+      "status": "completed",
+      "design_system": "employse",
+      "created_at": "2024-01-15T10:30:00Z",
+      "updated_at": "2024-01-15T11:45:00Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 45,
+    "pages": 3
+  }
+}
+```
+
+##### Create Project
+
+```http
+POST /projects
+```
+
+**Request Body:**
+```json
+{
+  "name": "Task Management App",
   "spec": {
-    "name": "My App",
+    "type": "saas",
+    "design_system": "taskflow",
+    "features": ["authentication", "task_management"],
+    "framework": "react"
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "project": {
+    "id": "proj_xyz789",
+    "name": "Task Management App",
+    "status": "draft",
+    "spec_url": "https://api.buildmate-studio.com/v1/projects/proj_xyz789/spec",
+    "created_at": "2024-01-15T12:00:00Z"
+  }
+}
+```
+
+##### Get Project
+
+```http
+GET /projects/:id
+```
+
+**Response:**
+```json
+{
+  "project": {
+    "id": "proj_abc123",
+    "name": "Employee Dashboard",
     "type": "dashboard",
-    "features": ["authentication", "user_list"],
-    "design_system": "employse"
-  },
-  "options": {
-    "framework": "react",
-    "database": "supabase",
-    "outputFormat": "github_pr"
+    "status": "completed",
+    "design_system": "employse",
+    "spec": { /* full spec */ },
+    "generated_files": [
+      {
+        "path": "src/components/EmployeeList.tsx",
+        "size": 2453,
+        "url": "https://storage.buildmate.com/proj_abc123/src/components/EmployeeList.tsx"
+      }
+    ],
+    "build_logs": "https://api.buildmate-studio.com/v1/projects/proj_abc123/logs",
+    "preview_url": "https://proj-abc123.buildmate.app",
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-01-15T11:45:00Z"
   }
+}
+```
+
+##### Update Project
+
+```http
+PATCH /projects/:id
+```
+
+**Request Body:**
+```json
+{
+  "name": "Updated Name",
+  "spec": { /* updated spec */ }
+}
+```
+
+##### Delete Project
+
+```http
+DELETE /projects/:id
+```
+
+**Response:**
+```json
+{
+  "message": "Project deleted successfully"
+}
+```
+
+#### Code Generation
+
+##### Start Generation
+
+```http
+POST /projects/:id/generate
+```
+
+**Request Body:**
+```json
+{
+  "regenerate": false,  // Regenerate all files
+  "target_files": []    // Specific files to regenerate (optional)
 }
 ```
 
 **Response:**
 ```json
 {
-  "id": "gen_abc123",
-  "status": "processing",
-  "progress": 0,
-  "estimated_time": 120
+  "build_id": "build_456",
+  "status": "building",
+  "estimated_time": "120s",
+  "websocket_url": "wss://api.buildmate-studio.com/v1/builds/build_456"
 }
 ```
 
-### Check Generation Status
+##### Get Build Status
 
-**Endpoint:** `GET /api/generate/:id`
+```http
+GET /builds/:build_id
+```
 
 **Response:**
 ```json
 {
-  "id": "gen_abc123",
-  "status": "completed",
-  "progress": 100,
-  "result": {
-    "repository_url": "https://github.com/org/repo",
-    "pr_url": "https://github.com/org/repo/pull/1",
-    "preview_url": "https://preview.buildmate.app/gen_abc123"
+  "build": {
+    "id": "build_456",
+    "project_id": "proj_abc123",
+    "status": "building",
+    "progress": 45,
+    "current_step": "Generating components",
+    "steps": [
+      {
+        "name": "Fetching design tokens",
+        "status": "completed",
+        "duration": "2.3s"
+      },
+      {
+        "name": "Generating components",
+        "status": "in_progress",
+        "progress": 60
+      },
+      {
+        "name": "Setting up routes",
+        "status": "pending"
+      }
+    ],
+    "started_at": "2024-01-15T12:05:00Z"
   }
 }
 ```
 
-### List Design Systems
+##### Cancel Build
 
-Get available design systems from DesignMate.
+```http
+POST /builds/:build_id/cancel
+```
 
-**Endpoint:** `GET /api/design-systems`
+#### Design Systems
+
+##### List Design Systems
+
+```http
+GET /design-systems
+```
 
 **Response:**
 ```json
@@ -82,30 +243,53 @@ Get available design systems from DesignMate.
   "design_systems": [
     {
       "id": "employse",
-      "name": "Employse Design System",
-      "tokens_count": 150
-    },
-    {
-      "id": "hottr",
-      "name": "Hottr Design System",
-      "tokens_count": 120
+      "name": "Employse",
+      "description": "Employee management design system",
+      "token_count": 156,
+      "updated_at": "2024-01-10T08:00:00Z"
     }
   ]
 }
 ```
 
-### Validate Spec
+##### Get Design Tokens
 
-Validate a specification before generation.
+```http
+GET /design-systems/:id/tokens
+```
 
-**Endpoint:** `POST /api/validate`
-
-**Request:**
+**Response:**
 ```json
 {
-  "spec": {
-    "name": "My App",
-    "type": "dashboard"
+  "design_system": "employse",
+  "tokens": {
+    "colors": { /* colors */ },
+    "spacing": { /* spacing */ },
+    "typography": { /* typography */ },
+    "radius": { /* radius */ },
+    "shadows": { /* shadows */ }
+  },
+  "version": "1.2.0",
+  "updated_at": "2024-01-10T08:00:00Z"
+}
+```
+
+#### Deployments
+
+##### Deploy Project
+
+```http
+POST /projects/:id/deploy
+```
+
+**Request Body:**
+```json
+{
+  "platform": "vercel",
+  "environment": "production",
+  "env_vars": {
+    "DATABASE_URL": "postgres://...",
+    "API_KEY": "secret_key"
   }
 }
 ```
@@ -113,11 +297,85 @@ Validate a specification before generation.
 **Response:**
 ```json
 {
-  "valid": true,
-  "warnings": [
-    "No design_system specified, using default"
-  ],
-  "errors": []
+  "deployment": {
+    "id": "dep_789",
+    "status": "deploying",
+    "platform": "vercel",
+    "url": "https://employee-dashboard.vercel.app",
+    "progress_url": "https://api.buildmate-studio.com/v1/deployments/dep_789"
+  }
+}
+```
+
+##### Get Deployment Status
+
+```http
+GET /deployments/:id
+```
+
+## WebSocket API
+
+### Connection
+
+```javascript
+const ws = new WebSocket('wss://api.buildmate-studio.com/v1/ws');
+
+ws.addEventListener('open', () => {
+  ws.send(JSON.stringify({
+    type: 'auth',
+    token: 'YOUR_API_KEY'
+  }));
+});
+```
+
+### Events
+
+#### Subscribe to Project
+
+```json
+{
+  "type": "subscribe",
+  "channel": "project:proj_abc123"
+}
+```
+
+#### Build Progress
+
+```json
+{
+  "type": "build.progress",
+  "build_id": "build_456",
+  "progress": 65,
+  "step": "Implementing business logic",
+  "timestamp": "2024-01-15T12:06:30Z"
+}
+```
+
+#### Build Complete
+
+```json
+{
+  "type": "build.complete",
+  "build_id": "build_456",
+  "project_id": "proj_abc123",
+  "files_generated": 42,
+  "preview_url": "https://proj-abc123.buildmate.app",
+  "timestamp": "2024-01-15T12:08:00Z"
+}
+```
+
+#### Build Failed
+
+```json
+{
+  "type": "build.failed",
+  "build_id": "build_456",
+  "error": {
+    "code": "DESIGN_SYSTEM_NOT_FOUND",
+    "message": "Design system 'employse' not found",
+    "details": { /* error details */ }
+  },
+  "timestamp": "2024-01-15T12:07:15Z"
 }
 ```
 
@@ -129,65 +387,113 @@ Validate a specification before generation.
 npm install @buildmate/sdk
 ```
 
-### Usage
+### Basic Usage
 
 ```typescript
-import { BuildMateClient } from '@buildmate/sdk';
+import { BuildMate } from '@buildmate/sdk';
 
-const client = new BuildMateClient({
+const buildmate = new BuildMate({
   apiKey: process.env.BUILDMATE_API_KEY
 });
 
-// Generate application
-const generation = await client.generate({
+// Create project
+const project = await buildmate.projects.create({
+  name: 'My App',
   spec: {
-    name: 'Employee Dashboard',
     type: 'dashboard',
-    features: ['employee_list', 'shift_calendar'],
-    design_system: 'employse'
-  },
-  options: {
-    framework: 'react',
-    database: 'supabase'
+    design_system: 'employse',
+    features: ['authentication', 'data_tables']
   }
+});
+
+// Start generation
+const build = await project.generate();
+
+// Subscribe to progress
+build.on('progress', (data) => {
+  console.log(`Progress: ${data.progress}%`);
+});
+
+build.on('complete', (data) => {
+  console.log(`Build complete: ${data.preview_url}`);
+});
+
+build.on('error', (error) => {
+  console.error('Build failed:', error);
+});
+```
+
+### Projects API
+
+```typescript
+// List projects
+const projects = await buildmate.projects.list({
+  status: 'completed',
+  limit: 50
+});
+
+// Get project
+const project = await buildmate.projects.get('proj_abc123');
+
+// Update project
+await project.update({
+  spec: { /* updated spec */ }
+});
+
+// Delete project
+await project.delete();
+```
+
+### Code Generation
+
+```typescript
+// Generate code
+const build = await project.generate({
+  regenerate: false
 });
 
 // Wait for completion
-await generation.waitForCompletion();
+const result = await build.wait();
 
-console.log('Generated:', generation.result.repository_url);
+// Download files
+const files = await build.downloadFiles('./output');
 ```
 
-### Advanced Usage
+### Design Systems
 
 ```typescript
-// Generate with streaming progress
-const generation = await client.generate(spec, {
-  onProgress: (progress) => {
-    console.log(`Progress: ${progress.percent}%`);
-    console.log(`Current step: ${progress.step}`);
-  }
-});
+// List design systems
+const systems = await buildmate.designSystems.list();
 
-// Generate to GitHub PR
-const generation = await client.generate(spec, {
-  output: {
-    type: 'github_pr',
-    repository: 'org/repo',
-    branch: 'feature/new-dashboard'
-  }
-});
+// Get tokens
+const tokens = await buildmate.designSystems.getTokens('employse');
 
-// Generate to local directory
-const generation = await client.generate(spec, {
-  output: {
-    type: 'local',
-    path: './generated-app'
-  }
-});
+// Validate token
+const isValid = await buildmate.designSystems.validateToken(
+  'employse',
+  'primary'
+);
 ```
 
-## CLI
+### Deployments
+
+```typescript
+// Deploy project
+const deployment = await project.deploy({
+  platform: 'vercel',
+  environment: 'production',
+  envVars: {
+    DATABASE_URL: process.env.DATABASE_URL
+  }
+});
+
+// Wait for deployment
+await deployment.wait();
+
+console.log(`Deployed to: ${deployment.url}`);
+```
+
+## CLI Tool
 
 ### Installation
 
@@ -195,139 +501,195 @@ const generation = await client.generate(spec, {
 npm install -g @buildmate/cli
 ```
 
-### Commands
-
-#### Generate
+### Authentication
 
 ```bash
-buildmate generate [spec-file]
+# Login
+buildmate login
 
-# Examples
-buildmate generate dashboard-spec.yaml
-buildmate generate --spec inline --name "My App" --type dashboard
+# Set API key
+buildmate config set apiKey YOUR_API_KEY
 ```
 
-#### Validate
+### Commands
+
+#### Create Project
 
 ```bash
-buildmate validate [spec-file]
+buildmate create my-app --spec spec.yaml
+```
 
-# Example
-buildmate validate dashboard-spec.yaml
+#### Generate Code
+
+```bash
+buildmate generate proj_abc123
 ```
 
 #### Deploy
 
 ```bash
-buildmate deploy [directory]
+buildmate deploy proj_abc123 --platform vercel
+```
 
-# Example
-buildmate deploy ./generated-app --platform vercel
+#### List Projects
+
+```bash
+buildmate list --status completed
+```
+
+#### Download Files
+
+```bash
+buildmate download proj_abc123 --output ./my-app
+```
+
+#### Watch Mode
+
+```bash
+# Regenerate on spec changes
+buildmate watch proj_abc123 --spec spec.yaml
 ```
 
 ## Webhooks
 
-Receive notifications when generation completes.
+### Configuration
 
-### Setup
+Configure webhooks in the BuildMate dashboard or via API:
 
-1. Configure webhook URL in BuildMate dashboard
-2. Receive POST requests on completion
+```http
+POST /webhooks
+```
 
-### Webhook Payload
-
+**Request Body:**
 ```json
 {
-  "event": "generation.completed",
-  "generation_id": "gen_abc123",
-  "spec": {
-    "name": "My App",
-    "type": "dashboard"
-  },
-  "result": {
-    "repository_url": "https://github.com/org/repo",
-    "pr_url": "https://github.com/org/repo/pull/1"
-  },
-  "timestamp": "2024-01-15T10:30:00Z"
+  "url": "https://your-app.com/webhooks/buildmate",
+  "events": [
+    "build.complete",
+    "build.failed",
+    "deployment.complete"
+  ],
+  "secret": "your-webhook-secret"
 }
 ```
 
-### Verify Webhooks
+### Events
+
+#### build.complete
+
+```json
+{
+  "event": "build.complete",
+  "timestamp": "2024-01-15T12:08:00Z",
+  "data": {
+    "build_id": "build_456",
+    "project_id": "proj_abc123",
+    "files_generated": 42,
+    "preview_url": "https://proj-abc123.buildmate.app"
+  }
+}
+```
+
+#### build.failed
+
+```json
+{
+  "event": "build.failed",
+  "timestamp": "2024-01-15T12:07:15Z",
+  "data": {
+    "build_id": "build_456",
+    "project_id": "proj_abc123",
+    "error": {
+      "code": "DESIGN_SYSTEM_NOT_FOUND",
+      "message": "Design system 'employse' not found"
+    }
+  }
+}
+```
+
+#### deployment.complete
+
+```json
+{
+  "event": "deployment.complete",
+  "timestamp": "2024-01-15T12:15:00Z",
+  "data": {
+    "deployment_id": "dep_789",
+    "project_id": "proj_abc123",
+    "platform": "vercel",
+    "url": "https://employee-dashboard.vercel.app"
+  }
+}
+```
+
+### Webhook Verification
+
+Verify webhook signatures:
 
 ```typescript
-import { verifyWebhook } from '@buildmate/sdk';
+import crypto from 'crypto';
 
-app.post('/webhooks/buildmate', (req, res) => {
-  const signature = req.headers['x-buildmate-signature'];
+function verifyWebhook(payload: string, signature: string, secret: string) {
+  const hash = crypto
+    .createHmac('sha256', secret)
+    .update(payload)
+    .digest('hex');
   
-  if (!verifyWebhook(req.body, signature, process.env.WEBHOOK_SECRET)) {
-    return res.status(401).send('Invalid signature');
-  }
-  
-  // Process webhook
-  console.log('Generation completed:', req.body.generation_id);
-  
-  res.sendStatus(200);
-});
-```
-
-## Rate Limits
-
-- **Free tier**: 10 generations/day
-- **Pro tier**: 100 generations/day
-- **Enterprise**: Unlimited
-
-Rate limit headers:
-```
-X-RateLimit-Limit: 100
-X-RateLimit-Remaining: 95
-X-RateLimit-Reset: 1705315200
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(hash)
+  );
+}
 ```
 
 ## Error Codes
 
 | Code | Description |
 |------|-------------|
-| 400 | Invalid spec format |
-| 401 | Invalid API key |
-| 402 | Payment required |
-| 404 | Generation not found |
-| 429 | Rate limit exceeded |
-| 500 | Internal server error |
+| `AUTHENTICATION_FAILED` | Invalid API key |
+| `RATE_LIMIT_EXCEEDED` | Too many requests |
+| `PROJECT_NOT_FOUND` | Project does not exist |
+| `DESIGN_SYSTEM_NOT_FOUND` | Design system not found in DesignMate |
+| `INVALID_SPEC` | Spec validation failed |
+| `BUILD_FAILED` | Code generation failed |
+| `DEPLOYMENT_FAILED` | Deployment failed |
+| `INSUFFICIENT_CREDITS` | Not enough API credits |
 
-## Examples
+## Rate Limiting
 
-### Generate Dashboard
+API responses include rate limit headers:
 
-```bash
-curl -X POST https://buildmate-studio.com/api/generate \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "spec": {
-      "name": "Admin Dashboard",
-      "type": "dashboard",
-      "features": ["user_management", "analytics"],
-      "design_system": "employse"
-    }
-  }'
+```
+X-RateLimit-Limit: 1000
+X-RateLimit-Remaining: 987
+X-RateLimit-Reset: 1642252800
 ```
 
-### Generate Landing Page
+## Pagination
 
-```typescript
-const generation = await client.generate({
-  spec: {
-    name: 'Product Landing',
-    type: 'landing_page',
-    sections: ['hero', 'features', 'pricing'],
-    design_system: 'hottr'
+Paginated endpoints use cursor-based pagination:
+
+```json
+{
+  "data": [ /* items */ ],
+  "pagination": {
+    "cursor": "eyJpZCI6InByb2pfYWJjMTIzIn0",
+    "has_more": true
   }
-});
+}
 ```
 
-## Next Steps
+Next page:
+```http
+GET /projects?cursor=eyJpZCI6InByb2pfYWJjMTIzIn0
+```
 
-- [Spec Format](./SPEC_FORMAT.md) - Learn spec syntax
-- [Design Integration](./DESIGN_INTEGRATION.md) - Connect DesignMate
-- [Deployment](./DEPLOYMENT.md) - Deploy generated apps
+## Support
+
+- **API Status**: https://status.buildmate-studio.com
+- **Documentation**: https://docs.buildmate-studio.com
+- **Support**: support@buildmate-studio.com
+
+---
+
+**Version**: 1.0.0 | **Last Updated**: January 2024

@@ -1,209 +1,435 @@
 # Spec Format Documentation
 
-BuildMate Studio uses YAML-based specification files to define application requirements. These specs are parsed by the AI generation engine to produce production-ready code.
+BuildMate Studio uses YAML-based specifications to describe applications. This document explains how to write specs that BuildMate can understand and generate code from.
 
 ## Basic Structure
 
+Every spec must include these core fields:
+
 ```yaml
-name: Application Name
+name: Your App Name
 type: app_type
-description: Brief description of the application
-features: []
-design_system: system_name
+description: Brief description of what the app does
+design_system: design_system_name
 framework: react
-database: database_provider
 ```
 
-## Supported App Types
+## App Types
+
+BuildMate supports several app types, each with specific features:
 
 ### Dashboard
-For admin panels, management interfaces, and data visualization apps.
+Used for admin panels, analytics dashboards, and data visualization apps.
 
 ```yaml
 type: dashboard
 features:
-  - data_grid
+  - data_tables
   - charts
   - filters
-  - export
+  - real_time_updates
 ```
 
 ### Landing Page
-For marketing sites, product pages, and promotional content.
+Used for marketing sites, product launches, and promotional pages.
 
 ```yaml
 type: landing_page
 sections:
   - hero
   - features
-  - testimonials
   - pricing
+  - testimonials
   - cta
 ```
 
+### E-commerce
+Used for online stores and marketplaces.
+
+```yaml
+type: ecommerce
+features:
+  - product_catalog
+  - shopping_cart
+  - checkout
+  - payment_integration
+```
+
 ### SaaS Application
-For full-featured web applications with authentication and database.
+Used for subscription-based software products.
 
 ```yaml
 type: saas
 features:
-  - authentication
+  - user_authentication
+  - subscription_management
   - user_dashboard
   - settings
-  - billing
-  - notifications
 ```
 
-## Common Properties
+## Features Specification
 
-### name (required)
-The display name of your application.
-```yaml
-name: My Awesome App
-```
+Define the functionality of your app with the `features` section:
 
-### type (required)
-The type of application to generate. Supported types:
-- `dashboard`
-- `landing_page`
-- `saas`
-- `e-commerce`
-- `blog`
-- `portfolio`
-
-### description (optional)
-A brief description of what the app does.
-```yaml
-description: Employee management system with shift scheduling
-```
-
-### features (optional)
-List of features to include in the application.
 ```yaml
 features:
-  - authentication
-  - user_management
-  - real_time_updates
-  - notifications
+  - user_authentication:
+      providers:
+        - email
+        - google
+        - github
+      features:
+        - password_reset
+        - email_verification
+        - two_factor_auth
+  
+  - data_management:
+      crud: true
+      entities:
+        - users
+        - posts
+        - comments
+      
+  - real_time:
+      enabled: true
+      features:
+        - notifications
+        - live_updates
+        - presence
 ```
 
-### design_system (optional)
-Name of the design system to use from DesignMate Studio.
+## Design System Integration
+
+BuildMate automatically fetches design tokens from DesignMate Studio:
+
 ```yaml
-design_system: employse
+design_system: employse  # References Employse design system
+
+# BuildMate will:
+# 1. Query DesignMate API for 'employse' tokens
+# 2. Generate token references in code
+# 3. Ensure design consistency
 ```
 
-### framework (optional, default: react)
-Frontend framework to use.
-```yaml
-framework: react
-```
+### Custom Styling (Optional)
 
-### database (optional, default: supabase)
-Database provider to use.
-```yaml
-database: supabase
-```
-
-### authentication (optional, default: false)
-Whether to include authentication.
-```yaml
-authentication: true
-```
-
-### responsive (optional, default: true)
-Whether to make the app responsive.
-```yaml
-responsive: mobile-first
-```
-
-## Advanced Features
-
-### Custom Styling
-Override design tokens or add custom styles.
+Override default styling when needed:
 
 ```yaml
 styling:
-  theme: dark
-  primary_color: var(--custom-primary)
-  font_family: Inter
+  theme:
+    mode: light  # or dark, or both
+    accent_color: custom-primary
+  typography:
+    headings: font-display
+    body: font-sans
+  spacing: comfortable  # compact, comfortable, or spacious
 ```
 
-### API Integration
-Define external API endpoints to integrate.
+## Pages and Routes
+
+Define your app's navigation structure:
+
+```yaml
+pages:
+  - name: Home
+    route: /
+    components:
+      - Hero
+      - Features
+      - CTA
+    
+  - name: Dashboard
+    route: /dashboard
+    protected: true  # Requires authentication
+    components:
+      - Stats
+      - ActivityFeed
+      - QuickActions
+    
+  - name: Settings
+    route: /settings
+    protected: true
+    components:
+      - ProfileSettings
+      - PreferencesForm
+      - DangerZone
+```
+
+## Components
+
+Specify custom components with their properties:
+
+```yaml
+components:
+  - name: UserList
+    type: data_table
+    props:
+      columns:
+        - name
+        - email
+        - role
+        - status
+      sortable: true
+      searchable: true
+      pagination: true
+      
+  - name: ShiftCalendar
+    type: calendar
+    props:
+      views: [day, week, month]
+      drag_and_drop: true
+      color_coding: by_employee
+```
+
+## API Endpoints
+
+Define backend API structure:
+
+```yaml
+api_endpoints:
+  - path: /api/users
+    methods: [GET, POST, PUT, DELETE]
+    authentication: required
+    
+  - path: /api/public/stats
+    methods: [GET]
+    authentication: optional
+    cache: 5m
+```
+
+## Database Schema
+
+Specify data models:
+
+```yaml
+database: supabase  # or postgres, mysql, mongodb
+
+models:
+  - name: User
+    fields:
+      - name: id
+        type: uuid
+        primary_key: true
+      - name: email
+        type: string
+        unique: true
+      - name: name
+        type: string
+      - name: role
+        type: enum
+        values: [admin, user, guest]
+    
+  - name: Post
+    fields:
+      - name: id
+        type: uuid
+        primary_key: true
+      - name: title
+        type: string
+      - name: content
+        type: text
+      - name: author_id
+        type: uuid
+        foreign_key: users.id
+      - name: created_at
+        type: timestamp
+```
+
+## Authentication
+
+Configure authentication and authorization:
+
+```yaml
+authentication: true
+auth_providers:
+  - email
+  - google
+  - github
+
+authorization:
+  roles:
+    - admin:
+        permissions: [all]
+    - user:
+        permissions: [read, write_own]
+    - guest:
+        permissions: [read]
+```
+
+## Third-Party Integrations
+
+Specify external services:
 
 ```yaml
 integrations:
-  - name: stripe
-    type: payment
-  - name: sendgrid
-    type: email
+  - stripe:
+      for: payments
+      plans:
+        - free
+        - premium
+        - enterprise
+  
+  - sendgrid:
+      for: email
+      templates:
+        - welcome
+        - password_reset
+        - notifications
+  
+  - analytics:
+      provider: google_analytics
+      tracking_id: GA-XXXXX
 ```
 
-### Routes
-Define custom routes for your application.
+## Performance Optimization
+
+Configure performance features:
 
 ```yaml
-routes:
-  - path: /dashboard
-    component: Dashboard
-  - path: /settings
-    component: Settings
+performance:
+  lazy_loading: true
+  image_optimization: true
+  code_splitting: true
+  caching:
+    strategy: swr  # stale-while-revalidate
+    duration: 5m
 ```
 
-## Example Specs
+## SEO Configuration
 
-### Dashboard Example
+Optimize for search engines:
+
 ```yaml
-name: Employse Dashboard
-type: dashboard
-description: Employee management dashboard with scheduling
-features:
-  - employee_list
-  - shift_calendar
-  - notifications
-  - reports
-design_system: employse
+seo:
+  title: "App Title - Tagline"
+  description: "App description for search results"
+  keywords:
+    - keyword1
+    - keyword2
+  og_image: og-image.png
+  twitter_card: summary_large_image
+```
+
+## Deployment
+
+Specify deployment configuration:
+
+```yaml
+deployment:
+  platform: vercel  # or netlify, aws, replit
+  domain: myapp.com
+  environment:
+    - name: DATABASE_URL
+      required: true
+      secret: true
+    - name: API_KEY
+      required: true
+      secret: true
+    - name: PUBLIC_URL
+      required: false
+```
+
+## Complete Example
+
+Here's a complete spec for a task management app:
+
+```yaml
+name: TaskFlow
+type: saas
+description: Team task management with real-time collaboration
+
+design_system: taskflow
 framework: react
+ui_library: shadcn/ui
 database: supabase
-authentication: true
-responsive: true
+
+features:
+  - user_authentication:
+      providers: [email, google]
+      features:
+        - password_reset
+        - email_verification
+  
+  - task_management:
+      crud: true
+      fields:
+        - title
+        - description
+        - status
+        - priority
+        - assignee
+        - due_date
+  
+  - real_time:
+      enabled: true
+      features:
+        - live_updates
+        - notifications
+
+pages:
+  - name: Dashboard
+    route: /
+    protected: true
+    components:
+      - TaskList
+      - TaskStats
+      - ActivityFeed
+  
+  - name: Project
+    route: /projects/:id
+    protected: true
+    components:
+      - ProjectHeader
+      - TaskBoard
+      - TeamMembers
+
+api_endpoints:
+  - path: /api/tasks
+    methods: [GET, POST, PUT, DELETE]
+    authentication: required
+  
+  - path: /api/projects
+    methods: [GET, POST, PUT, DELETE]
+    authentication: required
+
+deployment:
+  platform: vercel
+  domain: taskflow.app
+  environment:
+    - name: DATABASE_URL
+      required: true
+      secret: true
+    - name: SUPABASE_ANON_KEY
+      required: true
+      secret: true
 ```
 
-### Landing Page Example
-```yaml
-name: Product Landing
-type: landing_page
-description: Marketing page for SaaS product
-sections:
-  - hero
-  - features
-  - pricing
-  - testimonials
-  - cta
-design_system: hottr
-animations: true
-responsive: mobile-first
-seo: true
-```
+## Tips for Writing Good Specs
+
+1. **Be Specific**: Clearly describe what you want instead of being vague
+2. **Use Examples**: Reference similar apps or provide mockups
+3. **Start Simple**: Begin with core features, add complexity later
+4. **Reference Design System**: Always specify a design system for consistency
+5. **Think About Users**: Consider user flows and journeys
+6. **Plan for Scale**: Think about performance and data volume
+7. **Security First**: Always include authentication for sensitive data
 
 ## Validation
 
-BuildMate validates your spec before generation:
-- Required fields must be present
-- Type must be valid
-- Features must be supported
-- Design system must exist in DesignMate (if specified)
+BuildMate validates specs before generation:
 
-## Tips
+- ✅ Required fields present
+- ✅ Valid app type
+- ✅ Design system exists in DesignMate
+- ✅ Valid routes and component names
+- ✅ Database schema consistency
+- ✅ API endpoint validity
 
-1. **Start simple**: Begin with minimal specs and add features incrementally
-2. **Use design systems**: Leverage DesignMate for consistent styling
-3. **Be specific**: More detailed specs produce better results
-4. **Test incrementally**: Generate and test small features first
+If validation fails, BuildMate provides helpful error messages to fix the spec.
 
 ## Next Steps
 
-- [Design Integration](./DESIGN_INTEGRATION.md) - Connect to DesignMate Studio
-- [Deployment](./DEPLOYMENT.md) - Deploy your generated app
-- [API Reference](./API.md) - Use BuildMate programmatically
+- See [Design Integration](./DESIGN_INTEGRATION.md) for design token usage
+- See [API Reference](./API.md) for programmatic spec generation
+- Check [examples/](../examples/) for more complete specs

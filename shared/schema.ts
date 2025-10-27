@@ -560,7 +560,7 @@ export const chatMessages = pgTable("chat_messages", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-// Dynamic Intelligence Router Analysis Table - Core of Codemate system
+// Dynamic Intelligence Router Analysis Table - Core of BuildMate system
 export const routerAnalysis = pgTable("router_analysis", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   projectId: varchar("project_id").references(() => projects.id).notNull(),
