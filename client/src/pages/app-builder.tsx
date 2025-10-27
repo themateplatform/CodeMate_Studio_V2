@@ -94,6 +94,7 @@ export default function AppBuilderPage() {
   const [location] = useLocation();
   const [currentStep, setCurrentStep] = useState<AppBuilderStep>('intake');
   const [progress, setProgress] = useState(0);
+  const [targetApp, setTargetApp] = useState('default');
   
   // Extract prompt from URL params
   const urlParams = new URLSearchParams(location.split('?')[1] || '');
