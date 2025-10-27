@@ -264,7 +264,7 @@
                 if ('caches' in window) {
                     caches.keys().then(names => {
                         names.forEach(name => {
-                            if (name.startsWith('codemate-')) {
+                            if (name.startsWith('buildmate-')) {
                                 caches.delete(name);
                             }
                         });

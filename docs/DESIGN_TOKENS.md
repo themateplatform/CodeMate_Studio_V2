@@ -16,7 +16,7 @@ BuildMate Studio supports two token sources:
 ```
 client/src/lib/design-tokens/
 ├── global.css          # Base HubMate tokens
-├── codemate-overrides.css  # BuildMate brand overrides
+├── buildmate-overrides.css  # BuildMate brand overrides
 ├── preset.ts           # Tailwind preset
 └── sync.ts            # Runtime sync utility
 ```
@@ -123,7 +123,7 @@ All existing components continue to work without changes.
 
 ## BuildMate Brand Overrides
 
-BuildMate-specific brand values are defined in `codemate-overrides.css`:
+BuildMate-specific brand values are defined in `buildmate-overrides.css`:
 
 ```css
 :root {
@@ -161,7 +161,7 @@ npm run dev
 The console will show:
 ```
 [DesignTokenSync] Initializing...
-[DesignTokenSync] Fetching tokens from http://localhost:3000/api/design-tokens?app=codemate&env=dev&mode=light
+[DesignTokenSync] Fetching tokens from http://localhost:3000/api/design-tokens?app=buildmate&env=dev&mode=light
 [DesignTokenSync] Applied 127 tokens to :root
 ```
 
@@ -211,10 +211,10 @@ npm install @themateplatform/design-tokens@latest
 3. Update BuildMate's vendored files
 
 ### BuildMate-only tokens
-Add to `codemate-overrides.css`:
+Add to `buildmate-overrides.css`:
 ```css
 :root {
-  --codemate-special-color: hsl(180, 50%, 50%);
+  --buildmate-special-color: hsl(180, 50%, 50%);
 }
 ```
 
@@ -308,7 +308,7 @@ window.addEventListener('design-tokens-updated', (event) => {
 1. **Use semantic tokens** over core tokens in components
 2. **Preserve legacy aliases** for backward compatibility  
 3. **Test both light and dark modes** after changes
-4. **Document BuildMate-specific overrides** in codemate-overrides.css
+4. **Document BuildMate-specific overrides** in buildmate-overrides.css
 5. **Keep vendored tokens in sync** with HubMate releases
 6. **Use live sync in dev** for rapid iteration
 7. **Disable live sync in prod** for performance
