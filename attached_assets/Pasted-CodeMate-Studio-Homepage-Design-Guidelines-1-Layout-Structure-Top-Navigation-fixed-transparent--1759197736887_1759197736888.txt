@@ -1,9 +1,9 @@
-CodeMate Studio Homepage Design Guidelines
+BuildMate Studio Homepage Design Guidelines
 1. Layout Structure
 
 Top Navigation (fixed, transparent)
 
-Left: White Mate Face icon → text CodeMate Studio (Poppins Bold, 20–24px).
+Left: White Mate Face icon → text BuildMate Studio (Poppins Bold, 20–24px).
 
 Right: Links: Community | Pricing | Docs | Sign In (white, 14–16px).
 
@@ -134,4 +134,4 @@ CTA buttons have a hover shimmer.
 Background gradient can have a subtle slow drift for energy.
 
 ✅ Result:
-This makes the homepage instantly recognizable as CodeMate Studio — bold, creative, futuristic, but structured and professional.
+This makes the homepage instantly recognizable as BuildMate Studio — bold, creative, futuristic, but structured and professional.

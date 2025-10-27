@@ -1,7 +1,7 @@
 # Spec Editor System - Complete Implementation
 
 ## Overview
-The Spec Editor is CodeMate Studio's "single source of truth" system where users define their product vision in natural language. This living specification feeds directly into the Generator System to produce complete applications.
+The Spec Editor is BuildMate Studio's "single source of truth" system where users define their product vision in natural language. This living specification feeds directly into the Generator System to produce complete applications.
 
 ## Architecture
 

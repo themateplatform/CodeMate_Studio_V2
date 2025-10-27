@@ -1,4 +1,4 @@
-# Static Deployment Configuration for CodeMate Studio
+# Static Deployment Configuration for BuildMate Studio
 # Frontend-only deployment without backend server
 
 [deployment]

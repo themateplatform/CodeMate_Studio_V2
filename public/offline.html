@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodeMate Studio - Offline</title>
+    <title>BuildMate Studio - Offline</title>
     <style>
         * {
             margin: 0;
@@ -171,7 +171,7 @@
         </div>
         
         <h1>You're Offline</h1>
-        <p>Don't worry! CodeMate Studio works offline too. Your work is automatically saved locally and will sync when you reconnect.</p>
+        <p>Don't worry! BuildMate Studio works offline too. Your work is automatically saved locally and will sync when you reconnect.</p>
         
         <div class="features">
             <h3>Available Offline:</h3>
@@ -264,7 +264,7 @@
                 if ('caches' in window) {
                     caches.keys().then(names => {
                         names.forEach(name => {
-                            if (name.startsWith('codemate-')) {
+                            if (name.startsWith('buildmate-')) {
                                 caches.delete(name);
                             }
                         });

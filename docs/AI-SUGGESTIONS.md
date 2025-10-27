@@ -428,4 +428,4 @@ curl -X POST http://localhost:5000/api/ai/generate-user-stories \
 - [API Reference](./API.md)
 
 ## License
-Part of CodeMate Studio platform - see main LICENSE file.
+Part of BuildMate Studio platform - see main LICENSE file.

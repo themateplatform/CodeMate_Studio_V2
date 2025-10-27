@@ -7,8 +7,8 @@ export const PWA_CONFIG = {
   // Service Worker configuration
   serviceWorker: {
     scope: '/',
-    cacheName: 'codemate-v1.0.0',
-    apiCacheName: 'codemate-api-v1',
+    cacheName: 'buildmate-v1.0.0',
+    apiCacheName: 'buildmate-api-v1',
     offlineUrl: '/offline.html',
     skipWaiting: true
   },
@@ -73,8 +73,8 @@ export const PWA_CONFIG = {
 
   // App information
   app: {
-    name: 'CodeMate Studio',
-    shortName: 'CodeMate',
+    name: 'BuildMate Studio',
+    shortName: 'BuildMate',
     description: 'AI-powered code generation and development platform',
     version: '1.0.0',
     themeColor: '#000000',

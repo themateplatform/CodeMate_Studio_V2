@@ -6,7 +6,7 @@
  * 
  * Usage:
  * - Only active in development with VITE_DESIGN_TOKENS_SYNC=true
- * - Fetches from HubMate /api/design-tokens?app=codemate&env=dev&mode=light|dark
+ * - Fetches from HubMate /api/design-tokens?app=buildmate&env=dev&mode=light|dark
  * - Disabled in production for performance
  */
 
@@ -214,7 +214,7 @@ export function initDesignTokenSync(): DesignTokenSync | null {
   const config: TokenSyncConfig = {
     enabled,
     apiUrl: import.meta.env.VITE_HUBMATE_API_URL || 'http://localhost:3000',
-    app: 'codemate',
+    app: 'buildmate',
     env: 'dev',
     pollInterval: import.meta.env.VITE_DESIGN_TOKENS_POLL_INTERVAL 
       ? parseInt(import.meta.env.VITE_DESIGN_TOKENS_POLL_INTERVAL) 
