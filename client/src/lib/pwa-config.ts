@@ -7,8 +7,8 @@ export const PWA_CONFIG = {
   // Service Worker configuration
   serviceWorker: {
     scope: '/',
-    cacheName: 'codemate-v1.0.0',
-    apiCacheName: 'codemate-api-v1',
+    cacheName: 'buildmate-v1.0.0',
+    apiCacheName: 'buildmate-api-v1',
     offlineUrl: '/offline.html',
     skipWaiting: true
   },

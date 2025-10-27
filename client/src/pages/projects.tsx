@@ -28,7 +28,7 @@ export default function ProjectsPage() {
   const [importUrl, setImportUrl] = useState('');
   const [sourceType, setSourceType] = useState<'git' | 'zip' | 'github' | 'gitlab' | 'bitbucket'>('git');
   
-  // Codemate database options
+  // BuildMate database options
   const [databaseChoice, setDatabaseChoice] = useState<'existing' | 'new' | 'none'>('existing');
   const [existingSupabaseUrl, setExistingSupabaseUrl] = useState('');
   const [existingSupabaseKey, setExistingSupabaseKey] = useState('');
@@ -903,7 +903,7 @@ export default function ProjectsPage() {
                 <Code className="w-8 h-8 text-muted-foreground" />
               </div>
               <h3 className="text-lg font-semibold mb-2">No projects yet</h3>
-              <p className="text-muted-foreground mb-6">Create your first project to get started with Codemate Dynamic Intelligence</p>
+              <p className="text-muted-foreground mb-6">Create your first project to get started with BuildMate Dynamic Intelligence</p>
               <Button 
                 onClick={() => setIsCreateOpen(true)}
                 data-testid="button-create-first-project"

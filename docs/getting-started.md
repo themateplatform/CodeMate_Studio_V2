@@ -43,7 +43,7 @@ cp .env.example .env
 Edit `.env` and add your configuration:
 ```env
 # Database
-DATABASE_URL=postgresql://user:password@localhost:5432/codemate
+DATABASE_URL=postgresql://user:password@localhost:5432/buildmate
 
 # Session Secret
 SESSION_SECRET=your-secret-key-here
@@ -109,7 +109,7 @@ Visit `http://localhost:5000` to see BuildMate Studio in action!
 ### Using the API
 
 ```typescript
-import { runAutomation } from '@/codemate';
+import { runAutomation } from '@/buildmate';
 
 const result = await runAutomation(
   'Create a blog with posts, dark mode, and a contact form',
@@ -132,10 +132,10 @@ console.log('Files generated:', result.executionResults[0].filesGenerated.length
 ### Using the CLI (Future)
 ```bash
 # Generate app from prompt
-codemate generate "Create a blog app" --output ./my-blog
+buildmate generate "Create a blog app" --output ./my-blog
 
 # With options
-codemate generate "Dashboard with analytics" \
+buildmate generate "Dashboard with analytics" \
   --output ./dashboard \
   --backend supabase \
   --hosting vercel \
@@ -255,7 +255,7 @@ import { designTokens } from './styles/tokens';
 Configure backend in your prompt or through the UI:
 
 ```typescript
-import { BackendManager } from '@/codemate';
+import { BackendManager } from '@/buildmate';
 
 const manager = new BackendManager();
 
@@ -269,7 +269,7 @@ await manager.connect('supabase', {
 Deploy through the UI or programmatically:
 
 ```typescript
-import { HostingManager } from '@/codemate';
+import { HostingManager } from '@/buildmate';
 
 const manager = new HostingManager();
 
@@ -287,7 +287,7 @@ console.log('Deployed to:', deployment.url);
 Override model selection for specific tasks:
 
 ```typescript
-import { executeTask } from '@/codemate';
+import { executeTask } from '@/buildmate';
 
 const result = await executeTask(task, {
   modelOverride: 'gpt-5-codex',
@@ -364,7 +364,7 @@ console.log(history);
 - Check [Issues](https://github.com/yourusername/buildmate-studio/issues)
 - Read [Documentation](./README.md)
 - Join [Discord Community](#)
-- Contact support@codemate.studio
+- Contact support@buildmate.studio
 
 ## Best Practices
 
@@ -435,7 +435,7 @@ git commit -m "Initial BuildMate generation"
 - Enterprise features
 - SLA guarantees
 
-Contact: enterprise@codemate.studio
+Contact: enterprise@buildmate.studio
 
 ---
 

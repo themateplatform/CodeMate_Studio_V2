@@ -31,7 +31,7 @@ BuildMate Studio follows a **phase-gated development methodology** with 12 disti
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd codemate-studio
+cd buildmate-studio
 
 # Install dependencies
 npm install

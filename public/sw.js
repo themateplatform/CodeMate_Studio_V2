@@ -3,9 +3,9 @@
  * Provides offline capabilities, background sync, and push notifications
  */
 
-const CACHE_NAME = 'codemate-v1.0.0';
+const CACHE_NAME = 'buildmate-v1.0.0';
 const OFFLINE_URL = '/offline.html';
-const API_CACHE_NAME = 'codemate-api-v1';
+const API_CACHE_NAME = 'buildmate-api-v1';
 
 // Assets to cache immediately on install
 const STATIC_ASSETS = [
@@ -71,7 +71,7 @@ self.addEventListener('activate', (event) => {
         // Clean up old caches
         const cacheNames = await caches.keys();
         const oldCaches = cacheNames.filter(name => 
-          name.startsWith('codemate-') && name !== CACHE_NAME && name !== API_CACHE_NAME
+          name.startsWith('buildmate-') && name !== CACHE_NAME && name !== API_CACHE_NAME
         );
         
         await Promise.all(
@@ -440,7 +440,7 @@ async function clearAllCaches() {
   const cacheNames = await caches.keys();
   await Promise.all(
     cacheNames
-      .filter(name => name.startsWith('codemate-'))
+      .filter(name => name.startsWith('buildmate-'))
       .map(name => caches.delete(name))
   );
   console.log('[SW] All caches cleared');

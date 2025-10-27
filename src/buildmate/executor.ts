@@ -315,7 +315,7 @@ function estimateTokens(files: GeneratedFile[]): number {
 
 function generatePackageJson(): string {
   return JSON.stringify({
-    name: 'codemate-generated-app',
+    name: 'buildmate-generated-app',
     version: '0.1.0',
     type: 'module',
     scripts: {

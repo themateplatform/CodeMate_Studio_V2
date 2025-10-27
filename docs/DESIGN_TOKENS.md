@@ -214,7 +214,7 @@ npm install @themateplatform/design-tokens@latest
 Add to `buildmate-overrides.css`:
 ```css
 :root {
-  --codemate-special-color: hsl(180, 50%, 50%);
+  --buildmate-special-color: hsl(180, 50%, 50%);
 }
 ```
 
