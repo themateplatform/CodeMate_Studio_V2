@@ -100,10 +100,10 @@ export function generateCardStyles(tokens: DesignTokens): string {
  */
 export function generateTypographyCSS(tokens: DesignTokens): string {
   return `
-    font-family: ${tokens.typography.fontFamily.sans};
-    font-size: ${tokens.typography.fontSize.base};
-    font-weight: ${tokens.typography.fontWeight.normal};
-    color: ${tokens.colors.foreground};
+    fontFamily: '${tokens.typography.fontFamily.sans}',
+    fontSize: '${tokens.typography.fontSize.base}',
+    fontWeight: ${tokens.typography.fontWeight.normal},
+    color: '${tokens.colors.foreground}'
   `.trim();
 }
 
