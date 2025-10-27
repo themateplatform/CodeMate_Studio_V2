@@ -1,0 +1,13 @@
+name: Hottr Landing Page
+type: landing_page
+description: Marketing landing page for Hottr application
+sections:
+  - hero
+  - features
+  - pricing
+  - cta
+design_system: hottr
+animations: true
+responsive: mobile-first
+seo: true
+analytics: true

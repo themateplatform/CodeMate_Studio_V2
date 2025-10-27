@@ -1,0 +1,12 @@
+name: Employse Dashboard
+type: dashboard
+description: Employee management dashboard with scheduling and notifications
+features:
+  - employee_list
+  - shift_calendar
+  - notifications
+design_system: employse
+framework: react
+database: supabase
+authentication: true
+responsive: true
