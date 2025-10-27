@@ -73,8 +73,8 @@ export const PWA_CONFIG = {
 
   // App information
   app: {
-    name: 'CodeMate Studio',
-    shortName: 'CodeMate',
+    name: 'BuildMate Studio',
+    shortName: 'BuildMate',
     description: 'AI-powered code generation and development platform',
     version: '1.0.0',
     themeColor: '#000000',

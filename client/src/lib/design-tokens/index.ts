@@ -1,7 +1,7 @@
 /**
  * Design Tokens Module
  * 
- * Central export point for design tokens functionality in CodeMate Studio.
+ * Central export point for design tokens functionality in BuildMate Studio.
  * This module provides:
  * - Tailwind preset with HubMate token schema
  * - Runtime token sync for dev mode
