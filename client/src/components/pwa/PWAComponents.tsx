@@ -99,7 +99,7 @@ export function PWAInstallPrompt() {
             <Download className="h-6 w-6 text-primary" />
           </div>
           <div>
-            <h3 className="font-semibold text-lg mb-1">Install CodeMate Studio</h3>
+            <h3 className="font-semibold text-lg mb-1">Install BuildMate Studio</h3>
             <p className="text-sm text-muted-foreground">
               Get the best experience with our app
             </p>

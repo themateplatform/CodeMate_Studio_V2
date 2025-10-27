@@ -69,7 +69,7 @@ export function AuthDialog({
       {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : null}
       <DialogContent className="bg-[#0B0B15] text-white border-gray-800">
         <DialogHeader>
-          <DialogTitle>Welcome to CodeMate Studio</DialogTitle>
+          <DialogTitle>Welcome to BuildMate Studio</DialogTitle>
         </DialogHeader>
         <Tabs value={tab} onValueChange={(v) => setTab(v as any)} className="w-full">
           <TabsList className="grid grid-cols-3 bg-gray-900">

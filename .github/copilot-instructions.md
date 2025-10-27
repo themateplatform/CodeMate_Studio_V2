@@ -1,7 +1,7 @@
-# CodeMate Studio - AI Coding Agent Instructions
+# BuildMate Studio - AI Coding Agent Instructions
 
 ## Platform Vision & Mission
-CodeMate Studio is a spec-driven, collaborative platform where anyone can describe an idea and receive a production-ready product across web and native mobile, with governance and auditability suitable for teams and enterprises.
+BuildMate Studio is a spec-driven, collaborative platform where anyone can describe an idea and receive a production-ready product across web and native mobile, with governance and auditability suitable for teams and enterprises.
 
 **Mission**: Make software creation as simple as describing what you want, then deliver a secure, observable, and shippable product that matches that description.
 
@@ -13,7 +13,7 @@ CodeMate Studio is a spec-driven, collaborative platform where anyone can descri
 - Provide smooth paths to launch, update, and roll back across environments without stress
 
 ## Architecture Overview
-CodeMate Studio is a full-stack AI-powered app builder with React frontend, Express backend, and PostgreSQL database via Drizzle ORM. The app supports real-time collaborative editing, PWA functionality, and enterprise features.
+BuildMate Studio is a full-stack AI-powered app builder with React frontend, Express backend, and PostgreSQL database via Drizzle ORM. The app supports real-time collaborative editing, PWA functionality, and enterprise features.
 
 **Service Boundaries:**
 - `client/src/` - React SPA with TypeScript, Tailwind CSS, shadcn/ui components

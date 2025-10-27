@@ -1,5 +1,5 @@
 /**
- * CodeMate Studio Core - Main exports
+ * BuildMate Studio Core - Main exports
  * AI-driven no/low-code automation system
  */
 

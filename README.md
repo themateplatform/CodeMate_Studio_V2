@@ -1,127 +1,248 @@
-# CodeMate Studio V2
+# BuildMate Studio
 
-🚀 **AI-powered no/low-code platform** that transforms natural language prompts into production-ready applications.
+AI-powered low/no-code builder that generates production-ready TypeScript + React applications from specifications.
 
-Unlike visual-only builders, CodeMate generates **real, scalable code** (TypeScript + React + Tailwind) while letting you **choose any backend or hosting provider**.
+## What Makes BuildMate Different
 
-## ✨ Key Features
+**Not a Code Analyzer** - that's CodeMate (an agent in MateHub Studio)
 
-- 🤖 **AI Engineering Team**: Intelligent orchestration with Plan → Execute → Score → Decide workflow
-- 🎨 **Real Code Generation**: TypeScript + React + Tailwind, not proprietary formats
-- 🔌 **Provider Flexibility**: Connect to Supabase, Firebase, AWS, or any custom backend
-- 🚀 **Deploy Anywhere**: Vercel, Netlify, AWS, Cloudflare, or custom hosting
-- ✅ **Quality First**: Built-in validation for accessibility, performance, security, and tests
-- 🎯 **Smart Model Routing**: Automatically selects the best AI model for each task
+**BuildMate is a Builder:**
+- 🎯 Spec-to-code generation (natural language or structured specs)
+- 🎨 Design-intelligent (automatically uses DesignMate Studio tokens)
+- ✏️ Monaco-based code editor with real-time collaboration
+- 🚀 Production-ready output (not prototypes)
+- 🔗 Direct GitHub integration (commits, PRs, deployment)
 
-## 📚 Documentation
+## How It Works
 
-### Core Docs
-- **[Vision](./docs/vision.md)** - CodeMate Studio philosophy and comparison with other builders
-- **[Model Routing](./docs/model-routing.md)** - Intelligent AI model selection system
-- **[Getting Started](./docs/getting-started.md)** - Setup, deployment, and usage guide
+### 1. Describe What You Want
 
-### Additional Docs
-- **[Design Tokens](./docs/DESIGN_TOKENS.md)** - How CodeMate consumes shared design tokens from HubMate Studio
+Use natural language or structured specs:
+```
+"Build a dashboard for Employse with:
+- Employee list with search
+- Shift calendar view
+- Real-time notifications
+- Uses Employse design tokens"
+```
 
-## 🚀 Quick Start
+### 2. BuildMate Generates Code
 
-### Installation
+- Fetches design tokens from DesignMate Studio
+- Generates TypeScript + React + Tailwind
+- Creates proper component structure
+- Implements business logic
+- Adds error handling
+
+### 3. Edit & Refine
+
+- Monaco editor with syntax highlighting
+- AI-assisted editing
+- Real-time preview
+- Multi-user collaboration (via Yjs)
+
+### 4. Deploy
+
+- Direct commit to GitHub
+- Create PR with description
+- Deploy to Vercel/Replit/Lovable
+- CI/CD integration
+
+## Design Intelligence
+
+BuildMate automatically integrates with DesignMate Studio:
+
+**Before code generation:**
+- Queries DesignMate for target app's design tokens
+- Uses token references (not hardcoded values)
+- Ensures design system compliance
+
+**Example:**
+
+Instead of:
+```tsx
+<div className="bg-[#FF5733] text-[#FFFFFF]">
+```
+
+BuildMate generates:
+```tsx
+<div className="bg-employse-primary text-employse-text-light">
+```
+
+**Result:** Consistent styling across all generated apps.
+
+## Architecture
+
+```
+BuildMate Studio = Spec Editor + AI Generation + Monaco IDE + Deployment
+
+Integrates with:
+  ├── DesignMate Studio (design tokens)
+  ├── GitHub (version control)
+  └── MateHub Studio (orchestration)
+```
+
+## Tech Stack
+
+- **Frontend**: React 18.3 + Vite
+- **Editor**: Monaco Editor + Yjs (collaboration)
+- **Database**: Neon DB + Supabase
+- **AI**: OpenRouter (Claude, GPT-4, Gemini)
+- **Deployment**: Replit, Vercel, Lovable
+
+## Getting Started
+
 ```bash
-git clone https://github.com/themateplatform/CodeMate_Studio_V2.git
-cd CodeMate_Studio_V2
+# Install dependencies
 npm install
-```
 
-### Setup Environment
-```bash
-cp .env.example .env
-# Edit .env with your configuration
-```
-
-### Initialize Database
-```bash
-npm run db:push
-```
-
-### Start Development Server
-```bash
+# Start development server
 npm run dev
-```
 
-Visit `http://localhost:5000` to start building!
-
-## 🎯 Generate Your First App
-
-### Using Web Interface
-1. Navigate to App Builder
-2. Enter a prompt: "Create a blog with posts, dark mode, and contact form"
-3. Watch the AI orchestration workflow
-4. Review and deploy your generated app
-
-### Using API
-```typescript
-import { runAutomation } from '@/codemate';
-
-const result = await runAutomation(
-  'Create a blog with posts and dark mode',
-  './output',
-  {
-    qualityThreshold: 70,
-    enableAccessibility: true,
-    autoApprove: false,
-  }
-);
-```
-
-See [Getting Started Guide](./docs/getting-started.md) for detailed instructions.
-
-## 🏗️ Architecture
-
-### CodeMate Core Modules
-- **Planner** (`src/codemate/planner.ts`) - Repository audit & architecture planning
-- **Executor** (`src/codemate/executor.ts`) - Code scaffolding & implementation
-- **Scorer** (`src/codemate/scorer.ts`) - Quality validation (tests, accessibility, security)
-- **Decider** (`src/codemate/decider.ts`) - State machine controller
-- **Model Router** (`src/codemate/modelRouter.ts`) - Intelligent AI model selection
-- **Orchestrator** (`src/codemate/orchestrator.ts`) - Main automation workflow
-
-### Backend & Hosting Connectors
-- **Backend Connectors** - Supabase, Firebase, AWS, Custom APIs
-- **Hosting Connectors** - Vercel, Netlify, AWS, Cloudflare, Custom
-
-### Design System
-- **Design Tokens** (`src/styles/tokens.ts`) - Centralized design system
-- No raw hex values - all styling uses tokens
-
-## 🧪 Development
-
-### Run Tests
-```bash
-npm test              # Unit tests with Vitest
-npm run test:e2e      # E2E tests with Playwright
-npm run test:coverage # Coverage report
-```
-
-### Type Checking
-```bash
-npm run check
-```
-
-### Build for Production
-```bash
+# Build for production
 npm run build
-npm start
 ```
 
-## 📦 Tech Stack
+## Environment Variables
 
-### Generated Applications
-- React 18 + TypeScript
-- Tailwind CSS + shadcn/ui
-- Vite + Vitest + Playwright
-- Wouter (routing) + TanStack Query (state)
+```bash
+# BuildMate Studio
+VITE_APP_NAME=BuildMate Studio
+VITE_APP_URL=https://buildmate-studio.com
 
-### CodeMate Platform
-- Express.js + PostgreSQL + Drizzle ORM
-- Session-based Auth + WebSocket + Yjs
-- OpenAI, Anthropic, Google, xAI APIs
+# DesignMate Integration
+VITE_DESIGNMATE_API_URL=https://designmate-studio-api.com
+
+# Database
+DATABASE_URL=
+SUPABASE_URL=
+SUPABASE_ANON_KEY=
+
+# AI Models
+OPENROUTER_API_KEY=
+
+# GitHub Integration
+GITHUB_TOKEN=
+
+# Deployment
+VERCEL_TOKEN=
+REPLIT_TOKEN=
+```
+
+## Project Structure
+
+```
+buildmate-studio/
+├── src/
+│   ├── components/
+│   │   ├── SpecEditor.tsx      # Spec input interface
+│   │   ├── CodeEditor.tsx      # Monaco editor
+│   │   └── PreviewPane.tsx     # Live preview
+│   ├── services/
+│   │   ├── codeGenerator.ts    # AI code generation
+│   │   ├── designmateClient.ts # Design token fetching
+│   │   └── githubClient.ts     # GitHub integration
+│   └── pages/
+│       ├── Projects.tsx        # Project list
+│       └── Builder.tsx         # Main builder interface
+├── docs/
+│   ├── SPEC_FORMAT.md         # Spec documentation
+│   └── DEPLOYMENT.md          # Deployment guide
+└── examples/
+    ├── dashboard-spec.yaml    # Example specs
+    └── landing-page-spec.yaml
+```
+
+## Use Cases
+
+### 1. Rapid Prototyping
+Generate working prototypes in minutes instead of hours.
+
+### 2. Design System Compliance
+Automatically uses approved design tokens - no manual styling needed.
+
+### 3. Multi-App Consistency
+Build multiple apps with guaranteed visual consistency.
+
+### 4. Developer Productivity
+Let AI handle boilerplate while you focus on business logic.
+
+## Example Specs
+
+### Dashboard Spec
+```yaml
+name: Employse Dashboard
+type: dashboard
+features:
+  - employee_list
+  - shift_calendar
+  - notifications
+design_system: employse
+framework: react
+database: supabase
+```
+
+### Landing Page Spec
+```yaml
+name: Hottr Landing Page
+type: landing_page
+sections:
+  - hero
+  - features
+  - pricing
+  - cta
+design_system: hottr
+animations: true
+responsive: mobile-first
+```
+
+## Documentation
+
+- [Spec Format](./docs/SPEC_FORMAT.md) - How to write specs
+- [Design Integration](./docs/DESIGN_INTEGRATION.md) - DesignMate connection
+- [Deployment](./docs/DEPLOYMENT.md) - Deploy generated apps
+- [API Reference](./docs/API.md) - BuildMate API
+
+## Comparison
+
+| Feature | BuildMate Studio | CodeMate Agent |
+|---------|-----------------|----------------|
+| **Purpose** | Build new apps | Analyze existing code |
+| **Input** | Specs/requirements | Code repositories |
+| **Output** | Generated code | Analysis/fixes |
+| **Location** | Separate app | Agent in MateHub Studio |
+| **Use Case** | Create from scratch | Understand/improve existing |
+
+## Related Projects
+
+- **MateHub Studio** - Business operations HQ (orchestration)
+- **DesignMate Studio** - Design system authority (provides tokens)
+- **Mate** - Personal AI companion (can orchestrate BuildMate)
+
+## Roadmap
+
+**Current (v1.0):**
+- ✅ Spec-to-code generation
+- ✅ Monaco editor
+- ✅ GitHub integration
+- 🔶 DesignMate integration (in progress)
+
+**Next (v1.1):**
+- Real-time collaboration (Yjs)
+- Template library
+- One-click deployment
+- Advanced AI models
+
+**Future (v2.0):**
+- Visual spec builder (drag & drop)
+- Multi-framework support (Vue, Svelte)
+- Testing framework generation
+- API generation
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for development guidelines.
+
+---
+
+**Built by The Mate Platform Team**

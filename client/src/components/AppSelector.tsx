@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { designmateClient } from '@/lib/designmateClient';
+import { designmateClient } from '@/services/designmateClient';
 import {
   Select,
   SelectContent,
@@ -24,22 +24,20 @@ export function AppSelector({ value, onChange }: AppSelectorProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const loadApps = async () => {
+      setLoading(true);
+      const availableApps = await designmateClient.getAvailableApps();
+      setApps(availableApps);
+      setLoading(false);
+    };
     loadApps();
   }, []);
-
-  const loadApps = async () => {
-    setLoading(true);
-    const availableApps = await designmateClient.getAvailableApps();
-    setApps(availableApps);
-    setLoading(false);
-  };
-
   return (
     <div className="space-y-2">
       <Label htmlFor="app-selector">Target App Design System</Label>
       <Select value={value} onValueChange={onChange} disabled={loading}>
-        <SelectTrigger id="app-selector">
-          <SelectValue placeholder="Select an app" />
+        <SelectTrigger id="app-selector" className="w-full">
+          <SelectValue placeholder={loading ? "Loading..." : "Select an app"} />
         </SelectTrigger>
         <SelectContent>
           {apps.map(app => (
@@ -49,7 +47,7 @@ export function AppSelector({ value, onChange }: AppSelectorProps) {
           ))}
         </SelectContent>
       </Select>
-      <p className="text-xs text-muted-foreground">
+      <p className="text-sm text-muted-foreground">
         Generated code will use this app's design tokens
       </p>
     </div>

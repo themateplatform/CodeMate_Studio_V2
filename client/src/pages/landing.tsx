@@ -214,7 +214,7 @@ function LogoLockup({ variant, progress }: { variant: "hero" | "nav"; progress: 
   return (
     <div
       className="flex items-center gap-3 px-2 py-1"
-      aria-label="CodeMate Studio"
+      aria-label="BuildMate Studio"
       style={{
         transform: `scale(${scale})`,
         opacity,
@@ -225,7 +225,7 @@ function LogoLockup({ variant, progress }: { variant: "hero" | "nav"; progress: 
     >
       <img
         src={LOGO_SRC}
-        alt="CodeMate Studio"
+        alt="BuildMate Studio"
         className={cn(
           "block object-contain",
           variant === "hero" ? "h-24 w-auto md:h-28" : "h-8 w-auto md:h-9"
@@ -523,7 +523,7 @@ export default function LandingPage() {
           <LogoLockup variant="nav" progress={scrollProgress} />
           <div className="flex items-center gap-6 text-sm">
             <a className="text-white transition-colors" href="#why">
-              Why CodeMate
+              Why BuildMate
             </a>
             <a className="text-white transition-colors" href="#gallery">
               Gallery
@@ -869,7 +869,7 @@ export default function LandingPage() {
               </p>
               <h2 className="text-3xl font-semibold">Connect GitHub</h2>
               <p className="text-white/70">
-                Bring in your live repository, sync to CodeMate Studio, and keep your workflow intact. We branch
+                Bring in your live repository, sync to BuildMate Studio, and keep your workflow intact. We branch
                 as <span className="font-semibold">feat/auto-build-{"{slug}"}</span>, open human-readable PRs, and attach an instant preview.
               </p>
               <div className="flex flex-wrap items-center gap-4">
@@ -885,7 +885,7 @@ export default function LandingPage() {
                   onClick={() => setLocation("/projects")}
                   className="text-white/70 hover:text-white"
                 >
-                  Open in CodeMate Studio
+                  Open in BuildMate Studio
                 </Button>
               </div>
             </div>
@@ -903,9 +903,9 @@ export default function LandingPage() {
         <section id="why" className="px-4 py-20">
           <div className="mx-auto max-w-6xl text-white">
             <Badge className="bg-gradient-to-r from-[color:var(--core-brand-primary)] to-[color:var(--core-brand-secondary)] text-white">
-              Why CodeMate Studio is different
+              Why BuildMate Studio is different
             </Badge>
-            <h2 className="mt-6 text-4xl font-semibold">Why CodeMate Studio is different</h2>
+            <h2 className="mt-6 text-4xl font-semibold">Why BuildMate Studio is different</h2>
             <p className="mt-3 max-w-2xl text-white/70">
               Plain-language plans. Honest automation. Software that earns trust with every deploy.
             </p>
@@ -932,9 +932,9 @@ export default function LandingPage() {
           <div className="mx-auto max-w-6xl text-white">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div>
-                <h2 className="text-4xl font-semibold">Built with CodeMate Studio</h2>
+                <h2 className="text-4xl font-semibold">Built with BuildMate Studio</h2>
                 <p className="mt-2 max-w-2xl text-white/70">
-                  Real teams ship these live experiences with CodeMate Studio. Hover to see project details.
+                  Real teams ship these live experiences with BuildMate Studio. Hover to see project details.
                 </p>
               </div>
             </div>

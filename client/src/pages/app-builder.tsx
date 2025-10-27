@@ -29,7 +29,6 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { AppSelector } from "@/components/AppSelector";
-import { TokenPreview } from "@/components/TokenPreview";
 
 type AppBuilderStep = 'intake' | 'enhancement' | 'research' | 'brief' | 'agents' | 'implementation';
 
@@ -101,6 +100,9 @@ export default function AppBuilderPage() {
   const urlParams = new URLSearchParams(location.split('?')[1] || '');
   const initialPrompt = urlParams.get('prompt') || '';
   
+  // DesignMate integration state
+  const [targetApp, setTargetApp] = useState("default");
+  
   // State for each step
   const [userInput, setUserInput] = useState(initialPrompt);
   const [projectRequirements, setProjectRequirements] = useState<ProjectRequirement[]>([]);
@@ -134,7 +136,11 @@ export default function AppBuilderPage() {
   // Smart intake mutation
   const processIntakeMutation = useMutation({
     mutationFn: async (input: string) => {
-      const response = await apiRequest('POST', '/api/app-builder/intake', { input, context: messages });
+      const response = await apiRequest('POST', '/api/app-builder/intake', { 
+        input, 
+        context: messages,
+        targetApp // Include selected design system
+      });
       return await response.json();
     },
     onSuccess: (data: any) => {
@@ -170,7 +176,10 @@ export default function AppBuilderPage() {
   // Enhancement analysis mutation
   const enhancementMutation = useMutation({
     mutationFn: async () => {
-      const response = await apiRequest('POST', '/api/app-builder/enhance', { requirements: projectRequirements });
+      const response = await apiRequest('POST', '/api/app-builder/enhance', { 
+        requirements: projectRequirements,
+        targetApp // Include design system
+      });
       return await response.json();
     },
     onSuccess: (data: any) => {
@@ -186,7 +195,8 @@ export default function AppBuilderPage() {
     mutationFn: async () => {
       const response = await apiRequest('POST', '/api/app-builder/discover', { 
         requirements: projectRequirements,
-        enhancements: enhancements
+        enhancements: enhancements,
+        targetApp // Include design system
       });
       return await response.json();
     },
@@ -206,7 +216,8 @@ export default function AppBuilderPage() {
         enhancements: enhancements,
         competitors: competitors,
         mcpServers: mcpServers,
-        aiAgents: recommendedAgents
+        aiAgents: recommendedAgents,
+        targetApp // Include design system
       });
       return await response.json();
     },
@@ -223,7 +234,8 @@ export default function AppBuilderPage() {
       const response = await apiRequest('POST', '/api/app-builder/implement', {
         brief: designBrief,
         selectedAgents: recommendedAgents.filter(a => a.id), // Add selection logic
-        selectedMcpServers: mcpServers.filter(m => m.id) // Add selection logic
+        selectedMcpServers: mcpServers.filter(m => m.id), // Add selection logic
+        targetApp // Include design system
       });
       return await response.json();
     },
@@ -463,9 +475,8 @@ export default function AppBuilderPage() {
                 <CardHeader className="pb-3">
                   <CardTitle className="text-sm">Design System</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
+                <CardContent>
                   <AppSelector value={targetApp} onChange={setTargetApp} />
-                  <TokenPreview appName={targetApp} />
                 </CardContent>
               </Card>
 

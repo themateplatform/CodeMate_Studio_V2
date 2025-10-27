@@ -1,4 +1,4 @@
-# CodeMate Studio Pull Request
+# BuildMate Studio Pull Request
 
 ## 📋 Description
 Brief description of the changes in this PR.

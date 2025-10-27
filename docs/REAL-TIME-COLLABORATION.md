@@ -1,7 +1,7 @@
 # Real-Time Collaboration System
 
 ## Overview
-The Real-Time Collaboration System enables Google Docs-style multiplayer editing across CodeMate Studio. Multiple users can simultaneously edit specifications, code, and other content with live cursor tracking, presence indicators, and conflict-free merging powered by CRDTs (Conflict-Free Replicated Data Types).
+The Real-Time Collaboration System enables Google Docs-style multiplayer editing across BuildMate Studio. Multiple users can simultaneously edit specifications, code, and other content with live cursor tracking, presence indicators, and conflict-free merging powered by CRDTs (Conflict-Free Replicated Data Types).
 
 ## Features
 
@@ -949,4 +949,4 @@ For issues or questions:
 
 ## License
 
-Part of CodeMate Studio platform - see main LICENSE file.
+Part of BuildMate Studio platform - see main LICENSE file.

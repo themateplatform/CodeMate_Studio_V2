@@ -1,4 +1,4 @@
--- Row Level Security Policies for CodeMate Studio
+-- Row Level Security Policies for BuildMate Studio
 -- These policies enforce multi-tenant security and proper access controls
 
 -- ===== PROFILES POLICIES =====

@@ -44,7 +44,7 @@ export function PWAInstallPrompt({ onDismiss, className }: PWAInstallPromptProps
               <Smartphone className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <CardTitle className="text-lg">Install CodeMate Studio</CardTitle>
+              <CardTitle className="text-lg">Install BuildMate Studio</CardTitle>
               <Badge variant="secondary" className="text-xs">
                 Progressive Web App
               </Badge>
@@ -63,7 +63,7 @@ export function PWAInstallPrompt({ onDismiss, className }: PWAInstallPromptProps
       
       <CardContent className="pb-4">
         <CardDescription className="mb-4">
-          Install CodeMate Studio for a better experience with offline capabilities, 
+          Install BuildMate Studio for a better experience with offline capabilities, 
           faster loading, and native-like performance.
         </CardDescription>
         
