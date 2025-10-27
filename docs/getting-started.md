@@ -1,4 +1,4 @@
-# Getting Started with CodeMate Studio
+# Getting Started with BuildMate Studio
 
 ## Prerequisites
 
@@ -17,8 +17,8 @@
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/codemate-studio.git
-cd codemate-studio
+git clone https://github.com/yourusername/buildmate-studio.git
+cd buildmate-studio
 ```
 
 ### 2. Install Dependencies
@@ -73,7 +73,7 @@ npm run db:push
 npm run dev
 ```
 
-Visit `http://localhost:5000` to see CodeMate Studio in action!
+Visit `http://localhost:5000` to see BuildMate Studio in action!
 
 ## Quick Start: Generate Your First App
 
@@ -361,7 +361,7 @@ console.log(history);
 ```
 
 ### Getting Help
-- Check [Issues](https://github.com/yourusername/codemate-studio/issues)
+- Check [Issues](https://github.com/yourusername/buildmate-studio/issues)
 - Read [Documentation](./README.md)
 - Join [Discord Community](#)
 - Contact support@codemate.studio
@@ -388,7 +388,7 @@ console.log(history);
 cd my-app
 git init
 git add .
-git commit -m "Initial CodeMate generation"
+git commit -m "Initial BuildMate generation"
 ```
 
 ### 5. Test Thoroughly
@@ -400,7 +400,7 @@ git commit -m "Initial CodeMate generation"
 ## Next Steps
 
 ### Learning Resources
-- [Vision Document](./vision.md) - Understand CodeMate philosophy
+- [Vision Document](./vision.md) - Understand BuildMate philosophy
 - [Model Routing](./model-routing.md) - Learn about AI model selection
 - [API Reference](#) - Detailed API documentation
 - [Examples](#) - Sample applications
@@ -427,7 +427,7 @@ git commit -m "Initial CodeMate generation"
 ### Community
 - GitHub Discussions
 - Discord Server
-- Twitter @CodeMateStudio
+- Twitter @BuildMateStudio
 
 ### Commercial Support
 - Priority support
@@ -439,4 +439,4 @@ Contact: enterprise@codemate.studio
 
 ---
 
-**Ready to build?** Start with a simple prompt and watch CodeMate transform it into a production-ready application!
+**Ready to build?** Start with a simple prompt and watch BuildMate transform it into a production-ready application!

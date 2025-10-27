@@ -1,4 +1,4 @@
-You are a senior full-stack engineer operating inside the CodeMate Studio repo. Implement the following incremental improvements to the already-working “Prompt → Site” MVP. Follow these guardrails and acceptance checks exactly:
+You are a senior full-stack engineer operating inside the BuildMate Studio repo. Implement the following incremental improvements to the already-working “Prompt → Site” MVP. Follow these guardrails and acceptance checks exactly:
 
 Guardrails:
 - Plan then implement; after each step, STOP and show a unified diff and the exact commands to run. 

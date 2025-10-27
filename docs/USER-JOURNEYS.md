@@ -2,7 +2,7 @@
 
 ## Overview
 
-The User Journeys Visual Designer is a comprehensive system for creating, managing, and visualizing user journeys within CodeMate Studio. It enables product teams to define end-to-end user experiences, map user flows, identify pain points, and establish success criteria - all within the living specification.
+The User Journeys Visual Designer is a comprehensive system for creating, managing, and visualizing user journeys within BuildMate Studio. It enables product teams to define end-to-end user experiences, map user flows, identify pain points, and establish success criteria - all within the living specification.
 
 **Feature Status**: ✅ Production Ready  
 **Commit**: [To be added]  
@@ -887,4 +887,4 @@ MIT License - See LICENSE file for details
 
 ---
 
-**Built with ❤️ for CodeMate Studio**
+**Built with ❤️ for BuildMate Studio**

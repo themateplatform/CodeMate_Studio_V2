@@ -6,7 +6,7 @@
 
 ## Overview
 
-The Authentication System provides secure user registration, login, and session management for CodeMate Studio. Built with express-session, PostgreSQL-backed sessions, and bcrypt password hashing, it enables secure access control across all platform features.
+The Authentication System provides secure user registration, login, and session management for BuildMate Studio. Built with express-session, PostgreSQL-backed sessions, and bcrypt password hashing, it enables secure access control across all platform features.
 
 ## Architecture
 
