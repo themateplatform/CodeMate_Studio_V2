@@ -1,10 +1,10 @@
-# Contributing to CodeMate Studio
+# Contributing to BuildMate Studio
 
-Welcome to CodeMate Studio! This guide will help you contribute effectively to our AI-powered app builder platform.
+Welcome to BuildMate Studio! This guide will help you contribute effectively to our AI-powered app builder platform.
 
 ## 🏗️ Development Philosophy
 
-CodeMate Studio follows a **phase-gated development methodology** with 12 distinct phases, each building upon the previous. Every change must be secure, tested, and production-ready.
+BuildMate Studio follows a **phase-gated development methodology** with 12 distinct phases, each building upon the previous. Every change must be secure, tested, and production-ready.
 
 ### Phase-Based Development
 1. **Phase 1**: Repository & Infrastructure Audit ✅
@@ -309,4 +309,4 @@ Use our PR template which includes:
 
 ---
 
-Thank you for contributing to CodeMate Studio! Together, we're building the future of AI-powered application development.
+Thank you for contributing to BuildMate Studio! Together, we're building the future of AI-powered application development.
