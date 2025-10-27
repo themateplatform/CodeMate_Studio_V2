@@ -143,6 +143,7 @@ export default function GeneratorPage(): JSX.Element {
         recipe,
         name: projectName,
         validate: shouldValidate,
+        targetApp, // Include selected design system
       });
 
       const json = (await response.json()) as GeneratorResponse;

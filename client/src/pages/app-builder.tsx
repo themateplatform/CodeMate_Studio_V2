@@ -135,7 +135,11 @@ export default function AppBuilderPage() {
   // Smart intake mutation
   const processIntakeMutation = useMutation({
     mutationFn: async (input: string) => {
-      const response = await apiRequest('POST', '/api/app-builder/intake', { input, context: messages });
+      const response = await apiRequest('POST', '/api/app-builder/intake', { 
+        input, 
+        context: messages,
+        targetApp // Include selected design system
+      });
       return await response.json();
     },
     onSuccess: (data: any) => {
@@ -171,7 +175,10 @@ export default function AppBuilderPage() {
   // Enhancement analysis mutation
   const enhancementMutation = useMutation({
     mutationFn: async () => {
-      const response = await apiRequest('POST', '/api/app-builder/enhance', { requirements: projectRequirements });
+      const response = await apiRequest('POST', '/api/app-builder/enhance', { 
+        requirements: projectRequirements,
+        targetApp // Include design system
+      });
       return await response.json();
     },
     onSuccess: (data: any) => {
@@ -187,7 +194,8 @@ export default function AppBuilderPage() {
     mutationFn: async () => {
       const response = await apiRequest('POST', '/api/app-builder/discover', { 
         requirements: projectRequirements,
-        enhancements: enhancements
+        enhancements: enhancements,
+        targetApp // Include design system
       });
       return await response.json();
     },
@@ -207,7 +215,8 @@ export default function AppBuilderPage() {
         enhancements: enhancements,
         competitors: competitors,
         mcpServers: mcpServers,
-        aiAgents: recommendedAgents
+        aiAgents: recommendedAgents,
+        targetApp // Include design system
       });
       return await response.json();
     },
@@ -224,7 +233,8 @@ export default function AppBuilderPage() {
       const response = await apiRequest('POST', '/api/app-builder/implement', {
         brief: designBrief,
         selectedAgents: recommendedAgents.filter(a => a.id), // Add selection logic
-        selectedMcpServers: mcpServers.filter(m => m.id) // Add selection logic
+        selectedMcpServers: mcpServers.filter(m => m.id), // Add selection logic
+        targetApp // Include design system
       });
       return await response.json();
     },
