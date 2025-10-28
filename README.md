@@ -1,27 +1,41 @@
-# BuildMate Studio V2
+# BuildMate Studio
 
-🚀 **AI-powered no/low-code platform** that transforms natural language prompts into production-ready applications.
+**The AI-powered no-code builder for founders, developers, and agencies** that converts ideas into production-ready web applications in minutes.
 
-Unlike visual-only builders, BuildMate generates **real, scalable code** (TypeScript + React + Tailwind) while letting you **choose any backend or hosting provider**.
+BuildMate lets you describe what you want to build, and we generate **real, production-ready code** (TypeScript + React + Tailwind) that you own completely. No vendor lock-in, no proprietary formats—just clean, deployable code.
 
-## ✨ Key Features
+## ✨ How It Works
 
-- 🤖 **AI Engineering Team**: Intelligent orchestration with Plan → Execute → Score → Decide workflow
-- 🎨 **Real Code Generation**: TypeScript + React + Tailwind, not proprietary formats
-- 🔌 **Provider Flexibility**: Connect to Supabase, Firebase, AWS, or any custom backend
-- 🚀 **Deploy Anywhere**: Vercel, Netlify, AWS, Cloudflare, or custom hosting
-- ✅ **Quality First**: Built-in validation for accessibility, performance, security, and tests
-- 🎯 **Smart Model Routing**: Automatically selects the best AI model for each task
+1. **Describe Your Vision** (FREE): Tell us about your project—goals, audience, features, branding preferences
+2. **Get a Scope Document** (FREE): We research your idea and create a detailed scope of what we'll build
+3. **Choose Your Direction** (FREE): Pick from 3 visual mood boards (colors, fonts, vibes—not mockups)
+4. **See the Price** (THEN PAY): Before build starts, we show you the cost based on complexity
+5. **Get Production-Ready Code**: Real TypeScript + React + Tailwind, fully styled, ready to deploy
+6. **Deploy Anywhere**: Vercel, Netlify, Cloudflare, AWS, or self-hosted—your choice
+
+## 🎯 Use Cases
+
+- **Founders**: "I have an idea but no dev team"—get a fully functional SaaS, landing page, or MVP
+- **Developers**: "I started my repo but need help finishing it"—BuildMate analyzes your code and creates a PR with completed features
+- **Agencies**: "I need 5 sites for my portfolio companies with consistent branding"—create once, deploy many with brand kit reuse
+- **Solo Creators**: Blogs, portfolios, booking sites—no code required
+
+## 💰 Pricing
+
+- **Free tier**: Intake interview + scope document + mood board selection
+- **Builds**: $500–$7,500 based on complexity
+  - Simple landing page: ~$500
+  - Mid-tier SaaS (12 pages, auth, payments): ~$3,500
+  - Complex app (20+ pages, custom integrations): ~$7,500
 
 ## 📚 Documentation
 
-### Core Docs
-- **[Vision](./docs/vision.md)** - BuildMate Studio philosophy and comparison with other builders
-- **[Model Routing](./docs/model-routing.md)** - Intelligent AI model selection system
-- **[Getting Started](./docs/getting-started.md)** - Setup, deployment, and usage guide
-
-### Additional Docs
-- **[Design Tokens](./docs/DESIGN_TOKENS.md)** - How BuildMate consumes shared design tokens from HubMate Studio
+- **[Getting Started](./docs/getting-started.md)** - Installation, setup, and first build
+- **[Vision & Product Strategy](./docs/vision.md)** - Product philosophy and roadmap
+- **[Architecture](./docs/ARCHITECTURE.md)** - System design and service boundaries
+- **[Freemium Model](./docs/FREEMIUM-MODEL.md)** - Pricing funnel, user journeys, KPIs
+- **[API Integration Guide](./docs/INTEGRATION-HUB.md)** - How to integrate with Mate ecosystem
+- **[AI Agent Instructions](./github/copilot-instructions.md)** - For developers extending BuildMate
 
 ## 🚀 Quick Start
 
